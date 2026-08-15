@@ -2,7 +2,7 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1220"><link rel="manifest" href="manifest.webmanifest"><title>Diário Pro v5.2</title>
+<meta name="theme-color" content="#0b1220"><link rel="manifest" href="manifest.webmanifest"><title>Diário Pro v5.3</title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe2ea;--nav:#0b1220;--accent:#2563eb;--danger:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -22,7 +22,7 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 </style>
 </head>
 <body>
-<header><div class="top"><div><h1>🚛 Diário Pro</h1><small>Gestão diária de viagens</small></div><span class="badge">V5.2</span></div></header>
+<header><div class="top"><div><h1>🚛 Diário Pro</h1><small>Gestão diária de viagens</small></div><span class="badge">V5.3</span></div></header>
 <nav>
 <button data-v="home" class="active">🏠 Início</button><button data-v="trip">➕ Viagem</button><button data-v="history">📋 Histórico</button><button data-v="db">🗂️ Cadastros</button><button data-v="calendar">📅 Calendário</button><button data-v="report">📊 Relatórios</button>
 </nav>
@@ -57,7 +57,7 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <div><label>Local de descarga</label><input id="unloadSearch" placeholder="Pesquisar local" autocomplete="off"><select id="unload" style="display:none"></select><div id="unloadResults"></div></div><div><label>Valor (€)</label><input id="value" type="number" min="0" step=".01"></div>
 <div><label>Km início</label><input id="kmStart" type="number" min="0"></div><div><label>Km fim</label><input id="kmEnd" type="number" min="0"></div>
 <div class="full"><label>Observações</label><textarea id="notes"></textarea></div>
-<div class="full row"><button>GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
+<div class="full row"><button type="submit" id="mainSubmitBtn">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
 </form></div></section>
 
 <section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
@@ -70,11 +70,11 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <div class="card"><h2>👤 Clientes</h2><div class="grid"><div><label>Nome</label><input id="cname"></div><div><label>NIF (opcional)</label><input id="cnif"></div></div>
 <div class="row" style="margin-top:10px"><button id="addClient">Adicionar cliente</button><button type="button" class="secondary" onclick="toggleList('clients')">Ver / Ocultar</button></div><div id="clients" style="display:none; margin-top:10px;"></div></div>
 
-<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid"><div><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div><div><label>Cliente</label><select id="rclient"></select></div><div><label>Origem</label><select id="rfrom"></select></div><div><label>Destino</label><select id="rto"></select></div><div><label>Valor habitual (€)</label><input id="rvalue" type="number" min="0" step=".01"></div></div>
-<div class="row" style="margin-top:10px"><button id="addRoute">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:10px;"></div></div>
-
 <div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Nome</label><input id="pname"></div><div><label>Morada/localidade</label><input id="paddr"></div></div>
 <div class="row" style="margin-top:10px"><button id="addPlace">Adicionar local</button><button type="button" class="secondary" onclick="toggleList('places')">Ver / Ocultar</button></div><div id="places" style="display:none; margin-top:10px;"></div></div>
+
+<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid"><div><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div><div><label>Cliente</label><select id="rclient"></select></div><div><label>Origem</label><select id="rfrom"></select></div><div><label>Destino</label><select id="rto"></select></div><div><label>Valor habitual (€)</label><input id="rvalue" type="number" min="0" step=".01"></div></div>
+<div class="row" style="margin-top:10px"><button id="addRoute">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:10px;"></div></div>
 
 <div class="card"><h2>💾 Dados</h2><div class="row"><button id="backup">Criar backup</button><button id="restoreBtn" class="secondary">Restaurar backup</button></div><input id="restore" type="file" accept=".json" style="display:none"><p class="notice">O backup guarda viagens e cadastros num ficheiro JSON. Guarda-o num local seguro.</p></div>
 </section>
@@ -164,7 +164,43 @@ window.delClient=n=>{db.clients=db.clients.filter(x=>x.name!==n);save();refresh(
 window.delPlace=n=>{db.places=db.places.filter(x=>x.name!==n);save();refresh()}
 window.delRoute=i=>{db.routes.splice(i,1);save();routeSelects()}
 
-function renderHistory(){let fd=$('filterDate').value,q=$('search').value.trim().toLowerCase();let a=trips.filter(t=>(!fd||t.date===fd)&&(!q||[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.notes].join(' ').toLowerCase().includes(q)));$('historyList').innerHTML=a.slice().reverse().map(t=>`<div class="trip"><b>${esc(t.date)} · ${esc(t.load)} → ${esc(t.unload)}</b><div class="muted">${esc(t.truck)}${t.trailer?' · '+esc(t.trailer):''} · ${esc(t.client)} · ${km(t)} km · ${money(t.value)}</div><div class="actions"><button class="danger" onclick="delTrip('${esc(t.id)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem viagens.</div>'}
+// Função nova para editar Viagens
+window.editTrip = id => {
+    let t = trips.find(x => x.id === id);
+    if(!t) return;
+    $('date').value = t.date;
+    $('number').value = t.number || '';
+    $('truckSearch').value = t.truck || ''; $('truck').value = t.truck || '';
+    $('trailerSearch').value = t.trailer || ''; $('trailer').value = t.trailer || '';
+    $('clientSearch').value = t.client || ''; $('client').value = t.client || '';
+    $('loadSearch').value = t.load || ''; $('load').value = t.load || '';
+    $('unloadSearch').value = t.unload || ''; $('unload').value = t.unload || '';
+    $('value').value = t.value || '';
+    $('kmStart').value = t.kmStart || '';
+    $('kmEnd').value = t.kmEnd || '';
+    $('notes').value = t.notes || '';
+    
+    let btn = $('mainSubmitBtn');
+    btn.textContent = 'GUARDAR ALTERAÇÕES';
+    btn.dataset.editId = id;
+    
+    show('trip');
+    window.scrollTo(0, 0);
+};
+
+function renderHistory(){
+    let fd=$('filterDate').value,q=$('search').value.trim().toLowerCase();
+    let a=trips.filter(t=>(!fd||t.date===fd)&&(!q||[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.notes].join(' ').toLowerCase().includes(q)));
+    $('historyList').innerHTML=a.slice().reverse().map(t=>`
+    <div class="trip">
+        <b>${esc(t.date)} · ${esc(t.load)} → ${esc(t.unload)}</b>
+        <div class="muted">${esc(t.truck)}${t.trailer?' · '+esc(t.trailer):''} · ${esc(t.client)} · ${km(t)} km · ${money(t.value)}</div>
+        <div class="actions">
+            <button class="danger" onclick="delTrip('${esc(t.id)}')">Apagar</button>
+            <button class="secondary" onclick="editTrip('${esc(t.id)}')">Editar</button>
+        </div>
+    </div>`).join('')||'<div class="empty">Sem viagens.</div>';
+}
 
 $('tripRouteQuick').onchange = e => {
   let n = e.target.value;
@@ -180,7 +216,10 @@ $('tripRouteQuick').onchange = e => {
 
 $('form').onsubmit=e=>{
   e.preventDefault();
-  let t={id:Date.now().toString(),date:$('date').value,number:$('number').value,truck:$('truck').value,trailer:$('trailer').value,client:$('client').value,load:$('load').value,unload:$('unload').value,value:$('value').value,kmStart:$('kmStart').value,kmEnd:$('kmEnd').value,notes:$('notes').value};
+  let btn = $('mainSubmitBtn');
+  let editId = btn.dataset.editId;
+  
+  let t={id:editId || Date.now().toString(),date:$('date').value,number:$('number').value,truck:$('truck').value,trailer:$('trailer').value,client:$('client').value,load:$('load').value,unload:$('unload').value,value:$('value').value,kmStart:$('kmStart').value,kmEnd:$('kmEnd').value,notes:$('notes').value};
   
   if(!t.truck||!t.client||!t.load||!t.unload){
     if($('truckSearch').value&&!t.truck)return alert('Por favor, selecione um Camião da lista de sugestões.');
@@ -191,19 +230,35 @@ $('form').onsubmit=e=>{
   }
   if(t.kmStart!==''&&t.kmEnd!==''&&+t.kmEnd<+t.kmStart)return alert('Os Km finais não podem ser inferiores aos iniciais.');
   
-  trips.push(t);
+  if(editId){
+     let idx = trips.findIndex(x=>x.id===editId);
+     if(idx>-1) trips[idx] = t;
+     btn.textContent = 'GUARDAR VIAGEM';
+     delete btn.dataset.editId;
+  } else {
+     trips.push(t);
+  }
+  
   save();
   let d=t.date;
   $('form').reset();
   $('date').value=d;
   $('tripRouteQuick').value='';
   refresh();
-  show('home');
+  show('history'); // Redireciona para o histórico para ver as alterações
 }
 
-$('clear').onclick=()=>{let d=$('date').value;$('form').reset();$('date').value=d;$('tripRouteQuick').value='';}
+$('clear').onclick=()=>{
+    let d=$('date').value;
+    $('form').reset();
+    $('date').value=d;
+    $('tripRouteQuick').value='';
+    let btn = $('mainSubmitBtn');
+    btn.textContent = 'GUARDAR VIAGEM';
+    delete btn.dataset.editId;
+}
 
-// Funções de Edição
+// Funções de Edição dos Cadastros
 window.editPlate = (type, oldPlate) => {
     $('vtype').value = type; $('plate').value = oldPlate;
     $('addPlate').textContent = 'Guardar Alterações'; $('addPlate').dataset.old = oldPlate;
@@ -299,7 +354,7 @@ function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remo
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 $('homePeriod').onchange=renderHome;$('reportStart').onchange=renderReport;$('reportEnd').onchange=renderReport;$('prevMonth').onclick=()=>moveMonth(-1);$('nextMonth').onclick=()=>moveMonth(1);$('calMonth').onchange=renderCalendar;$('filterDate').onchange=renderHistory;$('search').oninput=renderHistory;$('showAll').onclick=()=>{$('filterDate').value='';$('search').value='';renderHistory()}
 $('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='diario_viagens.csv';a.click()}
-$('backup').onclick=()=>{let data=JSON.stringify({version:5.2,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
+$('backup').onclick=()=>{let data=JSON.stringify({version:5.3,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
 
 $('restoreBtn').onclick=()=>$('restore').click();
 $('restore').onchange=e=>{
