@@ -1,17 +1,15 @@
 {
   "name": "Diário Pro",
   "short_name": "Diário Pro",
-  "description": "Gestão diária de viagens para camionistas",
-  "lang": "pt-PT",
-  "start_url": "./",
-  "scope": "./",
+  "description": "Gestão diária de viagens",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#eef2f7",
   "theme_color": "#0b1220",
+  "lang": "pt-PT",
   "icons": [
     {
-      "src": "icone.svg",
+      "src": "./icone.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
