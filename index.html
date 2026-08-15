@@ -28,13 +28,22 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 </nav>
 <main>
 <section id="home" class="view active">
-<div class="card hero"><h2>Resumo 16 → 15</h2><div class="grid"><div><label style="color:#bfdbfe">Período</label><select id="homePeriod"></select></div><div><label style="color:#bfdbfe">Estado</label><input id="periodLabel" readonly></div></div></div>
-<div class="kpis"><div class="kpi"><b id="hkTrips">0</b><span>VIAGENS</span></div><div class="kpi"><b id="hkKm">0</b><span>KM</span></div><div class="kpi"><b id="hkDays">0</b><span>DIAS</span></div><div class="kpi"><b id="hkValue">0 €</b><span>VALOR</span></div></div>
-<div class="card"><h2>Últimas viagens</h2><div id="recent"></div></div>
-<div class="card" id="backupV51"><h2>💾 Segurança dos dados</h2>
-<p class="muted">Antes de atualizar a app, faça sempre um backup.</p>
-<div class="row"><button type="button" onclick="dv51Backup()">Exportar backup</button><label class="secondary" style="display:inline-block;padding:10px 14px;border-radius:10px;cursor:pointer">Importar backup
-<input type="file" accept=".json,application/json" style="display:none" onchange="dv51Restore(this.files[0])"></label></div></div>
+<div class="card hero">
+  <h2>Resumo 16 → 15</h2>
+  <div class="grid">
+    <div><label style="color:#bfdbfe">Período</label><select id="homePeriod"></select></div>
+    <div><label style="color:#bfdbfe">Estado</label><input id="periodLabel" readonly></div>
+  </div>
+</div>
+<div class="kpis">
+  <div class="kpi"><b id="hkTrips">0</b><span>VIAGENS</span></div>
+  <div class="kpi"><b id="hkKm">0</b><span>KM</span></div>
+  <div class="kpi"><b id="hkDays">0</b><span>DIAS</span></div>
+  <div class="kpi"><b id="hkValue">0 €</b><span>VALOR</span></div>
+</div>
+<div class="card">
+  <button type="button" onclick="show('trip')">➕ NOVA VIAGEM</button>
+</div>
 </section>
 
 <section id="trip" class="view"><div class="card"><h2>➕ Registar viagem</h2><form id="form" class="grid">
@@ -90,7 +99,7 @@ function fillSelect(el,arr,placeholder){$(el).innerHTML='<option value="">'+plac
 function refresh(){fillSelect('truck',db.trucks,'Selecionar camião');fillSelect('trailer',db.trailers,'Selecionar reboque');fillSelect('client',db.clients.map(x=>x.name),'Selecionar cliente');fillSelect('load',db.places.map(x=>x.name),'Selecionar local');fillSelect('unload',db.places.map(x=>x.name),'Selecionar local');renderDb();routeSelects();setupSearches();renderHome();renderReport();renderHistory();renderCalendar()}
 function periodData(sel){let [s,e]=sel.split('|');return trips.filter(t=>t.date>=s&&t.date<=e)}
 function stats(arr){let days=new Set(arr.map(t=>t.date));return{trips:arr.length,km:arr.reduce((a,t)=>a+km(t),0),days:days.size,value:arr.reduce((a,t)=>a+ +t.value,0),avg:days.size?arr.length/days.size:0}}
-function renderHome(){let a=periodData($('homePeriod').value),s=stats(a);$('periodLabel').value=$('homePeriod').selectedOptions[0]?.text||'';$('hkTrips').textContent=s.trips;$('hkKm').textContent=s.km.toLocaleString('pt-PT');$('hkDays').textContent=s.days;$('hkValue').textContent=money(s.value);$('recent').innerHTML=trips.slice().reverse().slice(0,5).map(t=>`<div class="trip"><b>${esc(t.load)} → ${esc(t.unload)}</b><div class="muted">${t.date} · ${esc(t.client)} · ${km(t)} km · ${money(t.value)}</div></div>`).join('')||'<div class="empty">Ainda não há viagens.</div>'}
+function renderHome(){let a=periodData($('homePeriod').value),s=stats(a);$('periodLabel').value=$('homePeriod').selectedOptions[0]?.text||'';$('hkTrips').textContent=s.trips;$('hkKm').textContent=s.km.toLocaleString('pt-PT');$('hkDays').textContent=s.days;$('hkValue').textContent=money(s.value)}
 function renderReport(){let a=reportDates(),s=stats(a);$('rTrips').textContent=s.trips;$('rKm').textContent=s.km.toLocaleString('pt-PT');$('rDays').textContent=s.days;$('rAvg').textContent=s.avg.toLocaleString('pt-PT',{maximumFractionDigits:1});$('rValue').textContent=money(s.value);$('reportList').innerHTML=a.slice().reverse().map(t=>`<div class="trip"><b>${esc(t.date)} · ${esc(t.load)} → ${esc(t.unload)}</b><div class="muted">${esc(t.truck)}${t.trailer?' · '+esc(t.trailer):''} · ${esc(t.client)} · ${km(t)} km · ${money(t.value)}</div></div>`).join('')||'<div class="empty">Sem viagens neste período.</div>'}
 function renderDb(){$('plates').innerHTML=[...db.trucks.map(x=>['Camião',x]),...db.trailers.map(x=>['Reboque',x])].map(([a,x])=>`<div class="item">${a}: <b>${esc(x)}</b><button class="danger" onclick="delPlate('${a}','${esc(x)}')">Apagar</button></div>`).join('')||'<div class="muted">Sem matrículas.</div>';$('clients').innerHTML=db.clients.map(x=>`<div class="item"><b>${esc(x.name)}</b>${x.nif?' · '+esc(x.nif):''}<button class="danger" onclick="delClient('${esc(x.name)}')">Apagar</button></div>`).join('')||'<div class="muted">Sem clientes.</div>';$('places').innerHTML=db.places.map(x=>`<div class="item"><b>${esc(x.name)}</b>${x.address?' · '+esc(x.address):''}<button class="danger" onclick="delPlace('${esc(x.name)}')">Apagar</button></div>`).join('')||'<div class="muted">Sem locais.</div>'}
 window.delTrip=id=>{if(confirm('Apagar viagem?')){trips=trips.filter(x=>x.id!==id);save();refresh()}}

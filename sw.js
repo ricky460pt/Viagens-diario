@@ -1,4 +1,4 @@
-const CACHE="diario-pro-v5-2";
+const CACHE="diario-pro-v5-3";
 const ASSETS=["./","./index.html","./manifest.webmanifest","./icone.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));

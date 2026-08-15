@@ -1,4 +1,4 @@
-DIÁRIO PRO V5.2
+DIÁRIO PRO V5.3
 
 Ficheiros:
 - index.html
@@ -18,3 +18,6 @@ IMPORTANTE:
 5. Depois abra o endereço do GitHub Pages no Chrome Android e use "Adicionar ao ecrã inicial".
 
 O backup JSON permite recuperar viagens e cadastros.
+
+
+V5.3: o menu Início mostra apenas o resumo do período e o botão NOVA VIAGEM. As viagens e restantes dados ficam nos menus próprios (Histórico, Cadastros, Calendário e Relatórios).
