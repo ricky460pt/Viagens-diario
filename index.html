@@ -2,7 +2,7 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1220"><link rel="manifest" href="manifest.webmanifest"><title>Diário Pro</title>
+<meta name="theme-color" content="#0b1220"><link rel="manifest" href="manifest.webmanifest"><title>Diário Pro <small style="opacity:.7">v5.1</small></title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe2ea;--nav:#0b1220;--accent:#2563eb;--danger:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -31,6 +31,14 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <div class="card hero"><h2>Resumo 16 → 15</h2><div class="grid"><div><label style="color:#bfdbfe">Período</label><select id="homePeriod"></select></div><div><label style="color:#bfdbfe">Estado</label><input id="periodLabel" readonly></div></div></div>
 <div class="kpis"><div class="kpi"><b id="hkTrips">0</b><span>VIAGENS</span></div><div class="kpi"><b id="hkKm">0</b><span>KM</span></div><div class="kpi"><b id="hkDays">0</b><span>DIAS</span></div><div class="kpi"><b id="hkValue">0 €</b><span>VALOR</span></div></div>
 <div class="card"><h2>Últimas viagens</h2><div id="recent"></div></div>
+
+<div class="card" id="backupV51"><h2>💾 Segurança dos dados</h2>
+<p class="muted">Antes de atualizar a app, faça sempre um backup.</p>
+<div class="row">
+<button type="button" onclick="dv51Backup()">Exportar backup</button>
+<label class="secondary" style="display:inline-block;padding:10px 14px;border-radius:10px;cursor:pointer">Importar backup
+<input type="file" accept=".json,application/json" style="display:none" onchange="dv51Restore(this.files[0])"></label>
+</div></div>
 </section>
 
 <section id="trip" class="view">
@@ -80,6 +88,24 @@ const $=id=>document.getElementById(id), VK='dv4_trips',DK='dv4_db';
 let trips=JSON.parse(localStorage.getItem(VK)||'[]'),db=JSON.parse(localStorage.getItem(DK)||'{"trucks":[],"trailers":[],"clients":[],"places":[],"routes":[]}');db.routes=db.routes||[];
 const today=()=>new Date().toISOString().slice(0,10),pad=n=>String(n).padStart(2,'0');
 $('date').value=today();
+
+// v5.1: backup seguro antes de atualizações
+function dv51Backup(){
+  const payload={version:"5.1",trips:trips,db:db,createdAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="diario-pro-backup.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function dv51Restore(file){
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const x=JSON.parse(r.result);
+    if(!Array.isArray(x.trips)||!x.db) throw Error();
+    trips=x.trips;db=x.db;db.routes=db.routes||[];
+    save();location.reload();
+  }catch(e){alert("Backup inválido.");}};
+  r.readAsText(file);
+}
 function save(){localStorage.setItem(VK,JSON.stringify(trips));localStorage.setItem(DK,JSON.stringify(db))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function money(n){return Number(n||0).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
