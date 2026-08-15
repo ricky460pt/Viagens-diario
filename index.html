@@ -63,7 +63,7 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
 <div class="row" style="margin-top:10px"><button id="showAll" class="secondary">Todas</button><button id="export">Exportar CSV</button></div><div id="historyList"></div></div></section>
 
-<section id="db">
+<section id="db" class="view">
 <div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Tipo</label><select id="vtype"><option>Camião</option><option>Reboque</option></select></div><div><label>Matrícula</label><input id="plate" placeholder="AA-00-AA"></div></div>
 <div class="row" style="margin-top:10px"><button id="addPlate">Adicionar matrícula</button><button type="button" class="secondary" onclick="toggleList('plates')">Ver / Ocultar</button></div><div id="plates" style="display:none; margin-top:10px;"></div></div>
 
