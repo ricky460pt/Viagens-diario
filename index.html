@@ -2,7 +2,10 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1220"><link rel="manifest" href="manifest.webmanifest"><title>Diário Pro v5.3</title>
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="45700.jpg">
+<title>Diário Pro v5.3</title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe2ea;--nav:#0b1220;--accent:#2563eb;--danger:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -22,7 +25,12 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 </style>
 </head>
 <body>
-<header><div class="top"><div><h1>🚛 Diário Pro</h1><small>Gestão diária de viagens</small></div><span class="badge">V5.3</span></div></header>
+<header><div class="top"><div>
+  <h1 style="display: flex; align-items: center; gap: 8px;">
+    <img src="45700.jpg" style="height: 28px; width: 28px; border-radius: 6px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"> 
+    Diário Pro
+  </h1>
+  <small>Gestão diária de viagens</small></div><span class="badge">V5.3</span></div></header>
 <nav>
 <button data-v="home" class="active">🏠 Início</button><button data-v="trip">➕ Viagem</button><button data-v="history">📋 Histórico</button><button data-v="db">🗂️ Cadastros</button><button data-v="calendar">📅 Calendário</button><button data-v="report">📊 Relatórios</button>
 </nav>
