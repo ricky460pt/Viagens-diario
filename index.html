@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v5.3</title>
+<title>Diário Pro v5.4</title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe2ea;--nav:#0b1220;--accent:#2563eb;--danger:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -30,7 +30,7 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
     <img src="45700.jpg" style="height: 28px; width: 28px; border-radius: 6px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"> 
     Diário Pro
   </h1>
-  <small>Gestão diária de viagens</small></div><span class="badge">V5.3</span></div></header>
+  <small>Gestão diária de viagens</small></div><span class="badge">V5.4</span></div></header>
 <nav>
 <button data-v="home" class="active">🏠 Início</button><button data-v="trip">➕ Viagem</button><button data-v="history">📋 Histórico</button><button data-v="db">🗂️ Cadastros</button><button data-v="calendar">📅 Calendário</button><button data-v="report">📊 Relatórios</button>
 </nav>
@@ -81,7 +81,15 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Nome</label><input id="pname"></div><div><label>Morada/localidade</label><input id="paddr"></div></div>
 <div class="row" style="margin-top:10px"><button id="addPlace">Adicionar local</button><button type="button" class="secondary" onclick="toggleList('places')">Ver / Ocultar</button></div><div id="places" style="display:none; margin-top:10px;"></div></div>
 
-<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid"><div><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div><div><label>Cliente</label><select id="rclient"></select></div><div><label>Origem</label><select id="rfrom"></select></div><div><label>Destino</label><select id="rto"></select></div><div><label>Valor habitual (€)</label><input id="rvalue" type="number" min="0" step=".01"></div></div>
+<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid">
+<div><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div>
+<div><label>Cliente</label><select id="rclient"></select></div>
+<div><label>Origem</label><select id="rfrom"></select></div>
+<div><label>Destino</label><select id="rto"></select></div>
+<div><label>Camião (Opcional)</label><select id="rtruck"></select></div>
+<div><label>Reboque (Opcional)</label><select id="rtrailer"></select></div>
+<div><label>Valor habitual (€)</label><input id="rvalue" type="number" min="0" step=".01"></div>
+</div>
 <div class="row" style="margin-top:10px"><button id="addRoute">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:10px;"></div></div>
 
 <div class="card"><h2>💾 Dados</h2><div class="row"><button id="backup">Criar backup</button><button id="restoreBtn" class="secondary">Restaurar backup</button></div><input id="restore" type="file" accept=".json" style="display:none"><p class="notice">O backup guarda viagens e cadastros num ficheiro JSON. Guarda-o num local seguro.</p></div>
@@ -97,7 +105,6 @@ const $=id=>document.getElementById(id), VK='dv4_trips',DK='dv4_db';
 let trips=JSON.parse(localStorage.getItem(VK)||'[]');
 let db=JSON.parse(localStorage.getItem(DK)||'{"trucks":[],"trailers":[],"clients":[],"places":[],"routes":[]}');
 
-// MUDANÇA IMPORTANTE: Converter e proteger dados antigos para evitar erros (Crash)
 db.routes = db.routes || [];
 db.trucks = db.trucks || [];
 db.trailers = db.trailers || [];
@@ -143,7 +150,6 @@ function searchCombo(searchId,selectId,resultId,arr){
     inp.oninput=()=>{
         const q=inp.value.trim().toLowerCase();
         if(!q){res.innerHTML='';$(selectId).value='';return}
-        // Proteção extra ao pesquisar
         const found=arr.filter(x=>String(x||'').toLowerCase().includes(q)).slice(0,8);
         res.innerHTML=found.map(x=>`<button type="button" class="secondary" style="margin-top:5px;text-align:left" data-val="${esc(x)}">${esc(x)}</button>`).join('');
         res.querySelectorAll('button').forEach(b=>b.onclick=()=>{inp.value=b.dataset.val;$(selectId).value=b.dataset.val;res.innerHTML=''})
@@ -162,7 +168,9 @@ function routeSelects(){
   fillSelect('rclient',db.clients.map(x=>x.name),'Selecionar cliente');
   fillSelect('rfrom',db.places.map(x=>x.name),'Origem');
   fillSelect('rto',db.places.map(x=>x.name),'Destino');
-  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><b>${esc(r.name)}</b><div class="muted">${esc(r.client)} · ${esc(r.from)} → ${esc(r.to)}${r.value?' · '+money(r.value):''}</div><button class="danger" onclick="delRoute(${i})">Apagar</button><button class="secondary" onclick="editRoute(${i})">Editar</button></div>`).join('')||'<div class="muted">Sem rotas habituais.</div>';
+  fillSelect('rtruck',db.trucks,'Camião (Opcional)');
+  fillSelect('rtrailer',db.trailers,'Reboque (Opcional)');
+  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><b>${esc(r.name)}</b><div class="muted">${esc(r.client)} · ${esc(r.from)} → ${esc(r.to)}${r.truck?' · '+esc(r.truck):''}${r.trailer?' / '+esc(r.trailer):''}${r.value?' · '+money(r.value):''}</div><button class="danger" onclick="delRoute(${i})">Apagar</button><button class="secondary" onclick="editRoute(${i})">Editar</button></div>`).join('')||'<div class="muted">Sem rotas habituais.</div>';
 }
 
 function renderCalendar(){let ym=$('calMonth').value;if(!ym)return;let [y,m]=ym.split('-').map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),start=(first.getDay()+6)%7;let cells=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(n=>`<div style="font-weight:800;text-align:center;font-size:11px">${n}</div>`);for(let i=0;i<start;i++)cells.push('<div></div>');for(let d=1;d<=days;d++){let ds=`${y}-${pad(m)}-${pad(d)}`,a=trips.filter(t=>t.date===ds);cells.push(`<button type="button" class="secondary" style="min-height:68px;text-align:left" onclick="openDay('${ds}')"><b>${d}</b><div class="muted">${a.length?a.length+' viagem'+(a.length>1?'s':''):''}</div></button>`)}$('calendarGrid').style.display='grid';$('calendarGrid').style.gridTemplateColumns='repeat(7,1fr)';$('calendarGrid').style.gap='5px';$('calendarGrid').innerHTML=cells.join('')}
@@ -243,6 +251,8 @@ $('tripRouteQuick').onchange = e => {
     if(r.client){ $('clientSearch').value=r.client; $('client').value=r.client; }
     if(r.from){ $('loadSearch').value=r.from; $('load').value=r.from; }
     if(r.to){ $('unloadSearch').value=r.to; $('unload').value=r.to; }
+    if(r.truck){ $('truckSearch').value=r.truck; $('truck').value=r.truck; }
+    if(r.trailer){ $('trailerSearch').value=r.trailer; $('trailer').value=r.trailer; }
     if(r.value){ $('value').value=r.value; }
   }
 };
@@ -278,7 +288,6 @@ $('form').onsubmit=e=>{
   }
   if(t.kmStart!=='' && t.kmEnd!=='' && +t.kmEnd < +t.kmStart) return alert('Os Km finais não podem ser inferiores aos iniciais.');
   
-  // Inserção automática protegida contra falhas
   if(t.truck && !db.trucks.includes(t.truck)) db.trucks.push(t.truck);
   if(t.trailer && !db.trailers.includes(t.trailer)) db.trailers.push(t.trailer);
   
@@ -342,7 +351,7 @@ window.editPlace = (name) => {
 window.editRoute = (i) => {
     let r = db.routes[i];
     if(!r) return;
-    $('rname').value = r.name; $('rclient').value = r.client; $('rfrom').value = r.from; $('rto').value = r.to; $('rvalue').value = r.value || '';
+    $('rname').value = r.name; $('rclient').value = r.client; $('rfrom').value = r.from; $('rto').value = r.to; $('rtruck').value = r.truck || ''; $('rtrailer').value = r.trailer || ''; $('rvalue').value = r.value || '';
     $('addRoute').textContent = 'Guardar Alterações'; $('addRoute').dataset.idx = i;
     $('rname').focus();
 };
@@ -397,15 +406,15 @@ $('addPlace').onclick=()=>{
 };
 
 $('addRoute').onclick=()=>{
-    let name=$('rname').value.trim(),client=$('rclient').value,from=$('rfrom').value,to=$('rto').value,value=$('rvalue').value;
+    let name=$('rname').value.trim(),client=$('rclient').value,from=$('rfrom').value,to=$('rto').value,truck=$('rtruck').value,trailer=$('rtrailer').value,value=$('rvalue').value;
     if(!name||!from||!to)return alert('Preenche nome, origem e destino.');
     let idx=$('addRoute').dataset.idx;
     if(idx!==undefined){
-        db.routes[idx]={name,client,from,to,value};
+        db.routes[idx]={name,client,from,to,truck,trailer,value};
     }else{
-        db.routes.push({name,client,from,to,value});
+        db.routes.push({name,client,from,to,truck,trailer,value});
     }
-    $('rname').value='';$('rvalue').value='';
+    $('rname').value='';$('rtruck').value='';$('rtrailer').value='';$('rvalue').value='';
     $('addRoute').textContent='Adicionar rota';
     delete $('addRoute').dataset.idx;
     save();refresh(); 
@@ -415,7 +424,7 @@ function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remo
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 $('homePeriod').onchange=renderHome;$('reportStart').onchange=renderReport;$('reportEnd').onchange=renderReport;$('prevMonth').onclick=()=>moveMonth(-1);$('nextMonth').onclick=()=>moveMonth(1);$('calMonth').onchange=renderCalendar;$('filterDate').onchange=renderHistory;$('search').oninput=renderHistory;$('showAll').onclick=()=>{$('filterDate').value='';$('search').value='';renderHistory()}
 $('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='diario_viagens.csv';a.click()}
-$('backup').onclick=()=>{let data=JSON.stringify({version:5.3,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
+$('backup').onclick=()=>{let data=JSON.stringify({version:5.4,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
 
 $('restoreBtn').onclick=()=>$('restore').click();
 $('restore').onchange=e=>{
