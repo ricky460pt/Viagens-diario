@@ -1,160 +1,204 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v5.5</title>
+<title>Diário Pro v6.0</title>
 <style>
-:root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe2ea;--nav:#0b1220;--accent:#2563eb;--danger:#b91c1c}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:var(--nav);color:white;padding:18px 16px 16px;position:sticky;top:0;z-index:10}header .top{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}h1{font-size:21px;margin:0}.badge{font-size:11px;background:#ffffff18;padding:6px 9px;border-radius:20px}
-nav{background:var(--nav);display:flex;gap:6px;padding:0 12px 12px;overflow:auto;position:sticky;top:65px;z-index:9}nav button{white-space:nowrap;width:auto;padding:9px 13px;background:#ffffff12;color:#dbeafe;border:1px solid #ffffff15}
-nav button.active{background:var(--accent);color:white;border-color:var(--accent)}
-main{max-width:900px;margin:auto;padding:14px}.view{display:none}.view.active{display:block}.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #0f172a0b;border:1px solid #e5eaf0}
-h2{font-size:17px;margin:0 0 13px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}label{font-size:11px;font-weight:800;display:block;margin-bottom:5px;color:#4b5563}
-input,select,textarea,button{font:inherit;border-radius:10px;padding:11px;border:1px solid var(--line);background:#fff;color:var(--ink);width:100%}textarea{min-height:72px}.full{grid-column:1/-1}
-button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:pointer}.secondary{background:#e8edf4;color:var(--ink)}.danger{background:#fee2e2;color:var(--danger)}.row{display:flex;gap:8px}.row>*{flex:1}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kpi{background:#f8fafc;border:1px solid #e6ebf1;border-radius:14px;padding:12px}.kpi b{font-size:22px;display:block}.kpi span{font-size:11px;color:var(--muted)}
-.hero{background:linear-gradient(135deg,#111827,#1e3a8a);color:#fff}.hero .muted{color:#dbeafe}
-.trip{border:1px solid #e2e8f0;border-radius:13px;padding:12px;margin-top:9px;background:#fff}.trip b{font-size:14px}.muted{font-size:12px;color:var(--muted)}.actions{display:flex;gap:7px;margin-top:8px}.actions button{width:auto;padding:7px 10px;font-size:12px}
-.item{padding:11px;border:1px solid #e5eaf0;border-radius:11px;margin-top:8px}.item button{float:right;width:auto;padding:6px 9px;font-size:11px;margin-left:6px}
-.empty{text-align:center;color:var(--muted);padding:18px}.notice{font-size:12px;color:#475569;background:#f8fafc;padding:10px;border-radius:10px}
-@media(max-width:650px){body{font-size:15px}main{padding:9px}.card{padding:13px;border-radius:14px}header{padding:14px 12px}nav{padding:0 8px 9px;gap:4px}nav button{font-size:12px;padding:8px 10px}.kpi b{font-size:19px}.grid{gap:8px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.kpis{grid-template-columns:1fr 1fr}nav{top:65px}}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+:root {
+  --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+  --line: #e2e8f0; --accent: #2563eb; --accent-light: #eff6ff;
+  --danger: #ef4444; --nav-bg: #ffffff;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); }
+
+header { background: #0b1220; color: white; padding: 18px 16px 35px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; position: relative; z-index: 1; }
+header .top { max-width: 900px; margin: auto; display: flex; justify-content: space-between; align-items: center; }
+h1 { font-size: 20px; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+h1 img { height: 32px; width: 32px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.badge { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; }
+
+nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); }
+nav button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; background: transparent; color: var(--muted); border: none; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+nav button.active { background: var(--accent-light); color: var(--accent); }
+.ic { font-size: 18px; }
+
+@media (max-width: 650px) {
+  nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 10px 8px calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 25px rgba(0,0,0,0.06); gap: 0; }
+  nav button { flex-direction: column; gap: 4px; padding: 8px 4px; font-size: 10px; }
+  .ic { font-size: 22px; margin-bottom: 2px; }
+  main { margin-bottom: 90px; }
+}
+
+main { max-width: 900px; margin: auto; padding: 24px 16px; }
+.card { background: var(--card); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(226,232,240,0.6); }
+h2 { font-size: 18px; margin: 0 0 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.full { grid-column: 1 / -1; }
+label { font-size: 12px; font-weight: 800; display: block; margin-bottom: 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+input, select, textarea { font: inherit; border-radius: 14px; padding: 14px; border: 1.5px solid var(--line); background: #f8fafc; color: var(--text); width: 100%; transition: 0.2s; font-weight: 600; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); background: #fff; }
+textarea { min-height: 90px; }
+
+button { font: inherit; border: none; cursor: pointer; transition: 0.2s; font-weight: 750; border-radius: 14px; padding: 14px; width: 100%; }
+button.primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+button.primary:active { transform: scale(0.97); }
+button.secondary { background: #f1f5f9; color: var(--text); }
+button.danger { background: #fef2f2; color: var(--danger); }
+.row { display: flex; gap: 10px; } .row > * { flex: 1; }
+
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.kpi { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.kpi b { font-size: 24px; display: block; color: var(--accent); font-weight: 800; margin-bottom: 4px; }
+.kpi span { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.hero { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; border: none; }
+.hero label { color: #94a3b8; }
+.hero input, .hero select { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white; }
+.hero input:focus, .hero select:focus { background: rgba(255,255,255,0.15); border-color: var(--accent); }
+
+.trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: #fff; transition: box-shadow 0.2s; display: flex; flex-direction: column; gap: 10px; }
+.trip:active { background: #f8fafc; }
+.trip-title { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.trip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569; }
+.actions { display: flex; gap: 8px; margin-top: 4px; }
+.actions button { padding: 10px; font-size: 12px; }
+
+.item { padding: 14px; border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: #fff; }
+.item-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+.item-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+.notice { font-size: 13px; color: #475569; background: #f8fafc; padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
+.empty { text-align: center; color: var(--muted); padding: 40px 10px; font-weight: 700; }
+
+.view { display: none; animation: fadeIn 0.3s ease-out; }
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+@media(max-width: 650px) { .grid { grid-template-columns: 1fr; gap: 12px; } .full { grid-column: auto; } header { padding-bottom: 25px; } }
 </style>
 </head>
 <body>
-<header><div class="top"><div>
-  <h1 style="display: flex; align-items: center; gap: 8px;">
-    <img src="45700.jpg" style="height: 28px; width: 28px; border-radius: 6px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"> 
-    Diário Pro
-  </h1>
-  <small>Gestão diária de viagens</small></div><span class="badge">V5.5</span></div></header>
+<header><div class="top">
+  <h1><img src="45700.jpg" alt="Logo"> Diário Pro</h1>
+  <span class="badge">V6.0 Modern</span>
+</div></header>
+
 <nav>
-<button data-v="home" class="active">🏠 Início</button><button data-v="trip">➕ Viagem</button><button data-v="history">📋 Histórico</button><button data-v="calendar">📅 Calendário</button><button data-v="report">📊 Relatórios</button><button data-v="db">🗂️ Cadastros</button>
+<button data-v="home" class="active"><span class="ic">🏠</span> <span class="tx">Início</span></button>
+<button data-v="trip"><span class="ic">➕</span> <span class="tx">Viagem</span></button>
+<button data-v="calendar"><span class="ic">📅</span> <span class="tx">Calendário</span></button>
+<button data-v="report"><span class="ic">📊</span> <span class="tx">Relatórios</span></button>
+<button data-v="db"><span class="ic">🗂️</span> <span class="tx">Cadastros</span></button>
+<button data-v="history"><span class="ic">📋</span> <span class="tx">Histórico</span></button>
 </nav>
+
 <main>
 <section id="home" class="view active">
 <div class="card hero">
   <h2>Resumo do Período</h2>
   <div class="grid">
-    <div><label style="color:#bfdbfe">Período</label><select id="homePeriod"></select></div>
-    <div><label style="color:#bfdbfe">Estado</label><input id="periodLabel" readonly></div>
+    <div><label style="color:#cbd5e1">Período</label><select id="homePeriod"></select></div>
+    <div><label style="color:#cbd5e1">Estado</label><input id="periodLabel" readonly></div>
   </div>
 </div>
 <div class="kpis">
-  <div class="kpi"><b id="hkTrips">0</b><span>VIAGENS</span></div>
-  <div class="kpi"><b id="hkKm">0</b><span>KM</span></div>
-  <div class="kpi"><b id="hkDays">0</b><span>DIAS</span></div>
-  <div class="kpi"><b id="hkValue">0 €</b><span>VALOR</span></div>
+  <div class="kpi"><b id="hkTrips">0</b><span>Viagens</span></div>
+  <div class="kpi"><b id="hkDays">0</b><span>Dias</span></div>
+  <div class="kpi"><b id="hkValue">0 €</b><span>Faturação</span></div>
 </div>
-<div class="card">
-  <button type="button" onclick="show('trip')">➕ NOVA VIAGEM</button>
+<div class="card" style="margin-top:20px; background: transparent; border: none; box-shadow: none; padding: 0;">
+  <button type="button" class="primary" style="padding: 18px; font-size: 16px;" onclick="show('trip')">➕ NOVA VIAGEM</button>
 </div>
 </section>
 
 <section id="trip" class="view"><div class="card"><h2>➕ Registar viagem</h2><form id="form" class="grid">
-<div class="full" style="background:#f8fafc; padding:12px; border:1px solid var(--line); border-radius:10px; margin-bottom:5px;">
-  <label style="color:var(--accent)">⭐ Rota Habitual (Preenchimento automático)</label>
-  <select id="tripRouteQuick" style="margin-top:5px; border-color:#cbd5e1"></select>
+<div class="full" style="background:#eff6ff; padding:16px; border:1px solid #bfdbfe; border-radius:16px; margin-bottom:8px;">
+  <label style="color:var(--accent)">⭐ Rota Habitual (Preenchimento rápido)</label>
+  <select id="tripRouteQuick" style="margin-top:8px; border-color:#93c5fd; font-weight: 700;"></select>
 </div>
 <div><label>Data</label><input id="date" type="date" required></div><div><label>N.º viagem</label><input id="number"></div>
-<div><label>Camião</label><input id="truckSearch" placeholder="Escrever ou pesquisar matrícula" autocomplete="off"><select id="truck" style="display:none"></select><div id="truckResults"></div></div><div><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou pesquisar matrícula" autocomplete="off"><select id="trailer" style="display:none"></select><div id="trailerResults"></div></div>
-<div><label>Cliente</label><input id="clientSearch" placeholder="Escrever ou pesquisar cliente" autocomplete="off"><select id="client" style="display:none"></select><div id="clientResults"></div></div><div><label>Local de carga</label><input id="loadSearch" placeholder="Escrever ou pesquisar local" autocomplete="off"><select id="load" style="display:none"></select><div id="loadResults"></div></div>
-<div><label>Local de descarga</label><input id="unloadSearch" placeholder="Escrever ou pesquisar local" autocomplete="off"><select id="unload" style="display:none"></select><div id="unloadResults"></div></div><div><label>Valor (€)</label><input id="value" type="number" min="0" step=".01"></div>
-<div><label>Km início</label><input id="kmStart" type="number" min="0"></div><div><label>Km fim</label><input id="kmEnd" type="number" min="0"></div>
-<div class="full"><label>Observações</label><textarea id="notes"></textarea></div>
-<div class="full row"><button type="submit" id="mainSubmitBtn">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
+<div><label>Camião</label><input id="truckSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="truck" style="display:none"></select><div id="truckResults"></div></div><div><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="trailer" style="display:none"></select><div id="trailerResults"></div></div>
+<div><label>Cliente</label><input id="clientSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="client" style="display:none"></select><div id="clientResults"></div></div><div><label>Valor (€)</label><input id="value" type="number" min="0" step=".01"></div>
+<div class="full"><label>Local de carga</label><input id="loadSearch" placeholder="Onde carregou?" autocomplete="off"><select id="load" style="display:none"></select><div id="loadResults"></div></div>
+<div class="full"><label>Local de descarga</label><input id="unloadSearch" placeholder="Onde descarregou?" autocomplete="off"><select id="unload" style="display:none"></select><div id="unloadResults"></div></div>
+<div class="full"><label>Observações</label><textarea id="notes" placeholder="Detalhes extra (opcional)"></textarea></div>
+<div class="full row" style="margin-top:8px"><button type="submit" id="mainSubmitBtn" class="primary">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
 </form></div></section>
 
-<section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
-<div class="row" style="margin-top:10px"><button id="showAll" class="secondary">Todas</button><button id="export">Exportar CSV</button></div><div id="historyList"></div></div></section>
+<section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Filtrar Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
+<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:#e0f2fe; color:#0369a1;">Exportar CSV</button></div><div id="historyList"></div></div></section>
 
-<section id="calendar" class="view"><div class="card"><h2>📅 Calendário de viagens</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:12px"></div></div></section>
+<section id="calendar" class="view"><div class="card"><h2>📅 Calendário</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:16px"></div></div></section>
 
-<section id="report" class="view"><div class="card"><h2>📊 Relatórios de Viagens</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
-<div style="margin-top:10px"><button id="exportReport" class="secondary">⬇️ Exportar Excel (CSV) deste período</button></div>
-<div class="kpis" style="margin-top:12px"><div class="kpi"><b id="rTrips">0</b><span>VIAGENS</span></div><div class="kpi"><b id="rKm">0</b><span>KM</span></div><div class="kpi"><b id="rDays">0</b><span>DIAS</span></div><div class="kpi"><b id="rAvg">0</b><span>VIAGENS/DIA</span></div></div><div style="margin-top:12px"><b id="rValue">0,00 €</b> <span class="muted">de valor total</span></div></div>
+<section id="report" class="view"><div class="card"><h2>📊 Relatórios</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
+<div style="margin-top:14px"><button id="exportReport" class="secondary" style="background:#e0f2fe; color:#0369a1;">⬇️ Exportar Excel (CSV) do período</button></div>
+<div class="kpis" style="margin-top:16px"><div class="kpi"><b id="rTrips">0</b><span>Viagens</span></div><div class="kpi"><b id="rDays">0</b><span>Dias</span></div><div class="kpi"><b id="rAvg">0</b><span>Viagens/Dia</span></div></div><div style="margin-top:16px; text-align: center;"><b id="rValue" style="font-size:28px; color:var(--accent);">0,00 €</b> <div class="muted" style="font-weight: 700; margin-top:4px;">FATURAÇÃO TOTAL</div></div></div>
 <div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
 
 <section id="db" class="view">
+<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid">
+<div class="full"><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div>
+<div><label>Cliente</label><select id="rclient"></select></div><div><label>Valor (€)</label><input id="rvalue" type="number" min="0" step=".01"></div>
+<div><label>Origem</label><select id="rfrom"></select></div><div><label>Destino</label><select id="rto"></select></div>
+<div><label>Camião</label><select id="rtruck"></select></div><div><label>Reboque</label><select id="rtrailer"></select></div>
+</div>
+<div class="row" style="margin-top:14px"><button id="addRoute" class="primary">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:12px;"></div></div>
+
 <div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Tipo</label><select id="vtype"><option>Camião</option><option>Reboque</option></select></div><div><label>Matrícula</label><input id="plate" placeholder="AA-00-AA"></div></div>
-<div class="row" style="margin-top:10px"><button id="addPlate">Adicionar matrícula</button><button type="button" class="secondary" onclick="toggleList('plates')">Ver / Ocultar</button></div><div id="plates" style="display:none; margin-top:10px;"></div></div>
+<div class="row" style="margin-top:14px"><button id="addPlate" class="primary">Adicionar matrícula</button><button type="button" class="secondary" onclick="toggleList('plates')">Ver / Ocultar</button></div><div id="plates" style="display:none; margin-top:12px;"></div></div>
 
 <div class="card"><h2>👤 Clientes</h2><div class="grid"><div><label>Nome</label><input id="cname"></div><div><label>NIF (opcional)</label><input id="cnif"></div></div>
-<div class="row" style="margin-top:10px"><button id="addClient">Adicionar cliente</button><button type="button" class="secondary" onclick="toggleList('clients')">Ver / Ocultar</button></div><div id="clients" style="display:none; margin-top:10px;"></div></div>
+<div class="row" style="margin-top:14px"><button id="addClient" class="primary">Adicionar cliente</button><button type="button" class="secondary" onclick="toggleList('clients')">Ver / Ocultar</button></div><div id="clients" style="display:none; margin-top:12px;"></div></div>
 
 <div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Nome</label><input id="pname"></div><div><label>Morada/localidade</label><input id="paddr"></div></div>
-<div class="row" style="margin-top:10px"><button id="addPlace">Adicionar local</button><button type="button" class="secondary" onclick="toggleList('places')">Ver / Ocultar</button></div><div id="places" style="display:none; margin-top:10px;"></div></div>
+<div class="row" style="margin-top:14px"><button id="addPlace" class="primary">Adicionar local</button><button type="button" class="secondary" onclick="toggleList('places')">Ver / Ocultar</button></div><div id="places" style="display:none; margin-top:12px;"></div></div>
 
-<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid">
-<div><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div>
-<div><label>Cliente</label><select id="rclient"></select></div>
-<div><label>Origem</label><select id="rfrom"></select></div>
-<div><label>Destino</label><select id="rto"></select></div>
-<div><label>Camião (Opcional)</label><select id="rtruck"></select></div>
-<div><label>Reboque (Opcional)</label><select id="rtrailer"></select></div>
-<div><label>Valor habitual (€)</label><input id="rvalue" type="number" min="0" step=".01"></div>
-</div>
-<div class="row" style="margin-top:10px"><button id="addRoute">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:10px;"></div></div>
-
-<div class="card"><h2>💾 Dados</h2><div class="row"><button id="backup">Criar backup</button><button id="restoreBtn" class="secondary">Restaurar backup</button></div><input id="restore" type="file" accept=".json" style="display:none"><p class="notice">O backup guarda viagens e cadastros num ficheiro JSON. Guarda-o num local seguro.</p></div>
+<div class="card"><h2>💾 Cópia de Segurança</h2><div class="row"><button id="backup" class="primary">Criar Backup</button><button id="restoreBtn" class="secondary">Restaurar</button></div><input id="restore" type="file" accept=".json" style="display:none"><p class="notice" style="margin-top:14px">Guarda um backup (ficheiro JSON) periodicamente no teu telemóvel para não perderes os dados.</p></div>
 </section>
-
 </main>
 <script>
 const $=id=>document.getElementById(id), VK='dv4_trips',DK='dv4_db';
 let trips=JSON.parse(localStorage.getItem(VK)||'[]');
 let db=JSON.parse(localStorage.getItem(DK)||'{"trucks":[],"trailers":[],"clients":[],"places":[],"routes":[]}');
 
-db.routes = db.routes || [];
-db.trucks = db.trucks || [];
-db.trailers = db.trailers || [];
+db.routes = db.routes || []; db.trucks = db.trucks || []; db.trailers = db.trailers || [];
 db.clients = (db.clients || []).map(c => typeof c === 'string' ? { name: c, nif: '' } : c).filter(c => c && c.name);
 db.places = (db.places || []).map(p => typeof p === 'string' ? { name: p, address: '' } : p).filter(p => p && p.name);
 
 const today=()=>new Date().toISOString().slice(0,10),pad=n=>String(n).padStart(2,'0');$('date').value=today();
-
 function save(){localStorage.setItem(VK,JSON.stringify(trips));localStorage.setItem(DK,JSON.stringify(db))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function money(n){return Number(n||0).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
-function km(t){let a=+t.kmStart,b=+t.kmEnd;return b>=a?b-a:0}
 function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
 
-window.toggleList = id => {
-    let el = $(id);
-    el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
-};
+window.toggleList = id => { let el = $(id); el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none'; };
 
 function periods(){
   let now=new Date(), d=now.getDate(), m=now.getMonth()+1, y=now.getFullYear();
-  let sm = d >= 16 ? m : m - 1, sy = y;
-  if(sm < 1){ sm = 12; sy--; }
+  let sm = d >= 16 ? m : m - 1, sy = y; if(sm < 1){ sm = 12; sy--; }
   let list=[];
   for(let i = -6; i <= 6; i++){
-    let mm = sm + i;
-    let yy = sy + Math.floor((mm - 1) / 12);
-    let mo = (((mm - 1) % 12) + 12) % 12 + 1; 
-    let em = mo + 1, ey = yy;
+    let mm = sm + i, yy = sy + Math.floor((mm - 1) / 12), mo = (((mm - 1) % 12) + 12) % 12 + 1, em = mo + 1, ey = yy;
     if(em === 13){ em = 1; ey++; }
-    list.push({
-      s: iso(new Date(yy, mo - 1, 16)),
-      e: iso(new Date(ey, em - 1, 15)),
-      label: `16/${pad(mo)}/${yy} → 15/${pad(em)}/${ey}`
-    });
-  }
-  return list;
+    list.push({ s: iso(new Date(yy, mo - 1, 16)), e: iso(new Date(ey, em - 1, 15)), label: `16/${pad(mo)}/${yy} → 15/${pad(em)}/${ey}` });
+  } return list;
 }
 
-function fillPeriods(){let ps=periods(),cur=ps.findIndex(p=>today()>=p.s&&today()<=p.e);if(cur<0)cur=6;$('homePeriod').innerHTML=ps.map((p,i)=>`<option value="${p.s}|${p.e}" ${i===cur?'selected':''}>${p.label}</option>`).join('')}
+function fillPeriods(){let ps=periods(),cur=ps.findIndex(p=>today()>=p.s&&today()<=p.e);if(cur<0)cur=6;$('homePeriod').innerHTML=ps.map((p,i)=>`<option value="${p.s}|${p.e}" ${i===cur?'selected':''}>${p.label}</option>`).join('');}
 function searchCombo(searchId,selectId,resultId,arr){
     const inp=$(searchId),res=$(resultId);
     inp.oninput=()=>{
         const q=inp.value.trim().toLowerCase();
         if(!q){res.innerHTML='';$(selectId).value='';return}
-        const found=arr.filter(x=>String(x||'').toLowerCase().includes(q)).slice(0,8);
-        res.innerHTML=found.map(x=>`<button type="button" class="secondary" style="margin-top:5px;text-align:left" data-val="${esc(x)}">${esc(x)}</button>`).join('');
+        const found=arr.filter(x=>String(x||'').toLowerCase().includes(q)).slice(0,6);
+        res.innerHTML=found.map(x=>`<button type="button" class="secondary" style="margin-top:6px;text-align:left;padding:12px;font-size:13px;" data-val="${esc(x)}">${esc(x)}</button>`).join('');
         res.querySelectorAll('button').forEach(b=>b.onclick=()=>{inp.value=b.dataset.val;$(selectId).value=b.dataset.val;res.innerHTML=''})
     }
 }
@@ -168,39 +212,42 @@ function setupSearches(){
 }
 
 function routeSelects(){
-  fillSelect('rclient',db.clients.map(x=>x.name),'Selecionar cliente');
-  fillSelect('rfrom',db.places.map(x=>x.name),'Origem');
-  fillSelect('rto',db.places.map(x=>x.name),'Destino');
-  fillSelect('rtruck',db.trucks,'Camião (Opcional)');
-  fillSelect('rtrailer',db.trailers,'Reboque (Opcional)');
-  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><b>${esc(r.name)}</b><div class="muted">${esc(r.client)} · ${esc(r.from)} → ${esc(r.to)}${r.truck?' · '+esc(r.truck):''}${r.trailer?' / '+esc(r.trailer):''}${r.value?' · '+money(r.value):''}</div><button class="danger" onclick="delRoute(${i})">Apagar</button><button class="secondary" onclick="editRoute(${i})">Editar</button></div>`).join('')||'<div class="muted">Sem rotas habituais.</div>';
+  fillSelect('rclient',db.clients.map(x=>x.name),'Selecionar cliente'); fillSelect('rfrom',db.places.map(x=>x.name),'Origem'); fillSelect('rto',db.places.map(x=>x.name),'Destino'); fillSelect('rtruck',db.trucks,'Camião (Opcional)'); fillSelect('rtrailer',db.trailers,'Reboque (Opcional)');
+  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><div class="item-head"><span>${esc(r.name)}</span></div><div class="item-sub">${esc(r.client)} · ${esc(r.from)} → ${esc(r.to)} ${r.value?'· '+money(r.value):''}</div><div class="actions" style="margin-top:10px"><button class="secondary" onclick="editRoute(${i})">Editar</button><button class="danger" onclick="delRoute(${i})">Apagar</button></div></div>`).join('')||'<div class="empty">Sem rotas habituais.</div>';
 }
 
-function renderCalendar(){let ym=$('calMonth').value;if(!ym)return;let [y,m]=ym.split('-').map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),start=(first.getDay()+6)%7;let cells=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(n=>`<div style="font-weight:800;text-align:center;font-size:11px">${n}</div>`);for(let i=0;i<start;i++)cells.push('<div></div>');for(let d=1;d<=days;d++){let ds=`${y}-${pad(m)}-${pad(d)}`,a=trips.filter(t=>t.date===ds);cells.push(`<button type="button" class="secondary" style="min-height:68px;text-align:left" onclick="openDay('${ds}')"><b>${d}</b><div class="muted">${a.length?a.length+' viagem'+(a.length>1?'s':''):''}</div></button>`)}$('calendarGrid').style.display='grid';$('calendarGrid').style.gridTemplateColumns='repeat(7,1fr)';$('calendarGrid').style.gap='5px';$('calendarGrid').innerHTML=cells.join('')}
+function renderCalendar(){
+  let ym=$('calMonth').value;if(!ym)return;let [y,m]=ym.split('-').map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),start=(first.getDay()+6)%7;
+  let cells=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(n=>`<div style="font-weight:800;text-align:center;font-size:11px;color:var(--muted);margin-bottom:4px">${n}</div>`);
+  for(let i=0;i<start;i++)cells.push('<div></div>');
+  for(let d=1;d<=days;d++){
+    let ds=`${y}-${pad(m)}-${pad(d)}`,a=trips.filter(t=>t.date===ds),has=a.length>0;
+    cells.push(`<button type="button" style="min-height:70px;text-align:center;background:${has?'var(--accent-light)':'#f8fafc'};border:1px solid ${has?'#bfdbfe':'#e2e8f0'};color:${has?'var(--accent)':'inherit'};padding:8px" onclick="openDay('${ds}')"><b style="font-size:16px">${d}</b>${has?`<div style="font-size:10px;font-weight:800;margin-top:4px;color:var(--accent)">${a.length}</div>`:''}</button>`);
+  }
+  $('calendarGrid').style.display='grid';$('calendarGrid').style.gridTemplateColumns='repeat(7,1fr)';$('calendarGrid').style.gap='6px';$('calendarGrid').innerHTML=cells.join('');
+}
 window.openDay=d=>{show('history');$('filterDate').value=d;renderHistory()}
 function moveMonth(delta){let [y,m]=$('calMonth').value.split('-').map(Number),d=new Date(y,m-1+delta,1);$('calMonth').value=iso(d).slice(0,7);renderCalendar()}
 function reportDates(){let s=$('reportStart').value,e=$('reportEnd').value;return s&&e?trips.filter(t=>t.date>=s&&t.date<=e):[]}
-function fillSelect(el,arr,placeholder){$(el).innerHTML='<option value="">'+placeholder+'</option>'+arr.map(x=>`<option>${esc(x)}</option>`).join('')}
+function fillSelect(el,arr,placeholder){$(el).innerHTML='<option value="">'+placeholder+'</option>'+arr.map(x=>`<option>${esc(x)}</option>`).join('');}
 
 function refresh(){
-  fillSelect('tripRouteQuick', db.routes.map(x=>x.name), 'Selecionar rota (Opcional)');
-  fillSelect('truck',db.trucks,'Selecionar camião');
-  fillSelect('trailer',db.trailers,'Selecionar reboque');
-  fillSelect('client',db.clients.map(x=>x.name),'Selecionar cliente');
-  fillSelect('load',db.places.map(x=>x.name),'Selecionar local');
-  fillSelect('unload',db.places.map(x=>x.name),'Selecionar local');
+  fillSelect('tripRouteQuick', db.routes.map(x=>x.name), 'Selecionar rota (Opcional)'); fillSelect('truck',db.trucks,'Selecionar camião'); fillSelect('trailer',db.trailers,'Selecionar reboque'); fillSelect('client',db.clients.map(x=>x.name),'Selecionar cliente'); fillSelect('load',db.places.map(x=>x.name),'Selecionar local'); fillSelect('unload',db.places.map(x=>x.name),'Selecionar local');
   renderDb();routeSelects();setupSearches();renderHome();renderReport();renderHistory();renderCalendar();
 }
 
 function periodData(sel){let [s,e]=sel.split('|');return trips.filter(t=>t.date>=s&&t.date<=e)}
-function stats(arr){let days=new Set(arr.map(t=>t.date));return{trips:arr.length,km:arr.reduce((a,t)=>a+km(t),0),days:days.size,value:arr.reduce((a,t)=>a+ +t.value,0),avg:days.size?arr.length/days.size:0}}
-function renderHome(){let a=periodData($('homePeriod').value),s=stats(a);$('periodLabel').value=$('homePeriod').selectedOptions[0]?.text||'';$('hkTrips').textContent=s.trips;$('hkKm').textContent=s.km.toLocaleString('pt-PT');$('hkDays').textContent=s.days;$('hkValue').textContent=money(s.value)}
-function renderReport(){let a=reportDates(),s=stats(a);$('rTrips').textContent=s.trips;$('rKm').textContent=s.km.toLocaleString('pt-PT');$('rDays').textContent=s.days;$('rAvg').textContent=s.avg.toLocaleString('pt-PT',{maximumFractionDigits:1});$('rValue').textContent=money(s.value);$('reportList').innerHTML=a.slice().reverse().map(t=>`<div class="trip"><b>${esc(t.date)} · ${esc(t.load)} → ${esc(t.unload)}</b><div class="muted">${esc(t.truck)}${t.trailer?' · '+esc(t.trailer):''} · ${esc(t.client)} · ${km(t)} km · ${money(t.value)}</div></div>`).join('')||'<div class="empty">Sem viagens neste período.</div>'}
+function stats(arr){let days=new Set(arr.map(t=>t.date));return{trips:arr.length,days:days.size,value:arr.reduce((a,t)=>a+ +t.value,0),avg:days.size?arr.length/days.size:0}}
+function renderHome(){let a=periodData($('homePeriod').value),s=stats(a);$('periodLabel').value=$('homePeriod').selectedOptions[0]?.text||'';$('hkTrips').textContent=s.trips;$('hkDays').textContent=s.days;$('hkValue').textContent=money(s.value)}
+function renderReport(){
+  let a=reportDates(),s=stats(a);$('rTrips').textContent=s.trips;$('rDays').textContent=s.days;$('rAvg').textContent=s.avg.toLocaleString('pt-PT',{maximumFractionDigits:1});$('rValue').textContent=money(s.value);
+  $('reportList').innerHTML=a.slice().reverse().map(t=>`<div class="trip"><div class="trip-title"><span>${esc(t.load)} ➔ ${esc(t.unload)}</span><span style="color:var(--accent)">${money(t.value)}</span></div><div class="trip-tags"><span class="tag">📅 ${esc(t.date)}</span><span class="tag">🚛 ${esc(t.truck)}${t.trailer?' / '+esc(t.trailer):''}</span><span class="tag">👤 ${esc(t.client)}</span></div></div>`).join('')||'<div class="empty">Sem viagens neste período.</div>';
+}
 
 function renderDb(){
-  $('plates').innerHTML=[...db.trucks.map(x=>['Camião',x]),...db.trailers.map(x=>['Reboque',x])].map(([a,x])=>`<div class="item">${a}: <b>${esc(x)}</b><button class="danger" onclick="delPlate('${a}','${esc(x)}')">Apagar</button><button class="secondary" onclick="editPlate('${a}','${esc(x)}')">Editar</button></div>`).join('')||'<div class="muted">Sem matrículas.</div>';
-  $('clients').innerHTML=db.clients.map(x=>`<div class="item"><b>${esc(x.name)}</b>${x.nif?' · '+esc(x.nif):''}<button class="danger" onclick="delClient('${esc(x.name)}')">Apagar</button><button class="secondary" onclick="editClient('${esc(x.name)}')">Editar</button></div>`).join('')||'<div class="muted">Sem clientes.</div>';
-  $('places').innerHTML=db.places.map(x=>`<div class="item"><b>${esc(x.name)}</b>${x.address?' · '+esc(x.address):''}<button class="danger" onclick="delPlace('${esc(x.name)}')">Apagar</button><button class="secondary" onclick="editPlace('${esc(x.name)}')">Editar</button></div>`).join('')||'<div class="muted">Sem locais.</div>';
+  $('plates').innerHTML=[...db.trucks.map(x=>['Camião',x]),...db.trailers.map(x=>['Reboque',x])].map(([a,x])=>`<div class="item"><div class="item-head"><span>${esc(x)}</span><span class="tag">${a}</span></div><div class="actions"><button class="secondary" onclick="editPlate('${a}','${esc(x)}')">Editar</button><button class="danger" onclick="delPlate('${a}','${esc(x)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem matrículas.</div>';
+  $('clients').innerHTML=db.clients.map(x=>`<div class="item"><div class="item-head"><span>${esc(x.name)}</span></div>${x.nif?`<div class="item-sub">NIF: ${esc(x.nif)}</div>`:''}<div class="actions" style="margin-top:10px"><button class="secondary" onclick="editClient('${esc(x.name)}')">Editar</button><button class="danger" onclick="delClient('${esc(x.name)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem clientes.</div>';
+  $('places').innerHTML=db.places.map(x=>`<div class="item"><div class="item-head"><span>${esc(x.name)}</span></div>${x.address?`<div class="item-sub">${esc(x.address)}</div>`:''}<div class="actions" style="margin-top:10px"><button class="secondary" onclick="editPlace('${esc(x.name)}')">Editar</button><button class="danger" onclick="delPlace('${esc(x.name)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem locais.</div>';
 }
 
 window.delTrip=id=>{if(confirm('Apagar viagem?')){trips=trips.filter(x=>x.id!==id);save();refresh()}}
@@ -210,26 +257,12 @@ window.delPlace=n=>{db.places=db.places.filter(x=>x.name!==n);save();refresh()}
 window.delRoute=i=>{db.routes.splice(i,1);save();routeSelects()}
 
 window.editTrip = id => {
-    let t = trips.find(x => x.id === id);
-    if(!t) return;
-    $('date').value = t.date;
-    $('number').value = t.number || '';
-    $('truckSearch').value = t.truck || ''; $('truck').value = t.truck || '';
-    $('trailerSearch').value = t.trailer || ''; $('trailer').value = t.trailer || '';
-    $('clientSearch').value = t.client || ''; $('client').value = t.client || '';
-    $('loadSearch').value = t.load || ''; $('load').value = t.load || '';
-    $('unloadSearch').value = t.unload || ''; $('unload').value = t.unload || '';
-    $('value').value = t.value || '';
-    $('kmStart').value = t.kmStart || '';
-    $('kmEnd').value = t.kmEnd || '';
-    $('notes').value = t.notes || '';
-    
-    let btn = $('mainSubmitBtn');
-    btn.textContent = 'GUARDAR ALTERAÇÕES';
-    btn.dataset.editId = id;
-    
-    show('trip');
-    window.scrollTo(0, 0);
+    let t = trips.find(x => x.id === id); if(!t) return;
+    $('date').value = t.date; $('number').value = t.number || '';
+    $('truckSearch').value = t.truck || ''; $('truck').value = t.truck || ''; $('trailerSearch').value = t.trailer || ''; $('trailer').value = t.trailer || '';
+    $('clientSearch').value = t.client || ''; $('client').value = t.client || ''; $('loadSearch').value = t.load || ''; $('load').value = t.load || ''; $('unloadSearch').value = t.unload || ''; $('unload').value = t.unload || '';
+    $('value').value = t.value || ''; $('notes').value = t.notes || '';
+    let btn = $('mainSubmitBtn'); btn.textContent = 'GUARDAR ALTERAÇÕES'; btn.dataset.editId = id; show('trip'); window.scrollTo(0, 0);
 };
 
 function renderHistory(){
@@ -237,19 +270,14 @@ function renderHistory(){
     let a=trips.filter(t=>(!fd||t.date===fd)&&(!q||[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.notes].join(' ').toLowerCase().includes(q)));
     $('historyList').innerHTML=a.slice().reverse().map(t=>`
     <div class="trip">
-        <b>${esc(t.date)} · ${esc(t.load)} → ${esc(t.unload)}</b>
-        <div class="muted">${esc(t.truck)}${t.trailer?' · '+esc(t.trailer):''} · ${esc(t.client)} · ${km(t)} km · ${money(t.value)}</div>
-        <div class="actions">
-            <button class="danger" onclick="delTrip('${esc(t.id)}')">Apagar</button>
-            <button class="secondary" onclick="editTrip('${esc(t.id)}')">Editar</button>
-        </div>
-    </div>`).join('')||'<div class="empty">Sem viagens.</div>';
+        <div class="trip-title"><span>${esc(t.load)} ➔ ${esc(t.unload)}</span><span style="color:var(--accent)">${money(t.value)}</span></div>
+        <div class="trip-tags"><span class="tag">📅 ${esc(t.date)}</span><span class="tag">🚛 ${esc(t.truck)}${t.trailer?' / '+esc(t.trailer):''}</span><span class="tag">👤 ${esc(t.client)}</span></div>
+        <div class="actions"><button class="secondary" onclick="editTrip('${esc(t.id)}')">Editar</button><button class="danger" onclick="delTrip('${esc(t.id)}')">Apagar</button></div>
+    </div>`).join('')||'<div class="empty">Sem viagens registadas.</div>';
 }
 
 $('tripRouteQuick').onchange = e => {
-  let n = e.target.value;
-  if(!n) return;
-  let r = db.routes.find(x => x.name === n);
+  let n = e.target.value; if(!n) return; let r = db.routes.find(x => x.name === n);
   if(r) {
     if(r.client){ $('clientSearch').value=r.client; $('client').value=r.client; }
     if(r.from){ $('loadSearch').value=r.from; $('load').value=r.from; }
@@ -262,206 +290,56 @@ $('tripRouteQuick').onchange = e => {
 
 $('form').onsubmit=e=>{
   e.preventDefault();
-  let btn = $('mainSubmitBtn');
-  let editId = btn.dataset.editId;
-  
-  let truckVal = $('truckSearch').value.trim().toUpperCase();
-  let trailerVal = $('trailerSearch').value.trim().toUpperCase();
-  let clientVal = $('clientSearch').value.trim();
-  let loadVal = $('loadSearch').value.trim();
-  let unloadVal = $('unloadSearch').value.trim();
-
+  let btn = $('mainSubmitBtn'), editId = btn.dataset.editId;
   let t={
-    id: editId || Date.now().toString(),
-    date: $('date').value,
-    number: $('number').value,
-    truck: truckVal,
-    trailer: trailerVal,
-    client: clientVal,
-    load: loadVal,
-    unload: unloadVal,
-    value: $('value').value,
-    kmStart: $('kmStart').value,
-    kmEnd: $('kmEnd').value,
-    notes: $('notes').value
+    id: editId || Date.now().toString(), date: $('date').value, number: $('number').value,
+    truck: $('truckSearch').value.trim().toUpperCase(), trailer: $('trailerSearch').value.trim().toUpperCase(),
+    client: $('clientSearch').value.trim(), load: $('loadSearch').value.trim(), unload: $('unloadSearch').value.trim(),
+    value: $('value').value, notes: $('notes').value
   };
   
-  if(!t.truck || !t.client || !t.load || !t.unload){
-    return alert('Preencha os campos obrigatórios: camião, cliente, carga e descarga.');
-  }
-  if(t.kmStart!=='' && t.kmEnd!=='' && +t.kmEnd < +t.kmStart) return alert('Os Km finais não podem ser inferiores aos iniciais.');
-  
+  if(!t.truck || !t.client || !t.load || !t.unload) return alert('Preencha os campos obrigatórios: camião, cliente, carga e descarga.');
   if(t.truck && !db.trucks.includes(t.truck)) db.trucks.push(t.truck);
   if(t.trailer && !db.trailers.includes(t.trailer)) db.trailers.push(t.trailer);
-  
-  if(t.client && !db.clients.some(x => x && x.name && x.name.toLowerCase() === t.client.toLowerCase())) {
-    db.clients.push({ name: t.client, nif: '' });
-  }
-  if(t.load && !db.places.some(x => x && x.name && x.name.toLowerCase() === t.load.toLowerCase())) {
-    db.places.push({ name: t.load, address: '' });
-  }
-  if(t.unload && !db.places.some(x => x && x.name && x.name.toLowerCase() === t.unload.toLowerCase())) {
-    db.places.push({ name: t.unload, address: '' });
-  }
+  if(t.client && !db.clients.some(x => x && x.name && x.name.toLowerCase() === t.client.toLowerCase())) db.clients.push({ name: t.client, nif: '' });
+  if(t.load && !db.places.some(x => x && x.name && x.name.toLowerCase() === t.load.toLowerCase())) db.places.push({ name: t.load, address: '' });
+  if(t.unload && !db.places.some(x => x && x.name && x.name.toLowerCase() === t.unload.toLowerCase())) db.places.push({ name: t.unload, address: '' });
 
-  if(editId){
-     let idx = trips.findIndex(x=>x.id===editId);
-     if(idx>-1) trips[idx] = t;
-     btn.textContent = 'GUARDAR VIAGEM';
-     delete btn.dataset.editId;
-  } else {
-     trips.push(t);
-  }
+  if(editId){ let idx = trips.findIndex(x=>x.id===editId); if(idx>-1) trips[idx] = t; btn.textContent = 'GUARDAR VIAGEM'; delete btn.dataset.editId; } 
+  else trips.push(t);
   
-  save();
-  let d=t.date;
-  $('form').reset();
-  $('date').value=d;
-  $('tripRouteQuick').value='';
-  refresh();
-  show('history');
+  save(); let d=t.date; $('form').reset(); $('date').value=d; $('tripRouteQuick').value='';
+  refresh(); show('history');
 }
 
-$('clear').onclick=()=>{
-    let d=$('date').value;
-    $('form').reset();
-    $('date').value=d;
-    $('tripRouteQuick').value='';
-    let btn = $('mainSubmitBtn');
-    btn.textContent = 'GUARDAR VIAGEM';
-    delete btn.dataset.editId;
-}
+$('clear').onclick=()=>{ let d=$('date').value; $('form').reset(); $('date').value=d; $('tripRouteQuick').value=''; $('mainSubmitBtn').textContent = 'GUARDAR VIAGEM'; delete $('mainSubmitBtn').dataset.editId; }
 
-window.editPlate = (type, oldPlate) => {
-    $('vtype').value = type; $('plate').value = oldPlate;
-    $('addPlate').textContent = 'Guardar Alterações'; $('addPlate').dataset.old = oldPlate;
-    $('plate').focus(); window.scrollTo(0, 0);
-};
-window.editClient = (name) => {
-    let c = db.clients.find(x => x.name === name);
-    if(!c) return;
-    $('cname').value = c.name; $('cnif').value = c.nif || '';
-    $('addClient').textContent = 'Guardar Alterações'; $('addClient').dataset.old = name;
-    $('cname').focus(); window.scrollTo(0, 0);
-};
-window.editPlace = (name) => {
-    let p = db.places.find(x => x.name === name);
-    if(!p) return;
-    $('pname').value = p.name; $('paddr').value = p.address || '';
-    $('addPlace').textContent = 'Guardar Alterações'; $('addPlace').dataset.old = name;
-    $('pname').focus();
-};
-window.editRoute = (i) => {
-    let r = db.routes[i];
-    if(!r) return;
-    $('rname').value = r.name; $('rclient').value = r.client; $('rfrom').value = r.from; $('rto').value = r.to; $('rtruck').value = r.truck || ''; $('rtrailer').value = r.trailer || ''; $('rvalue').value = r.value || '';
-    $('addRoute').textContent = 'Guardar Alterações'; $('addRoute').dataset.idx = i;
-    $('rname').focus();
-};
+window.editPlate = (type, oldPlate) => { $('vtype').value = type; $('plate').value = oldPlate; $('addPlate').textContent = 'Guardar'; $('addPlate').dataset.old = oldPlate; $('plate').focus(); window.scrollTo(0, 0); };
+window.editClient = (name) => { let c = db.clients.find(x => x.name === name); if(!c) return; $('cname').value = c.name; $('cnif').value = c.nif || ''; $('addClient').textContent = 'Guardar'; $('addClient').dataset.old = name; $('cname').focus(); window.scrollTo(0, 0); };
+window.editPlace = (name) => { let p = db.places.find(x => x.name === name); if(!p) return; $('pname').value = p.name; $('paddr').value = p.address || ''; $('addPlace').textContent = 'Guardar'; $('addPlace').dataset.old = name; $('pname').focus(); };
+window.editRoute = (i) => { let r = db.routes[i]; if(!r) return; $('rname').value = r.name; $('rclient').value = r.client; $('rfrom').value = r.from; $('rto').value = r.to; $('rtruck').value = r.truck || ''; $('rtrailer').value = r.trailer || ''; $('rvalue').value = r.value || ''; $('addRoute').textContent = 'Guardar'; $('addRoute').dataset.idx = i; $('rname').focus(); };
 
-$('addPlate').onclick=()=>{
-    let p=$('plate').value.trim().toUpperCase(),t=$('vtype').value;
-    if(!p)return;
-    let old=$('addPlate').dataset.old;
-    let a=t==='Camião'?db.trucks:db.trailers;
-    if(old){
-        let oldArr=db.trucks.includes(old)?db.trucks:db.trailers;
-        let idx=oldArr.indexOf(old);
-        if(idx>-1) oldArr.splice(idx,1);
-    }
-    if(!a.includes(p))a.push(p);
-    $('plate').value='';
-    $('addPlate').textContent='Adicionar matrícula';
-    delete $('addPlate').dataset.old;
-    save();refresh();
-};
+$('addPlate').onclick=()=>{ let p=$('plate').value.trim().toUpperCase(),t=$('vtype').value; if(!p)return; let old=$('addPlate').dataset.old,a=t==='Camião'?db.trucks:db.trailers; if(old){ let oldArr=db.trucks.includes(old)?db.trucks:db.trailers; let idx=oldArr.indexOf(old); if(idx>-1) oldArr.splice(idx,1); } if(!a.includes(p))a.push(p); $('plate').value=''; $('addPlate').textContent='Adicionar matrícula'; delete $('addPlate').dataset.old; save();refresh(); };
+$('addClient').onclick=()=>{ let n=$('cname').value.trim(),nif=$('cnif').value.trim(); if(!n)return; let old=$('addClient').dataset.old; if(old){ let c=db.clients.find(x=>x.name===old); if(c){ c.name=n; c.nif=nif; } }else{ if(!db.clients.some(x=>x.name.toLowerCase()===n.toLowerCase()))db.clients.push({name:n,nif}); } $('cname').value='';$('cnif').value=''; $('addClient').textContent='Adicionar cliente'; delete $('addClient').dataset.old; save();refresh(); };
+$('addPlace').onclick=()=>{ let n=$('pname').value.trim(),a=$('paddr').value.trim(); if(!n)return; let old=$('addPlace').dataset.old; if(old){ let p=db.places.find(x=>x.name===old); if(p){ p.name=n; p.address=a; } }else{ if(!db.places.some(x=>x.name.toLowerCase()===n.toLowerCase()))db.places.push({name:n,address:a}); } $('pname').value='';$('paddr').value=''; $('addPlace').textContent='Adicionar local'; delete $('addPlace').dataset.old; save();refresh(); };
+$('addRoute').onclick=()=>{ let name=$('rname').value.trim(),client=$('rclient').value,from=$('rfrom').value,to=$('rto').value,truck=$('rtruck').value,trailer=$('rtrailer').value,value=$('rvalue').value; if(!name||!from||!to)return alert('Preenche nome, origem e destino.'); let idx=$('addRoute').dataset.idx; if(idx!==undefined) db.routes[idx]={name,client,from,to,truck,trailer,value}; else db.routes.push({name,client,from,to,truck,trailer,value}); $('rname').value='';$('rtruck').value='';$('rtrailer').value='';$('rvalue').value=''; $('addRoute').textContent='Adicionar rota'; delete $('addRoute').dataset.idx; save();refresh(); };
 
-$('addClient').onclick=()=>{
-    let n=$('cname').value.trim(),nif=$('cnif').value.trim();
-    if(!n)return;
-    let old=$('addClient').dataset.old;
-    if(old){
-        let c=db.clients.find(x=>x.name===old);
-        if(c){ c.name=n; c.nif=nif; }
-    }else{
-        if(!db.clients.some(x=>x.name.toLowerCase()===n.toLowerCase()))db.clients.push({name:n,nif});
-    }
-    $('cname').value='';$('cnif').value='';
-    $('addClient').textContent='Adicionar cliente';
-    delete $('addClient').dataset.old;
-    save();refresh();
-};
-
-$('addPlace').onclick=()=>{
-    let n=$('pname').value.trim(),a=$('paddr').value.trim();
-    if(!n)return;
-    let old=$('addPlace').dataset.old;
-    if(old){
-        let p=db.places.find(x=>x.name===old);
-        if(p){ p.name=n; p.address=a; }
-    }else{
-        if(!db.places.some(x=>x.name.toLowerCase()===n.toLowerCase()))db.places.push({name:n,address:a});
-    }
-    $('pname').value='';$('paddr').value='';
-    $('addPlace').textContent='Adicionar local';
-    delete $('addPlace').dataset.old;
-    save();refresh();
-};
-
-$('addRoute').onclick=()=>{
-    let name=$('rname').value.trim(),client=$('rclient').value,from=$('rfrom').value,to=$('rto').value,truck=$('rtruck').value,trailer=$('rtrailer').value,value=$('rvalue').value;
-    if(!name||!from||!to)return alert('Preenche nome, origem e destino.');
-    let idx=$('addRoute').dataset.idx;
-    if(idx!==undefined){
-        db.routes[idx]={name,client,from,to,truck,trailer,value};
-    }else{
-        db.routes.push({name,client,from,to,truck,trailer,value});
-    }
-    $('rname').value='';$('rtruck').value='';$('rtrailer').value='';$('rvalue').value='';
-    $('addRoute').textContent='Adicionar rota';
-    delete $('addRoute').dataset.idx;
-    save();refresh(); 
-};
-
-function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===id))}
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===id)); window.scrollTo(0,0); }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 $('homePeriod').onchange=renderHome;$('reportStart').onchange=renderReport;$('reportEnd').onchange=renderReport;$('prevMonth').onclick=()=>moveMonth(-1);$('nextMonth').onclick=()=>moveMonth(1);$('calMonth').onchange=renderCalendar;$('filterDate').onchange=renderHistory;$('search').oninput=renderHistory;$('showAll').onclick=()=>{$('filterDate').value='';$('search').value='';renderHistory()}
 
-$('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='diario_viagens_total.csv';a.click()}
-$('exportReport').onclick=()=>{let a=reportDates();if(!a.length)return alert('Sem viagens neste período.');let s=$('reportStart').value,e=$('reportEnd').value,h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=a.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),lk=document.createElement('a');lk.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));lk.download=`relatorio_${s}_a_${e}.csv`;lk.click()}
+$('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='historico_viagens.csv';a.click()}
+$('exportReport').onclick=()=>{let a=reportDates();if(!a.length)return alert('Sem viagens neste período.');let s=$('reportStart').value,e=$('reportEnd').value,h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Valor (€)','Observações'],rows=a.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),lk=document.createElement('a');lk.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));lk.download=`relatorio_${s}_a_${e}.csv`;lk.click()}
 
-$('backup').onclick=()=>{let data=JSON.stringify({version:5.5,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
-
+$('backup').onclick=()=>{let data=JSON.stringify({version:6.0,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()}
 $('restoreBtn').onclick=()=>$('restore').click();
 $('restore').onchange=e=>{
-  let f=e.target.files[0];
-  if(!f)return;
-  let r=new FileReader();
-  r.onload=()=>{
-    try{
-      let x=JSON.parse(r.result);
-      if(!x.trips||!x.db)throw 0;
-      trips=x.trips;
-      db=x.db;
-      db.routes=db.routes||[];
-      db.trucks=db.trucks||[];
-      db.trailers=db.trailers||[];
-      save();
-      refresh();
-      alert('Backup restaurado com sucesso.');
-    }catch{
-      alert('Ficheiro de backup inválido.');
-    }
-  };
+  let f=e.target.files[0]; if(!f)return; let r=new FileReader();
+  r.onload=()=>{ try{ let x=JSON.parse(r.result); if(!x.trips||!x.db)throw 0; trips=x.trips; db=x.db; db.routes=db.routes||[]; db.trucks=db.trucks||[]; db.trailers=db.trailers||[]; trips.forEach(t => { delete t.kmStart; delete t.kmEnd; }); save(); refresh(); alert('Backup restaurado com sucesso.'); }catch{ alert('Ficheiro inválido.'); } };
   r.readAsText(f);
 }
 
-document.addEventListener('click', e => {
-  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
-    document.querySelectorAll('[id$="Results"]').forEach(el => el.innerHTML = '');
-  }
-});
-
+document.addEventListener('click', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') document.querySelectorAll('[id$="Results"]').forEach(el => el.innerHTML = ''); });
 fillPeriods();let cp=periods().find(p=>today()>=p.s&&today()<=p.e)||periods()[6];$('reportStart').value=cp.s;$('reportEnd').value=cp.e;$('calMonth').value=today().slice(0,7);refresh();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
