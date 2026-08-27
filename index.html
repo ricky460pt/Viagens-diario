@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v5.4</title>
+<title>Diário Pro v5.5</title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe2ea;--nav:#0b1220;--accent:#2563eb;--danger:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -30,14 +30,14 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
     <img src="45700.jpg" style="height: 28px; width: 28px; border-radius: 6px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"> 
     Diário Pro
   </h1>
-  <small>Gestão diária de viagens</small></div><span class="badge">V5.4</span></div></header>
+  <small>Gestão diária de viagens</small></div><span class="badge">V5.5</span></div></header>
 <nav>
-<button data-v="home" class="active">🏠 Início</button><button data-v="trip">➕ Viagem</button><button data-v="history">📋 Histórico</button><button data-v="db">🗂️ Cadastros</button><button data-v="calendar">📅 Calendário</button><button data-v="report">📊 Relatórios</button>
+<button data-v="home" class="active">🏠 Início</button><button data-v="trip">➕ Viagem</button><button data-v="history">📋 Histórico</button><button data-v="calendar">📅 Calendário</button><button data-v="report">📊 Relatórios</button><button data-v="db">🗂️ Cadastros</button>
 </nav>
 <main>
 <section id="home" class="view active">
 <div class="card hero">
-  <h2>Resumo 16 → 15</h2>
+  <h2>Resumo do Período</h2>
   <div class="grid">
     <div><label style="color:#bfdbfe">Período</label><select id="homePeriod"></select></div>
     <div><label style="color:#bfdbfe">Estado</label><input id="periodLabel" readonly></div>
@@ -71,6 +71,13 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
 <div class="row" style="margin-top:10px"><button id="showAll" class="secondary">Todas</button><button id="export">Exportar CSV</button></div><div id="historyList"></div></div></section>
 
+<section id="calendar" class="view"><div class="card"><h2>📅 Calendário de viagens</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:12px"></div></div></section>
+
+<section id="report" class="view"><div class="card"><h2>📊 Relatórios de Viagens</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
+<div style="margin-top:10px"><button id="exportReport" class="secondary">⬇️ Exportar Excel (CSV) deste período</button></div>
+<div class="kpis" style="margin-top:12px"><div class="kpi"><b id="rTrips">0</b><span>VIAGENS</span></div><div class="kpi"><b id="rKm">0</b><span>KM</span></div><div class="kpi"><b id="rDays">0</b><span>DIAS</span></div><div class="kpi"><b id="rAvg">0</b><span>VIAGENS/DIA</span></div></div><div style="margin-top:12px"><b id="rValue">0,00 €</b> <span class="muted">de valor total</span></div></div>
+<div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
+
 <section id="db" class="view">
 <div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Tipo</label><select id="vtype"><option>Camião</option><option>Reboque</option></select></div><div><label>Matrícula</label><input id="plate" placeholder="AA-00-AA"></div></div>
 <div class="row" style="margin-top:10px"><button id="addPlate">Adicionar matrícula</button><button type="button" class="secondary" onclick="toggleList('plates')">Ver / Ocultar</button></div><div id="plates" style="display:none; margin-top:10px;"></div></div>
@@ -95,10 +102,6 @@ button{background:var(--accent);color:#fff;border:0;font-weight:750;cursor:point
 <div class="card"><h2>💾 Dados</h2><div class="row"><button id="backup">Criar backup</button><button id="restoreBtn" class="secondary">Restaurar backup</button></div><input id="restore" type="file" accept=".json" style="display:none"><p class="notice">O backup guarda viagens e cadastros num ficheiro JSON. Guarda-o num local seguro.</p></div>
 </section>
 
-<section id="calendar" class="view"><div class="card"><h2>📅 Calendário de viagens</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:12px"></div></div></section>
-
-<section id="report" class="view"><div class="card"><h2>📊 Relatório 16 → 15</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div><div class="kpis" style="margin-top:12px"><div class="kpi"><b id="rTrips">0</b><span>VIAGENS</span></div><div class="kpi"><b id="rKm">0</b><span>KM</span></div><div class="kpi"><b id="rDays">0</b><span>DIAS</span></div><div class="kpi"><b id="rAvg">0</b><span>VIAGENS/DIA</span></div></div><div style="margin-top:12px"><b id="rValue">0,00 €</b> <span class="muted">de valor</span></div></div>
-<div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
 </main>
 <script>
 const $=id=>document.getElementById(id), VK='dv4_trips',DK='dv4_db';
@@ -423,8 +426,11 @@ $('addRoute').onclick=()=>{
 function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===id))}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 $('homePeriod').onchange=renderHome;$('reportStart').onchange=renderReport;$('reportEnd').onchange=renderReport;$('prevMonth').onclick=()=>moveMonth(-1);$('nextMonth').onclick=()=>moveMonth(1);$('calMonth').onchange=renderCalendar;$('filterDate').onchange=renderHistory;$('search').oninput=renderHistory;$('showAll').onclick=()=>{$('filterDate').value='';$('search').value='';renderHistory()}
-$('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='diario_viagens.csv';a.click()}
-$('backup').onclick=()=>{let data=JSON.stringify({version:5.4,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
+
+$('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='diario_viagens_total.csv';a.click()}
+$('exportReport').onclick=()=>{let a=reportDates();if(!a.length)return alert('Sem viagens neste período.');let s=$('reportStart').value,e=$('reportEnd').value,h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Km início','Km fim','Km','Valor (€)','Observações'],rows=a.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.kmStart,t.kmEnd,km(t),t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),lk=document.createElement('a');lk.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));lk.download=`relatorio_${s}_a_${e}.csv`;lk.click()}
+
+$('backup').onclick=()=>{let data=JSON.stringify({version:5.5,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario_viagens.json';a.click()}
 
 $('restoreBtn').onclick=()=>$('restore').click();
 $('restore').onchange=e=>{
