@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v6.3</title>
+<title>Diário Pro v6.2</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
@@ -26,6 +26,9 @@ header { background: #0b1220; color: white; padding: 18px 16px 35px; border-bott
 header .top { max-width: 900px; margin: auto; display: flex; justify-content: space-between; align-items: center; }
 h1 { font-size: 20px; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
 h1 img { height: 32px; width: 32px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.theme-btn { background: rgba(255,255,255,0.15); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; font-weight: 700; width: auto; }
+.theme-btn:active { transform: scale(0.95); }
 .badge { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; }
 
 nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); transition: background 0.3s; }
@@ -93,7 +96,10 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 <body>
 <header><div class="top">
   <h1><img src="45700.jpg" alt="Logo"> Diário Pro</h1>
-  <span class="badge">V6.3 Auto-Dark</span>
+  <div class="header-right">
+    <button class="theme-btn" id="themeBtn">🌙</button>
+    <span class="badge">V6.2</span>
+  </div>
 </div></header>
 
 <nav>
@@ -178,9 +184,13 @@ let trips=JSON.parse(localStorage.getItem('trips'))||[],db=JSON.parse(localStora
 if(!db.routes) db.routes=[];
 if(!db.trucks) db.trucks=[]; if(!db.trailers) db.trailers=[]; if(!db.clients) db.clients=[]; if(!db.locations) db.locations=[];
 
-let sysDark=window.matchMedia('(prefers-color-scheme: dark)');
-function applyAutoTheme(e){ if(e.matches) document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
-applyAutoTheme(sysDark); sysDark.addEventListener('change', applyAutoTheme);
+let darkMode=localStorage.getItem('darkMode')==='true';
+function applyTheme(){
+  if(darkMode){ document.body.classList.add('dark'); $('themeBtn').textContent='☀️'; }
+  else { document.body.classList.remove('dark'); $('themeBtn').textContent='🌙'; }
+}
+$('themeBtn').onclick=()=>{ darkMode=!darkMode; localStorage.setItem('darkMode',darkMode); applyTheme(); };
+applyTheme();
 
 let navBtns=document.querySelectorAll('nav button'),views=document.querySelectorAll('.view');
 navBtns.forEach(b=>{b.onclick=()=>{navBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');views.forEach(v=>v.classList.remove('active'));$(b.dataset.v).classList.add('active');if(b.dataset.v==='history')renderHistory();if(b.dataset.v==='calendar')renderCalendar();if(b.dataset.v==='home')renderHome();}});
@@ -352,7 +362,7 @@ let exp=n=>{
 $('export').onclick=()=>exp('diario_completo.csv');
 $('exportReport').onclick=()=>exp(`relatorio_${ds.value}_a_${de.value}.csv`);
 
-$('backup').onclick=()=>{let data=JSON.stringify({version:6.3,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()};
+$('backup').onclick=()=>{let data=JSON.stringify({version:6.2,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()};
 $('restore').onchange=e=>{
   let r=new FileReader(); r.onload=x=>{
     try { let d=JSON.parse(x.target.result); trips=d.trips||[]; db=d.db||{trucks:[],trailers:[],clients:[],locations:[],routes:[]}; saveDB(); localStorage.setItem('trips',JSON.stringify(trips)); alert('✅ Restaurado com sucesso!'); location.reload(); }
