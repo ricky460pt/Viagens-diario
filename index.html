@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v6.7</title>
+<title>Diário Pro v6.8</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
@@ -85,7 +85,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </head>
 <body>
 <header><div class="top">
-  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v6.7</span></h1>
+  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v6.8</span></h1>
   <button id="themeToggle" class="badge" style="border:1px solid rgba(255,255,255,0.3); color:white; cursor:pointer;">🌓 Tema</button>
 </div></header>
 
@@ -105,7 +105,8 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
   <div class="kpi"><b id="hkDays">0</b><span>Dias Trabalhados</span></div>
 </div>
 <div class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
-  <button type="button" class="primary" style="padding: 18px; font-size: 16px;" onclick="show('trip')">➕ NOVA VIAGEM</button>
+  <button type="button" class="primary" style="padding: 18px; font-size: 16px; margin-bottom: 12px;" onclick="show('trip')">➕ NOVA VIAGEM</button>
+  <button type="button" class="secondary" style="background: var(--accent-light); color: var(--accent); font-weight:700;" onclick="emergencyBackup()">💾 GUARDAR CÓPIA DE SEGURANÇA AGORA</button>
 </div>
 </section>
 
@@ -161,35 +162,49 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </main>
 <script>
 let $ = id => document.getElementById(id);
-let rawTrips = null;
 
-try {
-  let parsed = JSON.parse(localStorage.getItem('trips'));
-  if (Array.isArray(parsed)) rawTrips = parsed;
-  else if (parsed && typeof parsed === 'object' && Array.isArray(parsed.trips)) rawTrips = parsed.trips;
-} catch(e) {}
+let rawStorage = localStorage.getItem('trips');
+let rawTrips = [];
 
-if (!rawTrips) rawTrips = [];
+if (rawStorage) {
+  try {
+    let parsed = JSON.parse(rawStorage);
+    if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+    if (Array.isArray(parsed)) rawTrips = parsed;
+    else if (parsed && typeof parsed === 'object') rawTrips = parsed.trips || parsed.data || [];
+  } catch(e) {}
+}
 
 let trips = rawTrips.map((t, idx) => {
-  if (typeof t !== 'object' || !t) t = {};
+  if (typeof t === 'string') { try { t = JSON.parse(t); } catch(e) { t = {}; } }
+  if (!t || typeof t !== 'object') t = {};
   return {
-    id: String(t.id || (Date.now() + idx)),
-    date: String(t.date || ''),
-    number: String(t.number || ''),
-    truck: String(t.truck || ''),
-    trailer: String(t.trailer || ''),
-    client: String(t.client || ''),
-    load: String(t.load || ''),
-    unload: String(t.unload || ''),
-    value: Number(t.value || 0),
-    notes: String(t.notes || '')
+    id: String(t.id || t._id || (Date.now() + idx)),
+    date: String(t.date || t.data || ''),
+    number: String(t.number || t.numero || t.n || ''),
+    truck: String(t.truck || t.camiao || t.matricula || ''),
+    trailer: String(t.trailer || t.reboque || ''),
+    client: String(t.client || t.cliente || ''),
+    load: String(t.load || t.carga || t.origem || ''),
+    unload: String(t.unload || t.descarga || t.destino || ''),
+    value: Number(t.value || t.valor || 0),
+    notes: String(t.notes || t.obs || t.observacoes || '')
   };
 });
+
 localStorage.setItem('trips', JSON.stringify(trips));
 
 let db = JSON.parse(localStorage.getItem('db')) || {trucks:[],trailers:[],clients:[],locations:[],routes:[]}, editId = null;
 if(!db.routes) db.routes=[]; if(!db.trucks) db.trucks=[]; if(!db.trailers) db.trailers=[]; if(!db.clients) db.clients=[]; if(!db.locations) db.locations=[];
+
+function emergencyBackup() {
+  let data = JSON.stringify({version:6.8, trips, db}, null, 2);
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+  a.download = 'diario_backup_seguranca.json';
+  a.click();
+  alert('✅ Backup descarregado com sucesso!');
+}
 
 const themeBtn = $('themeToggle');
 const currentTheme = localStorage.getItem('theme');
@@ -247,7 +262,7 @@ function setupSmartSelect(inputId, selectId, resultsId, arrName){
   inp.oninput=()=> renderList();
   function renderList() {
     let v=(inp.value||'').trim().toLowerCase();
-    let matches=db[arrName].filter(x=>(x||'').toLowerCase().includes(v));
+    let matches=(db[arrName]||[]).filter(x=>(x||'').toLowerCase().includes(v));
     res.innerHTML='';
     matches.slice(0, 5).forEach(m=>{
       let d=document.createElement('div'); d.textContent=m;
@@ -312,23 +327,24 @@ function renderHistory(){
   if(s) arr=arr.filter(t=>(t.client||'').toLowerCase().includes(s)||(t.load||'').toLowerCase().includes(s)||(t.unload||'').toLowerCase().includes(s)||(t.truck||'').toLowerCase().includes(s)||(t.number||'').toString().toLowerCase().includes(s));
   arr.sort((a,b)=>(b.date||'').localeCompare(a.date||'')||b.id-a.id);
   
-  $('historyList').innerHTML=arr.length?arr.map(t=>{
+  $('historyList').innerHTML=arr.length?arr.map((t, idx)=>{
     let dStr = t.date ? t.date.split('-').reverse().join('/') : '--/--/----';
+    let safeId = String(t.id).replace(/'/g, "\\'");
     return `
     <div class="trip">
       <div class="trip-title"><span>#${t.number||'--'} | ${dStr}</span> <span style="color:var(--accent); font-size:16px">${money(t.value)}</span></div>
       <div class="trip-tags"><span class="tag">🚚 ${t.truck||'--'}</span>${t.trailer?`<span class="tag">📦 ${t.trailer}</span>`:''}<span class="tag">🏢 ${t.client||'--'}</span></div>
       <div style="font-weight:700; font-size:14px; margin:4px 0">${t.load||'?'} ➔ ${t.unload||'?'}</div>
       ${t.notes?`<div style="font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;">📝 ${t.notes}</div>`:''}
-      <div class="actions"><button class="secondary" onclick="editTrip('${t.id}')">Editar</button><button class="danger" onclick="delTrip('${t.id}')">Apagar</button></div>
+      <div class="actions"><button class="secondary" onclick="editTrip('${safeId}')">Editar</button><button class="danger" onclick="delTrip('${safeId}')">Apagar</button></div>
     </div>`;
   }).join(''):'<div class="empty">Nenhuma viagem encontrada.</div>';
 }
 
 function editTrip(id){
   try {
-    let t=trips.find(x=>String(x.id)===String(id));
-    if(!t) return alert('Viagem não encontrada no sistema.');
+    let t=trips.find(x=>String(x.id).trim()===String(id).trim());
+    if(!t) return alert('Viagem não encontrada.');
     editId=String(t.id);
     $('date').value=t.date||str(now);
     $('number').value=t.number||'';
@@ -343,15 +359,16 @@ function editTrip(id){
     if($('formTitle')) $('formTitle').textContent='✏️ Editar viagem';
     show('trip');
   } catch(err) {
-    alert('Erro ao carregar a viagem: ' + err.message);
+    alert('Erro ao carregar viagem: ' + err.message);
   }
 }
 
 function delTrip(id){
   if(confirm('Apagar esta viagem?')){
-    trips=trips.filter(t=>String(t.id)!==String(id));
+    trips=trips.filter(t=>String(t.id).trim()!==String(id).trim());
     localStorage.setItem('trips',JSON.stringify(trips));
     renderHistory();
+    renderHome();
   }
 }
 
@@ -391,7 +408,7 @@ let exp=n=>{
 $('export').onclick=()=>exp('diario_completo.csv');
 $('exportReport').onclick=()=>exp(`relatorio_${ds.value}_a_${de.value}.csv`);
 
-$('backup').onclick=()=>{let data=JSON.stringify({version:6.7,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()};
+$('backup').onclick=emergencyBackup;
 
 $('restore').onchange=e=>{
   let file=e.target.files[0]; if(!file) return; let r=new FileReader();
