@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v7.0</title>
+<title>Diário Pro v7.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
@@ -87,7 +87,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </head>
 <body>
 <header><div class="top">
-  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v7.0</span></h1>
+  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v7.1</span></h1>
   <button id="themeToggle" class="badge" style="border:1px solid rgba(255,255,255,0.3); color:white; cursor:pointer;">🌓 Tema</button>
 </div></header>
 
@@ -174,7 +174,7 @@ let pad = n => n < 10 ? '0' + n : n;
 let str = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 let money = v => Number(v || 0).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
 
-// Função de sanitização rigorosa para listas de texto
+// Função de sanitização de listas
 function sanitizeList(raw) {
   if (!Array.isArray(raw)) return [];
   let res = [];
@@ -191,7 +191,7 @@ function sanitizeList(raw) {
   return Array.from(new Set(res));
 }
 
-// --- MIGRAR HISTÓRICO DE VIAGENS ---
+// Histórico de viagens
 let rawStorage = localStorage.getItem('trips');
 let rawTrips = [];
 if (rawStorage) {
@@ -221,7 +221,7 @@ let trips = rawTrips.map((t, idx) => {
 });
 localStorage.setItem('trips', JSON.stringify(trips));
 
-// --- MIGRAR E LER CADASTROS DE FORMA ROBUSTA ---
+// Base de dados local
 let rawDb = localStorage.getItem('db');
 let parsedDb = {};
 if (rawDb) { try { parsedDb = JSON.parse(rawDb) || {}; } catch(e){} }
@@ -256,7 +256,7 @@ function saveDB(){
 }
 
 function emergencyBackup() {
-  let data = JSON.stringify({version: 7.0, trips, db}, null, 2);
+  let data = JSON.stringify({version: 7.1, trips, db}, null, 2);
   let a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
   a.download = 'diario_backup_seguranca.json';
@@ -297,6 +297,7 @@ navBtns.forEach(b => {
     if (b.dataset.v === 'history') renderHistory();
     if (b.dataset.v === 'calendar') renderCalendar();
     if (b.dataset.v === 'home') renderHome();
+    if (b.dataset.v === 'report') updateReport();
   };
 });
 function show(v){ let btn = document.querySelector(`[data-v="${v}"]`); if (btn) btn.click(); }
@@ -305,7 +306,7 @@ let now = new Date();
 if (!$('date').value) $('date').value = str(now);
 $('calMonth').value = now.getFullYear() + '-' + pad(now.getMonth() + 1);
 
-// --- PERÍODO DO DIA 16 AO DIA 15 ---
+// Período 16 a 15
 function getPeriodRange(refDate = new Date()) {
   let y = refDate.getFullYear();
   let m = refDate.getMonth();
@@ -346,7 +347,7 @@ function renderHome() {
   $('hkDays').textContent = s.days;
 }
 
-// Obter valores únicos (Cruzando Cadastros + Histórico de Viagens)
+// Obter valores únicos
 function getUniqueList(dbCategory, tripFields) {
   let fromDb = sanitizeList(db[dbCategory] || []);
   let fields = Array.isArray(tripFields) ? tripFields : [tripFields];
@@ -387,7 +388,7 @@ function loadDropdowns() {
   }
 }
 
-// --- SUGESTÕES INTELIGENTES (AUTOCOMPLETE) ---
+// Sugestões inteligentes
 function setupSmartSelect(inputId, resultsId, getListFn, categoryKey) {
   let inp = $(inputId), res = $(resultsId);
   if (!inp || !res) return;
@@ -519,7 +520,6 @@ $('form').onsubmit = e => {
     notes: $('notes').value.trim()
   };
   
-  // Auto-registar no cadastro dados novos inseridos na viagem
   if (t.truck && !db.trucks.includes(t.truck)) db.trucks.push(t.truck);
   if (t.trailer && !db.trailers.includes(t.trailer)) db.trailers.push(t.trailer);
   if (t.client && !db.clients.includes(t.client)) db.clients.push(t.client);
@@ -599,16 +599,33 @@ $('filterDate').onchange = renderHistory;
 $('search').oninput = renderHistory;
 $('showAll').onclick = () => { $('filterDate').value = ''; $('search').value = ''; renderHistory(); };
 
+// --- RELATÓRIOS (PERSISTÊNCIA DE DATAS E PADRÃO 16-15) ---
 let ds = $('reportStart'), de = $('reportEnd');
-[ds, de].forEach(e => e.onchange = () => {
+
+function updateReport() {
   if (!ds.value || !de.value) return;
+  
+  // Guardar a escolha do utilizador na memória local
+  localStorage.setItem('reportStart', ds.value);
+  localStorage.setItem('reportEnd', de.value);
+
   let arr = trips.filter(t => t.date >= ds.value && t.date <= de.value).sort((a, b) => (b.date || '').localeCompare(a.date || '')), s = stats(arr);
   $('rTrips').textContent = s.trips;
   $('rDays').textContent = s.days;
   $('rAvg').textContent = s.days ? (s.trips / s.days).toFixed(1) : 0;
   $('rValue').textContent = money(s.value);
   $('reportList').innerHTML = arr.length ? arr.map(t => `<div class="item"><div class="item-head">${t.date ? t.date.split('-').reverse().join('/') : '--/--/----'} <span style="color:var(--accent)">${money(t.value)}</span></div><div class="item-sub">${t.load || '?'} ➔ ${t.unload || '?'}</div></div>`).join('') : '<div class="empty">Nenhum registo.</div>';
-});
+}
+
+[ds, de].forEach(e => e.onchange = updateReport);
+
+// Carregar datas gravadas ou aplicar o período do dia 16 ao 15 por defeito
+let savedStart = localStorage.getItem('reportStart');
+let savedEnd = localStorage.getItem('reportEnd');
+let initialPeriod = getPeriodRange(new Date());
+
+ds.value = savedStart || initialPeriod.start;
+de.value = savedEnd || initialPeriod.end;
 
 function renderCalendar(){
   let c = $('calMonth').value.split('-'), y = parseInt(c[0]), m = parseInt(c[1]) - 1;
@@ -659,6 +676,5 @@ $('restore').onchange = e => {
 };
 $('reset').onclick = () => { if (confirm('⚠️ APAGAR TUDO? Sem volta!')) { localStorage.clear(); location.reload(); } };
 
-saveDB(); renderHome(); renderCalendar();
-let t = new Date(); ds.value = t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-01'; de.value = t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate(); ds.onchange();
+saveDB(); renderHome(); renderCalendar(); updateReport();
 </script></body></html>
