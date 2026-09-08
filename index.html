@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v6.8</title>
+<title>Diário Pro v6.9</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
@@ -62,6 +62,8 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .kpi b { font-size: 24px; display: block; color: var(--accent); font-weight: 800; margin-bottom: 4px; }
 .kpi span { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 
+.smart-results { position: absolute; z-index: 100; background: var(--card); border: 1px solid var(--line); border-radius: 14px; max-height: 180px; overflow-y: auto; width: calc(100% - 2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; margin-top: 4px; }
+
 .trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: var(--card); transition: 0.2s; display: flex; flex-direction: column; gap: 10px; }
 .trip-title { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .trip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -85,7 +87,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </head>
 <body>
 <header><div class="top">
-  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v6.8</span></h1>
+  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v6.9</span></h1>
   <button id="themeToggle" class="badge" style="border:1px solid rgba(255,255,255,0.3); color:white; cursor:pointer;">🌓 Tema</button>
 </div></header>
 
@@ -100,13 +102,15 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 
 <main>
 <section id="home" class="view active">
+<div style="margin-bottom: 12px; text-align: center;"><span id="periodLabel" class="badge" style="background:var(--accent-light); color:var(--accent); font-size:12px; border:1px solid var(--line);">Período: --/-- a --/--</span></div>
 <div class="kpis" style="margin-bottom: 20px;">
-  <div class="kpi"><b id="hkTrips">0</b><span>Total Viagens</span></div>
+  <div class="kpi"><b id="hkTrips">0</b><span>Viagens do Período</span></div>
   <div class="kpi"><b id="hkDays">0</b><span>Dias Trabalhados</span></div>
+  <div class="kpi" style="grid-column: span 2"><b id="hkValue">0,00 €</b><span>Faturação no Período (16 a 15)</span></div>
 </div>
 <div class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
   <button type="button" class="primary" style="padding: 18px; font-size: 16px; margin-bottom: 12px;" onclick="show('trip')">➕ NOVA VIAGEM</button>
-  <button type="button" class="secondary" style="background: var(--accent-light); color: var(--accent); font-weight:700;" onclick="emergencyBackup()">💾 GUARDAR CÓPIA DE SEGURANÇA AGORA</button>
+  <button type="button" class="secondary" style="background: var(--accent-light); color: var(--accent); font-weight:700;" onclick="emergencyBackup()">💾 GUARDAR CÓPIA DE SEGURANÇA</button>
 </div>
 </section>
 
@@ -116,10 +120,14 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
   <select id="tripRouteQuick" style="margin-top:8px; font-weight: 700;"></select>
 </div>
 <div><label>Data</label><input id="date" type="date" required></div><div><label>N.º viagem</label><input id="number"></div>
-<div><label>Camião</label><input id="truckSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="truck" style="display:none"></select><div id="truckResults"></div></div><div><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="trailer" style="display:none"></select><div id="trailerResults"></div></div>
-<div><label>Cliente</label><input id="clientSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="client" style="display:none"></select><div id="clientResults"></div></div><div><label>Valor (€)</label><input id="value" type="number" min="0" step=".01"></div>
-<div class="full"><label>Local de carga</label><input id="loadSearch" placeholder="Onde carregou?" autocomplete="off"><select id="load" style="display:none"></select><div id="loadResults"></div></div>
-<div class="full"><label>Local de descarga</label><input id="unloadSearch" placeholder="Onde descarregou?" autocomplete="off"><select id="unload" style="display:none"></select><div id="unloadResults"></div></div>
+
+<div style="position:relative"><label>Camião</label><input id="truckSearch" placeholder="Escrever ou escolher..." autocomplete="off"><div id="truckResults" class="smart-results"></div></div>
+<div style="position:relative"><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou escolher..." autocomplete="off"><div id="trailerResults" class="smart-results"></div></div>
+<div style="position:relative"><label>Cliente</label><input id="clientSearch" placeholder="Escrever ou escolher..." autocomplete="off"><div id="clientResults" class="smart-results"></div></div>
+<div><label>Valor (€)</label><input id="value" type="number" min="0" step=".01"></div>
+
+<div class="full" style="position:relative"><label>Local de carga</label><input id="loadSearch" placeholder="Onde carregou?" autocomplete="off"><div id="loadResults" class="smart-results"></div></div>
+<div class="full" style="position:relative"><label>Local de descarga</label><input id="unloadSearch" placeholder="Onde descarregou?" autocomplete="off"><div id="unloadResults" class="smart-results"></div></div>
 <div class="full"><label>Observações</label><textarea id="notes" placeholder="Detalhes extra (opcional)"></textarea></div>
 <div class="full row" style="margin-top:8px"><button type="submit" id="mainSubmitBtn" class="primary">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
 </form></div></section>
@@ -163,9 +171,13 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 <script>
 let $ = id => document.getElementById(id);
 
+let pad = n => n < 10 ? '0' + n : n;
+let str = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+let money = v => Number(v || 0).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
+
+// --- MIGRAR HISTÓRICO DE VIAGENS ---
 let rawStorage = localStorage.getItem('trips');
 let rawTrips = [];
-
 if (rawStorage) {
   try {
     let parsed = JSON.parse(rawStorage);
@@ -191,14 +203,40 @@ let trips = rawTrips.map((t, idx) => {
     notes: String(t.notes || t.obs || t.observacoes || '')
   };
 });
-
 localStorage.setItem('trips', JSON.stringify(trips));
 
-let db = JSON.parse(localStorage.getItem('db')) || {trucks:[],trailers:[],clients:[],locations:[],routes:[]}, editId = null;
-if(!db.routes) db.routes=[]; if(!db.trucks) db.trucks=[]; if(!db.trailers) db.trailers=[]; if(!db.clients) db.clients=[]; if(!db.locations) db.locations=[];
+// --- MIGRAR E LER BASE DE DADOS (CADASTROS) ---
+let rawDb = localStorage.getItem('db');
+let parsedDb = {};
+if (rawDb) { try { parsedDb = JSON.parse(rawDb) || {}; } catch(e){} }
+
+let db = {
+  trucks: parsedDb.trucks || parsedDb.camioes || [],
+  trailers: parsedDb.trailers || parsedDb.reboques || [],
+  clients: parsedDb.clients || parsedDb.clientes || [],
+  locations: parsedDb.locations || parsedDb.locais || [],
+  routes: (parsedDb.routes || parsedDb.rotas || []).map(r => ({
+    id: String(r.id || Date.now()),
+    name: String(r.name || r.nome || ''),
+    client: String(r.client || r.cliente || ''),
+    truck: String(r.truck || r.camiao || ''),
+    trailer: String(r.trailer || r.reboque || ''),
+    load: String(r.load || r.origem || r.carga || ''),
+    unload: String(r.unload || r.destino || r.descarga || ''),
+    value: Number(r.value || r.valor || 0)
+  }))
+};
+
+let editId = null;
+
+function saveDB(){
+  localStorage.setItem('db', JSON.stringify(db));
+  loadDropdowns();
+  renderDB();
+}
 
 function emergencyBackup() {
-  let data = JSON.stringify({version:6.8, trips, db}, null, 2);
+  let data = JSON.stringify({version: 6.9, trips, db}, null, 2);
   let a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
   a.download = 'diario_backup_seguranca.json';
@@ -206,6 +244,7 @@ function emergencyBackup() {
   alert('✅ Backup descarregado com sucesso!');
 }
 
+// Tema Claro / Escuro
 const themeBtn = $('themeToggle');
 const currentTheme = localStorage.getItem('theme');
 const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
@@ -219,7 +258,6 @@ function applyTheme(theme) {
     themeBtn.innerHTML = '🌙 Escuro';
   }
 }
-
 applyTheme(currentTheme);
 themeBtn.onclick = () => {
   const isDark = document.body.classList.contains('dark');
@@ -228,135 +266,278 @@ themeBtn.onclick = () => {
   applyTheme(newTheme);
 };
 
-let navBtns=document.querySelectorAll('nav button'), views=document.querySelectorAll('.view');
-navBtns.forEach(b=>{b.onclick=()=>{navBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');views.forEach(v=>v.classList.remove('active'));$(b.dataset.v).classList.add('active');if(b.dataset.v==='history')renderHistory();if(b.dataset.v==='calendar')renderCalendar();if(b.dataset.v==='home')renderHome();}});
-function show(v){let btn=document.querySelector(`[data-v="${v}"]`); if(btn) btn.click();}
+// Navegação
+let navBtns = document.querySelectorAll('nav button'), views = document.querySelectorAll('.view');
+navBtns.forEach(b => {
+  b.onclick = () => {
+    navBtns.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    views.forEach(v => v.classList.remove('active'));
+    $(b.dataset.v).classList.add('active');
+    if (b.dataset.v === 'history') renderHistory();
+    if (b.dataset.v === 'calendar') renderCalendar();
+    if (b.dataset.v === 'home') renderHome();
+  };
+});
+function show(v){ let btn = document.querySelector(`[data-v="${v}"]`); if (btn) btn.click(); }
 
-let now=new Date(), pad=n=>n<10?'0'+n:n, str=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()), money=v=>Number(v||0).toLocaleString('pt-PT',{style:'currency',currency:'EUR'});
-if(!$('date').value) $('date').value=str(now);
-$('calMonth').value=now.getFullYear()+'-'+pad(now.getMonth()+1);
+let now = new Date();
+if (!$('date').value) $('date').value = str(now);
+$('calMonth').value = now.getFullYear() + '-' + pad(now.getMonth() + 1);
 
-function stats(arr){let d=new Set();arr.forEach(t=>{if(t.date)d.add(t.date);});return{trips:arr.length,days:d.size,value:arr.reduce((s,t)=>s+Number(t.value||0),0)};}
-
-function renderHome(){
-  let s=stats(trips);
-  $('hkTrips').textContent=s.trips;
-  $('hkDays').textContent=s.days;
+// --- CÁLCULO DO PERÍODO DO DIA 16 AO DIA 15 ---
+function getPeriodRange(refDate = new Date()) {
+  let y = refDate.getFullYear();
+  let m = refDate.getMonth();
+  let d = refDate.getDate();
+  
+  let start, end;
+  if (d >= 16) {
+    start = new Date(y, m, 16);
+    end = new Date(y, m + 1, 15);
+  } else {
+    start = new Date(y, m - 1, 16);
+    end = new Date(y, m, 15);
+  }
+  return {
+    start: str(start),
+    end: str(end),
+    label: `${pad(start.getDate())}/${pad(start.getMonth() + 1)} a ${pad(end.getDate())}/${pad(end.getMonth() + 1)}`
+  };
 }
 
-function loadDropdowns(){
-  let fill=(id,arr)=>$(id).innerHTML='<option value="">Selecione...</option>'+[...arr].sort().map(x=>`<option value="${x}">${x}</option>`).join('');
-  fill('truck',db.trucks);fill('rtruck',db.trucks);
-  fill('trailer',db.trailers);fill('rtrailer',db.trailers);
-  fill('client',db.clients);fill('rclient',db.clients);
-  fill('load',db.locations);fill('rfrom',db.locations);
-  fill('unload',db.locations);fill('rto',db.locations);
-  let rq=$('tripRouteQuick'); rq.innerHTML='<option value="">Selecione para preencher...</option>';
-  db.routes.forEach(r=>{ let o=document.createElement('option'); o.value=r.id; o.textContent=r.name; rq.appendChild(o); });
+function stats(arr) {
+  let d = new Set();
+  arr.forEach(t => { if (t.date) d.add(t.date); });
+  return {
+    trips: arr.length,
+    days: d.size,
+    value: arr.reduce((s, t) => s + Number(t.value || 0), 0)
+  };
 }
 
-function setupSmartSelect(inputId, selectId, resultsId, arrName){
-  let inp=$(inputId), sel=$(selectId), res=$(resultsId);
-  inp.onfocus=()=> { res.style.display='block'; renderList(); }
-  inp.onblur=()=> setTimeout(()=>res.style.display='none', 200);
-  inp.oninput=()=> renderList();
+function renderHome() {
+  let period = getPeriodRange(new Date());
+  let periodTrips = trips.filter(t => t.date >= period.start && t.date <= period.end);
+  let s = stats(periodTrips);
+  
+  $('periodLabel').textContent = `Período Atual: ${period.label}`;
+  $('hkTrips').textContent = s.trips;
+  $('hkDays').textContent = s.days;
+  $('hkValue').textContent = money(s.value);
+}
+
+// Obter valores únicos do cadastro + do histórico de viagens para nunca falhar sugestões
+function getUniqueList(dbCategory, tripField) {
+  let fromDb = db[dbCategory] || [];
+  let fromTrips = trips.map(t => t[tripField]).filter(Boolean);
+  return Array.from(new Set([...fromDb, ...fromTrips])).sort();
+}
+
+function loadDropdowns() {
+  let fill = (id, arr) => $(id).innerHTML = '<option value="">Selecione...</option>' + arr.map(x => `<option value="${x}">${x}</option>`).join('');
+  
+  fill('rtruck', getUniqueList('trucks', 'truck'));
+  fill('rtrailer', getUniqueList('trailers', 'trailer'));
+  fill('rclient', getUniqueList('clients', 'client'));
+  fill('rfrom', getUniqueList('locations', 'load'));
+  fill('rto', getUniqueList('locations', 'unload'));
+
+  let rq = $('tripRouteQuick');
+  rq.innerHTML = '<option value="">Selecione para preencher...</option>';
+  db.routes.forEach(r => {
+    let o = document.createElement('option');
+    o.value = r.id;
+    o.textContent = r.name || `${r.load} ➔ ${r.unload}`;
+    rq.appendChild(o);
+  });
+}
+
+// --- SUGESTÕES INTELIGENTES (AUTOCOMPLETE) ---
+function setupSmartSelect(inputId, resultsId, getListFn, categoryKey) {
+  let inp = $(inputId), res = $(resultsId);
+  if (!inp || !res) return;
+
   function renderList() {
-    let v=(inp.value||'').trim().toLowerCase();
-    let matches=(db[arrName]||[]).filter(x=>(x||'').toLowerCase().includes(v));
-    res.innerHTML='';
-    matches.slice(0, 5).forEach(m=>{
-      let d=document.createElement('div'); d.textContent=m;
-      d.style.padding='10px'; d.style.borderBottom='1px solid var(--line)'; d.style.cursor='pointer';
-      d.onmousedown=e=>{ e.preventDefault(); inp.value=m; res.style.display='none'; }
-      res.appendChild(d);
-    });
-    if(v && !matches.find(x=>(x||'').toLowerCase()===v)){
-      let add=document.createElement('div'); add.textContent=`+ Adicionar "${inp.value}"`; add.style.padding='10px'; add.style.color='var(--accent)'; add.style.fontWeight='700'; add.style.cursor='pointer';
-      add.onmousedown=e=>{ e.preventDefault(); db[arrName].push(inp.value.trim()); saveDB(); loadDropdowns(); res.style.display='none'; }
+    let options = getListFn();
+    let v = (inp.value || '').trim().toLowerCase();
+    let matches = options.filter(x => (x || '').toLowerCase().includes(v));
+
+    res.innerHTML = '';
+    if (matches.length > 0) {
+      matches.slice(0, 8).forEach(m => {
+        let d = document.createElement('div');
+        d.textContent = m;
+        d.style.padding = '12px';
+        d.style.borderBottom = '1px solid var(--line)';
+        d.style.cursor = 'pointer';
+        d.style.fontWeight = '600';
+        d.onmousedown = e => {
+          e.preventDefault();
+          inp.value = m;
+          res.style.display = 'none';
+        };
+        res.appendChild(d);
+      });
+    }
+
+    if (v && !options.find(x => (x || '').toLowerCase() === v)) {
+      let add = document.createElement('div');
+      add.textContent = `+ Adicionar "${inp.value}" ao cadastro`;
+      add.style.padding = '12px';
+      add.style.color = 'var(--accent)';
+      add.style.fontWeight = '800';
+      add.style.cursor = 'pointer';
+      add.onmousedown = e => {
+        e.preventDefault();
+        let val = inp.value.trim();
+        if (val && !db[categoryKey].includes(val)) {
+          db[categoryKey].push(val);
+          saveDB();
+        }
+        res.style.display = 'none';
+      };
       res.appendChild(add);
     }
+    res.style.display = (res.children.length > 0) ? 'block' : 'none';
   }
+
+  inp.onfocus = () => renderList();
+  inp.oninput = () => renderList();
+  inp.onblur = () => setTimeout(() => res.style.display = 'none', 250);
 }
 
-setupSmartSelect('truckSearch', 'truck', 'truckResults', 'trucks');
-setupSmartSelect('trailerSearch', 'trailer', 'trailerResults', 'trailers');
-setupSmartSelect('clientSearch', 'client', 'clientResults', 'clients');
-setupSmartSelect('loadSearch', 'load', 'loadResults', 'locations');
-setupSmartSelect('unloadSearch', 'unload', 'unloadResults', 'locations');
+setupSmartSelect('truckSearch', 'truckResults', () => getUniqueList('trucks', 'truck'), 'trucks');
+setupSmartSelect('trailerSearch', 'trailerResults', () => getUniqueList('trailers', 'trailer'), 'trailers');
+setupSmartSelect('clientSearch', 'clientResults', () => getUniqueList('clients', 'client'), 'clients');
+setupSmartSelect('loadSearch', 'loadResults', () => getUniqueList('locations', 'load'), 'locations');
+setupSmartSelect('unloadSearch', 'unloadResults', () => getUniqueList('locations', 'unload'), 'locations');
 
-function saveDB(){localStorage.setItem('db',JSON.stringify(db));loadDropdowns();renderDB();}
-function toggleList(id){ $(id).style.display=$(id).style.display==='none'?'block':'none'; }
+function toggleList(id){ $(id).style.display = $(id).style.display === 'none' ? 'block' : 'none'; }
 
-['Truck','Trailer','Client','Location'].forEach(t=>{
-  $('add'+t).onclick=()=>{let v=$('db'+t).value.trim();if(v&&!db[t.toLowerCase()+'s'].includes(v)){db[t.toLowerCase()+'s'].push(v);$('db'+t).value='';saveDB();}};
+['Truck','Trailer','Client','Location'].forEach(t => {
+  $('add' + t).onclick = () => {
+    let key = t.toLowerCase() + 's';
+    let v = $('db' + t).value.trim();
+    if (v && !db[key].includes(v)) {
+      db[key].push(v);
+      $('db' + t).value = '';
+      saveDB();
+    }
+  };
 });
 
-$('addRoute').onclick=()=>{
-  let n=$('rname').value.trim(); if(!n) return alert('Dê um nome à rota!');
-  db.routes.push({id:Date.now(), name:n, client:$('rclient').value, truck:$('rtruck').value, trailer:$('rtrailer').value, load:$('rfrom').value, unload:$('rto').value, value:$('rvalue').value||0});
-  ['rname','rclient','rtruck','rtrailer','rfrom','rto','rvalue'].forEach(i=>$(i).value=''); saveDB();
+$('addRoute').onclick = () => {
+  let n = $('rname').value.trim();
+  if (!n) return alert('Dê um nome à rota!');
+  db.routes.push({
+    id: String(Date.now()),
+    name: n,
+    client: $('rclient').value,
+    truck: $('rtruck').value,
+    trailer: $('rtrailer').value,
+    load: $('rfrom').value,
+    unload: $('rto').value,
+    value: Number($('rvalue').value || 0)
+  });
+  ['rname','rclient','rtruck','rtrailer','rfrom','rto','rvalue'].forEach(i => $(i).value = '');
+  saveDB();
 };
 
-$('tripRouteQuick').onchange=e=>{
-  let r=db.routes.find(x=>x.id==e.target.value);
-  if(r){
-    $('clientSearch').value=r.client||''; $('truckSearch').value=r.truck||''; $('trailerSearch').value=r.trailer||'';
-    $('loadSearch').value=r.load||''; $('unloadSearch').value=r.unload||''; $('value').value=r.value||'';
+$('tripRouteQuick').onchange = e => {
+  let r = db.routes.find(x => String(x.id) === String(e.target.value));
+  if (r) {
+    $('clientSearch').value = r.client || '';
+    $('truckSearch').value = r.truck || '';
+    $('trailerSearch').value = r.trailer || '';
+    $('loadSearch').value = r.load || '';
+    $('unloadSearch').value = r.unload || '';
+    $('value').value = r.value || '';
   }
 };
 
 function renderDB(){
-  ['trucks','trailers','clients','locations'].forEach(t=>{
-    $(t).innerHTML=db[t].map((x,i)=>`<div class="item"><div class="item-head">${x} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.${t}.splice(${i},1);saveDB()">Apagar</button></div></div>`).join('');
+  ['trucks','trailers','clients','locations'].forEach(t => {
+    $(t).innerHTML = db[t].map((x, i) => `
+      <div class="item">
+        <div class="item-head">${x} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.${t}.splice(${i},1);saveDB()">Apagar</button></div>
+      </div>`).join('');
   });
-  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><div class="item-head">${r.name} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.routes.splice(${i},1);saveDB()">Apagar</button></div><div class="item-sub">${r.load} → ${r.unload} | ${r.client}</div></div>`).join('');
+  $('routes').innerHTML = db.routes.map((r, i) => `
+    <div class="item">
+      <div class="item-head">${r.name} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.routes.splice(${i},1);saveDB()">Apagar</button></div>
+      <div class="item-sub">${r.load} ➔ ${r.unload} | ${r.client} | ${money(r.value)}</div>
+    </div>`).join('');
 }
 
-$('form').onsubmit=e=>{
+$('form').onsubmit = e => {
   e.preventDefault();
-  let t={id:editId||String(Date.now()),date:$('date').value,number:$('number').value.trim(),truck:$('truckSearch').value,trailer:$('trailerSearch').value,client:$('clientSearch').value,load:$('loadSearch').value,unload:$('unloadSearch').value,value:$('value').value||0,notes:$('notes').value.trim()};
-  if(editId) trips=trips.map(x=>String(x.id)===String(editId)?t:x); else trips.push(t);
-  localStorage.setItem('trips',JSON.stringify(trips));$('clear').click();show('home');
+  let t = {
+    id: editId || String(Date.now()),
+    date: $('date').value,
+    number: $('number').value.trim(),
+    truck: $('truckSearch').value.trim(),
+    trailer: $('trailerSearch').value.trim(),
+    client: $('clientSearch').value.trim(),
+    load: $('loadSearch').value.trim(),
+    unload: $('unloadSearch').value.trim(),
+    value: Number($('value').value || 0),
+    notes: $('notes').value.trim()
+  };
+  
+  if (editId) trips = trips.map(x => String(x.id) === String(editId) ? t : x);
+  else trips.push(t);
+  
+  localStorage.setItem('trips', JSON.stringify(trips));
+  $('clear').click();
+  show('home');
 };
 
-$('clear').onclick=()=>{editId=null;['number','truckSearch','trailerSearch','clientSearch','loadSearch','unloadSearch','value','notes','tripRouteQuick'].forEach(id=>$(id).value='');$('date').value=str(now);$('mainSubmitBtn').textContent='GUARDAR VIAGEM';if($('formTitle'))$('formTitle').textContent='➕ Registar viagem';};
+$('clear').onclick = () => {
+  editId = null;
+  ['number','truckSearch','trailerSearch','clientSearch','loadSearch','unloadSearch','value','notes','tripRouteQuick'].forEach(id => $(id).value = '');
+  $('date').value = str(now);
+  $('mainSubmitBtn').textContent = 'GUARDAR VIAGEM';
+  if ($('formTitle')) $('formTitle').textContent = '➕ Registar viagem';
+};
 
 function renderHistory(){
-  let f=$('filterDate').value, s=($('search').value||'').toLowerCase().trim(), arr=trips;
-  if(f) arr=arr.filter(t=>t.date===f);
-  if(s) arr=arr.filter(t=>(t.client||'').toLowerCase().includes(s)||(t.load||'').toLowerCase().includes(s)||(t.unload||'').toLowerCase().includes(s)||(t.truck||'').toLowerCase().includes(s)||(t.number||'').toString().toLowerCase().includes(s));
-  arr.sort((a,b)=>(b.date||'').localeCompare(a.date||'')||b.id-a.id);
+  let f = $('filterDate').value, s = ($('search').value || '').toLowerCase().trim(), arr = trips;
+  if (f) arr = arr.filter(t => t.date === f);
+  if (s) arr = arr.filter(t => (t.client || '').toLowerCase().includes(s) || (t.load || '').toLowerCase().includes(s) || (t.unload || '').toLowerCase().includes(s) || (t.truck || '').toLowerCase().includes(s) || (t.number || '').toString().toLowerCase().includes(s));
   
-  $('historyList').innerHTML=arr.length?arr.map((t, idx)=>{
+  arr.sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.id - a.id);
+  
+  $('historyList').innerHTML = arr.length ? arr.map(t => {
     let dStr = t.date ? t.date.split('-').reverse().join('/') : '--/--/----';
     let safeId = String(t.id).replace(/'/g, "\\'");
     return `
     <div class="trip">
-      <div class="trip-title"><span>#${t.number||'--'} | ${dStr}</span> <span style="color:var(--accent); font-size:16px">${money(t.value)}</span></div>
-      <div class="trip-tags"><span class="tag">🚚 ${t.truck||'--'}</span>${t.trailer?`<span class="tag">📦 ${t.trailer}</span>`:''}<span class="tag">🏢 ${t.client||'--'}</span></div>
-      <div style="font-weight:700; font-size:14px; margin:4px 0">${t.load||'?'} ➔ ${t.unload||'?'}</div>
-      ${t.notes?`<div style="font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;">📝 ${t.notes}</div>`:''}
+      <div class="trip-title"><span>#${t.number || '--'} | ${dStr}</span> <span style="color:var(--accent); font-size:16px">${money(t.value)}</span></div>
+      <div class="trip-tags"><span class="tag">🚚 ${t.truck || '--'}</span>${t.trailer ? `<span class="tag">📦 ${t.trailer}</span>` : ''}<span class="tag">🏢 ${t.client || '--'}</span></div>
+      <div style="font-weight:700; font-size:14px; margin:4px 0">${t.load || '?'} ➔ ${t.unload || '?'}</div>
+      ${t.notes ? `<div style="font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;">📝 ${t.notes}</div>` : ''}
       <div class="actions"><button class="secondary" onclick="editTrip('${safeId}')">Editar</button><button class="danger" onclick="delTrip('${safeId}')">Apagar</button></div>
     </div>`;
-  }).join(''):'<div class="empty">Nenhuma viagem encontrada.</div>';
+  }).join('') : '<div class="empty">Nenhuma viagem encontrada.</div>';
 }
 
 function editTrip(id){
   try {
-    let t=trips.find(x=>String(x.id).trim()===String(id).trim());
-    if(!t) return alert('Viagem não encontrada.');
-    editId=String(t.id);
-    $('date').value=t.date||str(now);
-    $('number').value=t.number||'';
-    $('value').value=t.value||'';
-    $('notes').value=t.notes||'';
-    $('truckSearch').value=t.truck||'';
-    $('trailerSearch').value=t.trailer||'';
-    $('clientSearch').value=t.client||'';
-    $('loadSearch').value=t.load||'';
-    $('unloadSearch').value=t.unload||'';
-    $('mainSubmitBtn').textContent='ATUALIZAR VIAGEM';
-    if($('formTitle')) $('formTitle').textContent='✏️ Editar viagem';
+    let t = trips.find(x => String(x.id).trim() === String(id).trim());
+    if (!t) return alert('Viagem não encontrada.');
+    editId = String(t.id);
+    $('date').value = t.date || str(now);
+    $('number').value = t.number || '';
+    $('value').value = t.value || '';
+    $('notes').value = t.notes || '';
+    $('truckSearch').value = t.truck || '';
+    $('trailerSearch').value = t.trailer || '';
+    $('clientSearch').value = t.client || '';
+    $('loadSearch').value = t.load || '';
+    $('unloadSearch').value = t.unload || '';
+    $('mainSubmitBtn').textContent = 'ATUALIZAR VIAGEM';
+    if ($('formTitle')) $('formTitle').textContent = '✏️ Editar viagem';
     show('trip');
   } catch(err) {
     alert('Erro ao carregar viagem: ' + err.message);
@@ -364,65 +545,78 @@ function editTrip(id){
 }
 
 function delTrip(id){
-  if(confirm('Apagar esta viagem?')){
-    trips=trips.filter(t=>String(t.id).trim()!==String(id).trim());
-    localStorage.setItem('trips',JSON.stringify(trips));
+  if (confirm('Apagar esta viagem?')){
+    trips = trips.filter(t => String(t.id).trim() !== String(id).trim());
+    localStorage.setItem('trips', JSON.stringify(trips));
     renderHistory();
     renderHome();
   }
 }
 
-$('filterDate').onchange=renderHistory; $('search').oninput=renderHistory;
-$('showAll').onclick=()=>{f=$('filterDate').value='';s=$('search').value='';renderHistory();};
+$('filterDate').onchange = renderHistory;
+$('search').oninput = renderHistory;
+$('showAll').onclick = () => { $('filterDate').value = ''; $('search').value = ''; renderHistory(); };
 
-let ds=$('reportStart'),de=$('reportEnd');
-[ds,de].forEach(e=>e.onchange=()=>{
-  if(!ds.value||!de.value)return;
-  let arr=trips.filter(t=>t.date>=ds.value&&t.date<=de.value).sort((a,b)=>(b.date||'').localeCompare(a.date||'')),s=stats(arr);
-  $('rTrips').textContent=s.trips;$('rDays').textContent=s.days;$('rAvg').textContent=s.days?(s.trips/s.days).toFixed(1):0;$('rValue').textContent=money(s.value);
-  $('reportList').innerHTML=arr.length?arr.map(t=>`<div class="item"><div class="item-head">${t.date ? t.date.split('-').reverse().join('/') : '--/--/----'} <span style="color:var(--accent)">${money(t.value)}</span></div><div class="item-sub">${t.load||'?'} → ${t.unload||'?'}</div></div>`).join(''):'<div class="empty">Nenhum registo.</div>';
+let ds = $('reportStart'), de = $('reportEnd');
+[ds, de].forEach(e => e.onchange = () => {
+  if (!ds.value || !de.value) return;
+  let arr = trips.filter(t => t.date >= ds.value && t.date <= de.value).sort((a, b) => (b.date || '').localeCompare(a.date || '')), s = stats(arr);
+  $('rTrips').textContent = s.trips;
+  $('rDays').textContent = s.days;
+  $('rAvg').textContent = s.days ? (s.trips / s.days).toFixed(1) : 0;
+  $('rValue').textContent = money(s.value);
+  $('reportList').innerHTML = arr.length ? arr.map(t => `<div class="item"><div class="item-head">${t.date ? t.date.split('-').reverse().join('/') : '--/--/----'} <span style="color:var(--accent)">${money(t.value)}</span></div><div class="item-sub">${t.load || '?'} ➔ ${t.unload || '?'}</div></div>`).join('') : '<div class="empty">Nenhum registo.</div>';
 });
 
 function renderCalendar(){
-  let c=$('calMonth').value.split('-'), y=parseInt(c[0]), m=parseInt(c[1])-1;
-  let d1=new Date(y,m,1), d2=new Date(y,m+1,0), sDay=d1.getDay()===0?6:d1.getDay()-1;
-  let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);margin-bottom:8px"><div>2ª</div><div>3ª</div><div>4ª</div><div>5ª</div><div>6ª</div><div>Sá</div><div>Do</div></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
-  for(let i=0;i<sDay;i++) html+=`<div style="padding:10px;background:var(--input-bg);border-radius:8px"></div>`;
-  for(let i=1;i<=d2.getDate();i++){
-    let f=y+'-'+pad(m+1)+'-'+pad(i), arr=trips.filter(t=>t.date===f);
-    html+=`<div style="padding:10px 4px; border-radius:12px; border:1.5px solid ${arr.length?'var(--accent)':'var(--line)'}; background:${arr.length?'var(--accent-light)':'var(--card)'}; text-align:center; cursor:pointer;" onclick="gotoDay('${f}')">
-      <div style="font-weight:800; font-size:14px; color:${arr.length?'var(--accent)':'var(--text)'}">${i}</div>
-      ${arr.length?`<div style="font-size:10px; font-weight:700; color:var(--accent); margin-top:2px">${arr.length}v</div>`:''}
+  let c = $('calMonth').value.split('-'), y = parseInt(c[0]), m = parseInt(c[1]) - 1;
+  let d1 = new Date(y, m, 1), d2 = new Date(y, m + 1, 0), sDay = d1.getDay() === 0 ? 6 : d1.getDay() - 1;
+  let html = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);margin-bottom:8px"><div>2ª</div><div>3ª</div><div>4ª</div><div>5ª</div><div>6ª</div><div>Sá</div><div>Do</div></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
+  for(let i=0; i<sDay; i++) html += `<div style="padding:10px;background:var(--input-bg);border-radius:8px"></div>`;
+  for(let i=1; i<=d2.getDate(); i++){
+    let f = y + '-' + pad(m + 1) + '-' + pad(i), arr = trips.filter(t => t.date === f);
+    html += `<div style="padding:10px 4px; border-radius:12px; border:1.5px solid ${arr.length ? 'var(--accent)' : 'var(--line)'}; background:${arr.length ? 'var(--accent-light)' : 'var(--card)'}; text-align:center; cursor:pointer;" onclick="gotoDay('${f}')">
+      <div style="font-weight:800; font-size:14px; color:${arr.length ? 'var(--accent)' : 'var(--text)'}">${i}</div>
+      ${arr.length ? `<div style="font-size:10px; font-weight:700; color:var(--accent); margin-top:2px">${arr.length}v</div>` : ''}
     </div>`;
   }
-  $('calendarGrid').innerHTML=html+'</div>';
+  $('calendarGrid').innerHTML = html + '</div>';
 }
-function gotoDay(d){ $('filterDate').value=d; show('history'); }
-$('prevMonth').onclick=()=>{let c=$('calMonth').value.split('-');$('calMonth').value=c[0]+'-'+pad(parseInt(c[1])-1);if(c[1]=='01')$('calMonth').value=(parseInt(c[0])-1)+'-12';renderCalendar();};
-$('nextMonth').onclick=()=>{let c=$('calMonth').value.split('-');$('calMonth').value=c[0]+'-'+pad(parseInt(c[1])+1);if(c[1]=='12')$('calMonth').value=(parseInt(c[0])+1)+'-01';renderCalendar();};
 
-let exp=n=>{
-  let csv='Data,Viagem,Camião,Reboque,Cliente,Carga,Descarga,Valor,Obs\n'+trips.map(t=>`${t.date||''},${t.number||''},${t.truck||''},${t.trailer||''},${t.client||''},${t.load||''},${t.unload||''},${t.value||0},${(t.notes||'').replace(/,/g,';')}`).join('\n');
-  let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=n;a.click();
+function gotoDay(d){ $('filterDate').value = d; show('history'); }
+$('prevMonth').onclick = () => { let c = $('calMonth').value.split('-'); $('calMonth').value = c[0] + '-' + pad(parseInt(c[1]) - 1); if (c[1] == '01') $('calMonth').value = (parseInt(c[0]) - 1) + '-12'; renderCalendar(); };
+$('nextMonth').onclick = () => { let c = $('calMonth').value.split('-'); $('calMonth').value = c[0] + '-' + pad(parseInt(c[1]) + 1); if (c[1] == '12') $('calMonth').value = (parseInt(c[0]) + 1) + '-01'; renderCalendar(); };
+
+let exp = n => {
+  let csv = 'Data,Viagem,Camião,Reboque,Cliente,Carga,Descarga,Valor,Obs\n' + trips.map(t => `${t.date||''},${t.number||''},${t.truck||''},${t.trailer||''},${t.client||''},${t.load||''},${t.unload||''},${t.value||0},${(t.notes||'').replace(/,/g,';')}`).join('\n');
+  let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); a.download = n; a.click();
 };
-$('export').onclick=()=>exp('diario_completo.csv');
-$('exportReport').onclick=()=>exp(`relatorio_${ds.value}_a_${de.value}.csv`);
+$('export').onclick = () => exp('diario_completo.csv');
+$('exportReport').onclick = () => exp(`relatorio_${ds.value}_a_${de.value}.csv`);
 
-$('backup').onclick=emergencyBackup;
+$('backup').onclick = emergencyBackup;
 
-$('restore').onchange=e=>{
-  let file=e.target.files[0]; if(!file) return; let r=new FileReader();
-  r.onload=x=>{
+$('restore').onchange = e => {
+  let file = e.target.files[0]; if (!file) return;
+  let r = new FileReader();
+  r.onload = x => {
     try {
-      let d=JSON.parse(x.target.result.trim());
-      if(Array.isArray(d)) trips=d; else if(d && typeof d==='object') { trips=d.trips||trips; if(d.db) db=d.db; }
-      saveDB(); localStorage.setItem('trips',JSON.stringify(trips)); alert('✅ Restaurado com sucesso!'); location.reload();
+      let d = JSON.parse(x.target.result.trim());
+      if (Array.isArray(d)) trips = d;
+      else if (d && typeof d === 'object') {
+        if (d.trips) trips = d.trips;
+        if (d.db) db = d.db;
+      }
+      saveDB();
+      localStorage.setItem('trips', JSON.stringify(trips));
+      alert('✅ Restaurado com sucesso!');
+      location.reload();
     } catch(err) { alert('❌ Erro no ficheiro.'); }
   };
   r.readAsText(file);
 };
-$('reset').onclick=()=>{if(confirm('⚠️ APAGAR TUDO? Sem volta!')){localStorage.clear();location.reload();}};
+$('reset').onclick = () => { if (confirm('⚠️ APAGAR TUDO? Sem volta!')) { localStorage.clear(); location.reload(); } };
 
 loadDropdowns(); renderDB(); renderHome(); renderCalendar();
-let t=new Date(); ds.value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-01'; de.value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+new Date(t.getFullYear(),t.getMonth()+1,0).getDate(); ds.onchange();
+let t = new Date(); ds.value = t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-01'; de.value = t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate(); ds.onchange();
 </script></body></html>
