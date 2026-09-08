@@ -5,51 +5,58 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v6.0</title>
+<title>Diário Pro v6.5</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
   --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
   --line: #e2e8f0; --accent: #2563eb; --accent-light: #eff6ff;
-  --danger: #ef4444; --nav-bg: #ffffff;
+  --danger: #ef4444; --nav-bg: #ffffff; --input-bg: #f8fafc;
 }
+body.dark {
+  --bg: #0b1329; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
+  --line: #334155; --accent: #3b82f6; --accent-light: rgba(59, 130, 246, 0.15);
+  --danger: #f87171; --nav-bg: #1e293b; --input-bg: #0f172a;
+}
+
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); transition: background 0.3s, color 0.3s; }
 
 header { background: #0b1220; color: white; padding: 18px 16px 35px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; position: relative; z-index: 1; }
 header .top { max-width: 900px; margin: auto; display: flex; justify-content: space-between; align-items: center; }
 h1 { font-size: 20px; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
 h1 img { height: 32px; width: 32px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-.badge { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; }
+.badge { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; transition: 0.2s; }
+.badge:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
 
-nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); }
+nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); transition: background 0.3s; }
 nav button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; background: transparent; color: var(--muted); border: none; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
 nav button.active { background: var(--accent-light); color: var(--accent); }
 .ic { font-size: 18px; }
 
 @media (max-width: 650px) {
-  nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 10px 8px calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 25px rgba(0,0,0,0.06); gap: 0; }
+  nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 10px 8px calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); gap: 0; }
   nav button { flex-direction: column; gap: 4px; padding: 8px 4px; font-size: 10px; }
   .ic { font-size: 22px; margin-bottom: 2px; }
   main { margin-bottom: 90px; }
 }
 
 main { max-width: 900px; margin: auto; padding: 24px 16px; }
-.card { background: var(--card); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(226,232,240,0.6); }
+.card { background: var(--card); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--line); transition: background 0.3s, border-color 0.3s; }
 h2 { font-size: 18px; margin: 0 0 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .full { grid-column: 1 / -1; }
 label { font-size: 12px; font-weight: 800; display: block; margin-bottom: 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-input, select, textarea { font: inherit; border-radius: 14px; padding: 14px; border: 1.5px solid var(--line); background: #f8fafc; color: var(--text); width: 100%; transition: 0.2s; font-weight: 600; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); background: #fff; }
+input, select, textarea { font: inherit; border-radius: 14px; padding: 14px; border: 1.5px solid var(--line); background: var(--input-bg); color: var(--text); width: 100%; transition: 0.2s; font-weight: 600; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); background: var(--card); }
 textarea { min-height: 90px; }
 
 button { font: inherit; border: none; cursor: pointer; transition: 0.2s; font-weight: 750; border-radius: 14px; padding: 14px; width: 100%; }
 button.primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
 button.primary:active { transform: scale(0.97); }
-button.secondary { background: #f1f5f9; color: var(--text); }
-button.danger { background: #fef2f2; color: var(--danger); }
+button.secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--line); }
+button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .row { display: flex; gap: 10px; } .row > * { flex: 1; }
 
 .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -57,24 +64,19 @@ button.danger { background: #fef2f2; color: var(--danger); }
 .kpi b { font-size: 24px; display: block; color: var(--accent); font-weight: 800; margin-bottom: 4px; }
 .kpi span { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 
-.hero { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; border: none; }
-.hero label { color: #94a3b8; }
-.hero input, .hero select { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white; }
-.hero input:focus, .hero select:focus { background: rgba(255,255,255,0.15); border-color: var(--accent); }
-
-.trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: #fff; transition: box-shadow 0.2s; display: flex; flex-direction: column; gap: 10px; }
-.trip:active { background: #f8fafc; }
+.trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: var(--card); transition: 0.2s; display: flex; flex-direction: column; gap: 10px; }
+.trip:active { background: var(--input-bg); }
 .trip-title { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .trip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569; }
+.tag { background: var(--input-bg); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); }
 .actions { display: flex; gap: 8px; margin-top: 4px; }
 .actions button { padding: 10px; font-size: 12px; }
 
-.item { padding: 14px; border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: #fff; }
+.item { padding: 14px; border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: var(--card); }
 .item-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 15px; margin-bottom: 4px; }
 .item-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
 
-.notice { font-size: 13px; color: #475569; background: #f8fafc; padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
+.notice { font-size: 13px; color: var(--muted); background: var(--input-bg); padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
 .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-weight: 700; }
 
 .view { display: none; animation: fadeIn 0.3s ease-out; }
@@ -87,7 +89,7 @@ button.danger { background: #fef2f2; color: var(--danger); }
 <body>
 <header><div class="top">
   <h1><img src="45700.jpg" alt="Logo"> Diário Pro</h1>
-  <span class="badge">V6.0 Modern</span>
+  <button id="themeToggle" class="badge" style="border:1px solid rgba(255,255,255,0.3); color:white; cursor:pointer;">🌓 Tema</button>
 </div></header>
 
 <nav>
@@ -101,27 +103,19 @@ button.danger { background: #fef2f2; color: var(--danger); }
 
 <main>
 <section id="home" class="view active">
-<div class="card hero">
-  <h2>Resumo do Período</h2>
-  <div class="grid">
-    <div><label style="color:#cbd5e1">Período</label><select id="homePeriod"></select></div>
-    <div><label style="color:#cbd5e1">Estado</label><input id="periodLabel" readonly></div>
-  </div>
+<div class="kpis" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
+  <div class="kpi"><b id="hkTrips">0</b><span>Total Viagens</span></div>
+  <div class="kpi"><b id="hkDays">0</b><span>Dias Trabalhados</span></div>
 </div>
-<div class="kpis">
-  <div class="kpi"><b id="hkTrips">0</b><span>Viagens</span></div>
-  <div class="kpi"><b id="hkDays">0</b><span>Dias</span></div>
-  <div class="kpi"><b id="hkValue">0 €</b><span>Faturação</span></div>
-</div>
-<div class="card" style="margin-top:20px; background: transparent; border: none; box-shadow: none; padding: 0;">
+<div class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
   <button type="button" class="primary" style="padding: 18px; font-size: 16px;" onclick="show('trip')">➕ NOVA VIAGEM</button>
 </div>
 </section>
 
 <section id="trip" class="view"><div class="card"><h2>➕ Registar viagem</h2><form id="form" class="grid">
-<div class="full" style="background:#eff6ff; padding:16px; border:1px solid #bfdbfe; border-radius:16px; margin-bottom:8px;">
+<div class="full" style="background:var(--accent-light); padding:16px; border:1px solid var(--accent); border-radius:16px; margin-bottom:8px;">
   <label style="color:var(--accent)">⭐ Rota Habitual (Preenchimento rápido)</label>
-  <select id="tripRouteQuick" style="margin-top:8px; border-color:#93c5fd; font-weight: 700;"></select>
+  <select id="tripRouteQuick" style="margin-top:8px; font-weight: 700;"></select>
 </div>
 <div><label>Data</label><input id="date" type="date" required></div><div><label>N.º viagem</label><input id="number"></div>
 <div><label>Camião</label><input id="truckSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="truck" style="display:none"></select><div id="truckResults"></div></div><div><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="trailer" style="display:none"></select><div id="trailerResults"></div></div>
@@ -133,12 +127,12 @@ button.danger { background: #fef2f2; color: var(--danger); }
 </form></div></section>
 
 <section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Filtrar Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
-<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:#e0f2fe; color:#0369a1;">Exportar CSV</button></div><div id="historyList"></div></div></section>
+<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:var(--accent-light); color:var(--accent);">Exportar CSV</button></div><div id="historyList"></div></div></section>
 
 <section id="calendar" class="view"><div class="card"><h2>📅 Calendário</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:16px"></div></div></section>
 
 <section id="report" class="view"><div class="card"><h2>📊 Relatórios</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
-<div style="margin-top:14px"><button id="exportReport" class="secondary" style="background:#e0f2fe; color:#0369a1;">⬇️ Exportar Excel (CSV) do período</button></div>
+<div style="margin-top:14px"><button id="exportReport" class="secondary" style="background:var(--accent-light); color:var(--accent);">⬇️ Exportar Excel (CSV) do período</button></div>
 <div class="kpis" style="margin-top:16px"><div class="kpi"><b id="rTrips">0</b><span>Viagens</span></div><div class="kpi"><b id="rDays">0</b><span>Dias</span></div><div class="kpi"><b id="rAvg">0</b><span>Viagens/Dia</span></div></div><div style="margin-top:16px; text-align: center;"><b id="rValue" style="font-size:28px; color:var(--accent);">0,00 €</b> <div class="muted" style="font-weight: 700; margin-top:4px;">FATURAÇÃO TOTAL</div></div></div>
 <div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
 
@@ -151,196 +145,215 @@ button.danger { background: #fef2f2; color: var(--danger); }
 </div>
 <div class="row" style="margin-top:14px"><button id="addRoute" class="primary">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:12px;"></div></div>
 
-<div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Tipo</label><select id="vtype"><option>Camião</option><option>Reboque</option></select></div><div><label>Matrícula</label><input id="plate" placeholder="AA-00-AA"></div></div>
-<div class="row" style="margin-top:14px"><button id="addPlate" class="primary">Adicionar matrícula</button><button type="button" class="secondary" onclick="toggleList('plates')">Ver / Ocultar</button></div><div id="plates" style="display:none; margin-top:12px;"></div></div>
+<div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Matrícula camião</label><input id="dbTruck" placeholder="Ex: 11-AA-22"></div><div><button type="button" class="primary" style="margin-top:22px" id="addTruck">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('trucks')">Ver / Ocultar</button><div id="trucks" style="display:none; margin-top:12px;"></div></div>
 
-<div class="card"><h2>👤 Clientes</h2><div class="grid"><div><label>Nome</label><input id="cname"></div><div><label>NIF (opcional)</label><input id="cnif"></div></div>
-<div class="row" style="margin-top:14px"><button id="addClient" class="primary">Adicionar cliente</button><button type="button" class="secondary" onclick="toggleList('clients')">Ver / Ocultar</button></div><div id="clients" style="display:none; margin-top:12px;"></div></div>
+<div class="card"><h2>📦 Reboques</h2><div class="grid"><div><label>Matrícula reboque</label><input id="dbTrailer" placeholder="Ex: L-123456"></div><div><button type="button" class="primary" style="margin-top:22px" id="addTrailer">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('trailers')">Ver / Ocultar</button><div id="trailers" style="display:none; margin-top:12px;"></div></div>
 
-<div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Nome</label><input id="pname"></div><div><label>Morada/localidade</label><input id="paddr"></div></div>
-<div class="row" style="margin-top:14px"><button id="addPlace" class="primary">Adicionar local</button><button type="button" class="secondary" onclick="toggleList('places')">Ver / Ocultar</button></div><div id="places" style="display:none; margin-top:12px;"></div></div>
+<div class="card"><h2>🏢 Clientes</h2><div class="grid"><div><label>Nome do cliente</label><input id="dbClient"></div><div><button type="button" class="primary" style="margin-top:22px" id="addClient">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('clients')">Ver / Ocultar</button><div id="clients" style="display:none; margin-top:12px;"></div></div>
 
-<div class="card"><h2>💾 Cópia de Segurança</h2><div class="row"><button id="backup" class="primary">Criar Backup</button><button id="restoreBtn" class="secondary">Restaurar</button></div><input id="restore" type="file" accept=".json" style="display:none"><p class="notice" style="margin-top:14px">Guarda um backup (ficheiro JSON) periodicamente no teu telemóvel para não perderes os dados.</p></div>
+<div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Localidade</label><input id="dbLocation"></div><div><button type="button" class="primary" style="margin-top:22px" id="addLocation">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('locations')">Ver / Ocultar</button><div id="locations" style="display:none; margin-top:12px;"></div></div>
+
+<div class="card danger"><h2>⚠️ Gestão de dados</h2><p class="notice">Guarda uma cópia antes de limpar ou se mudares de telemóvel.</p>
+<div class="row" style="margin-top:12px"><button id="backup" class="secondary" style="background:var(--accent-light); color:var(--accent)">💾 Criar Backup</button><label style="background:var(--input-bg); color:var(--text); border:1px solid var(--line); padding:14px; border-radius:14px; cursor:pointer; font-weight:750; text-align:center;">📂 Restaurar Backup<input type="file" id="restore" accept=".json" style="display:none"></label></div>
+<button id="reset" class="danger" style="margin-top:12px">Apagar tudo</button></div>
 </section>
 </main>
 <script>
-const $=id=>document.getElementById(id), VK='dv4_trips',DK='dv4_db';
-let trips=JSON.parse(localStorage.getItem(VK)||'[]');
-let db=JSON.parse(localStorage.getItem(DK)||'{"trucks":[],"trailers":[],"clients":[],"places":[],"routes":[]}');
+let trips=JSON.parse(localStorage.getItem('trips'))||[],db=JSON.parse(localStorage.getItem('db'))||{trucks:[],trailers:[],clients:[],locations:[],routes:[]},editId=null,$=id=>document.getElementById(id);
+if(!db.routes) db.routes=[]; if(!db.trucks) db.trucks=[]; if(!db.trailers) db.trailers=[]; if(!db.clients) db.clients=[]; if(!db.locations) db.locations=[];
 
-db.routes = db.routes || []; db.trucks = db.trucks || []; db.trailers = db.trailers || [];
-db.clients = (db.clients || []).map(c => typeof c === 'string' ? { name: c, nif: '' } : c).filter(c => c && c.name);
-db.places = (db.places || []).map(p => typeof p === 'string' ? { name: p, address: '' } : p).filter(p => p && p.name);
+// MODO ESCURO MANUAL + AUTO
+const themeBtn = $('themeToggle');
+const currentTheme = localStorage.getItem('theme');
+const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-const today=()=>new Date().toISOString().slice(0,10),pad=n=>String(n).padStart(2,'0');$('date').value=today();
-function save(){localStorage.setItem(VK,JSON.stringify(trips));localStorage.setItem(DK,JSON.stringify(db))}
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function money(n){return Number(n||0).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
-function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
-
-window.toggleList = id => { let el = $(id); el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none'; };
-
-function periods(){
-  let now=new Date(), d=now.getDate(), m=now.getMonth()+1, y=now.getFullYear();
-  let sm = d >= 16 ? m : m - 1, sy = y; if(sm < 1){ sm = 12; sy--; }
-  let list=[];
-  for(let i = -6; i <= 6; i++){
-    let mm = sm + i, yy = sy + Math.floor((mm - 1) / 12), mo = (((mm - 1) % 12) + 12) % 12 + 1, em = mo + 1, ey = yy;
-    if(em === 13){ em = 1; ey++; }
-    list.push({ s: iso(new Date(yy, mo - 1, 16)), e: iso(new Date(ey, em - 1, 15)), label: `16/${pad(mo)}/${yy} → 15/${pad(em)}/${ey}` });
-  } return list;
+function applyTheme(theme) {
+  if (theme === 'dark' || (!theme && sysDark.matches)) {
+    document.body.classList.add('dark');
+    themeBtn.innerHTML = '☀️ Claro';
+  } else {
+    document.body.classList.remove('dark');
+    themeBtn.innerHTML = '🌙 Escuro';
+  }
 }
 
-function fillPeriods(){let ps=periods(),cur=ps.findIndex(p=>today()>=p.s&&today()<=p.e);if(cur<0)cur=6;$('homePeriod').innerHTML=ps.map((p,i)=>`<option value="${p.s}|${p.e}" ${i===cur?'selected':''}>${p.label}</option>`).join('');}
-function searchCombo(searchId,selectId,resultId,arr){
-    const inp=$(searchId),res=$(resultId);
-    inp.oninput=()=>{
-        const q=inp.value.trim().toLowerCase();
-        if(!q){res.innerHTML='';$(selectId).value='';return}
-        const found=arr.filter(x=>String(x||'').toLowerCase().includes(q)).slice(0,6);
-        res.innerHTML=found.map(x=>`<button type="button" class="secondary" style="margin-top:6px;text-align:left;padding:12px;font-size:13px;" data-val="${esc(x)}">${esc(x)}</button>`).join('');
-        res.querySelectorAll('button').forEach(b=>b.onclick=()=>{inp.value=b.dataset.val;$(selectId).value=b.dataset.val;res.innerHTML=''})
+applyTheme(currentTheme);
+themeBtn.onclick = () => {
+  const isDark = document.body.classList.contains('dark');
+  const newTheme = isDark ? 'light' : 'dark';
+  localStorage.setItem('theme', newTheme);
+  applyTheme(newTheme);
+};
+sysDark.addEventListener('change', (e) => {
+  if (!localStorage.getItem('theme')) applyTheme();
+});
+
+let navBtns=document.querySelectorAll('nav button'),views=document.querySelectorAll('.view');
+navBtns.forEach(b=>{b.onclick=()=>{navBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');views.forEach(v=>v.classList.remove('active'));$(b.dataset.v).classList.add('active');if(b.dataset.v==='history')renderHistory();if(b.dataset.v==='calendar')renderCalendar();if(b.dataset.v==='home')renderHome();}});
+function show(v){document.querySelector(`[data-v="${v}"]`).click();}
+
+let now=new Date(),pad=n=>n<10?'0'+n:n,str=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),money=v=>Number(v).toLocaleString('pt-PT',{style:'currency',currency:'EUR'});
+if(!$('date').value) $('date').value=str(now);
+$('calMonth').value=now.getFullYear()+'-'+pad(now.getMonth()+1);
+
+function stats(arr){let d=new Set();arr.forEach(t=>d.add(t.date));return{trips:arr.length,days:d.size,value:arr.reduce((s,t)=>s+Number(t.value||0),0)};}
+
+function renderHome(){
+  let s=stats(trips);
+  $('hkTrips').textContent=s.trips;
+  $('hkDays').textContent=s.days;
+}
+
+function loadDropdowns(){
+  let fill=(id,arr)=>$(id).innerHTML='<option value="">Selecione...</option>'+[...arr].sort().map(x=>`<option value="${x}">${x}</option>`).join('');
+  fill('truck',db.trucks);fill('rtruck',db.trucks);
+  fill('trailer',db.trailers);fill('rtrailer',db.trailers);
+  fill('client',db.clients);fill('rclient',db.clients);
+  fill('load',db.locations);fill('rfrom',db.locations);
+  fill('unload',db.locations);fill('rto',db.locations);
+  let rq=$('tripRouteQuick'); rq.innerHTML='<option value="">Selecione para preencher...</option>';
+  db.routes.forEach(r=>{ let o=document.createElement('option'); o.value=r.id; o.textContent=r.name; rq.appendChild(o); });
+}
+
+function setupSmartSelect(inputId, selectId, resultsId, arrName){
+  let inp=$(inputId), sel=$(selectId), res=$(resultsId);
+  inp.onfocus=()=> { res.style.display='block'; renderList(); }
+  inp.onblur=()=> setTimeout(()=>res.style.display='none', 200);
+  inp.oninput=()=> renderList();
+  function renderList() {
+    let v=inp.value.trim().toLowerCase();
+    let matches=db[arrName].filter(x=>x.toLowerCase().includes(v));
+    res.innerHTML='';
+    matches.slice(0, 5).forEach(m=>{
+      let d=document.createElement('div'); d.textContent=m;
+      d.style.padding='10px'; d.style.borderBottom='1px solid var(--line)'; d.style.cursor='pointer';
+      d.onmousedown=e=>{ e.preventDefault(); inp.value=m; res.style.display='none'; }
+      res.appendChild(d);
+    });
+    if(v && !matches.find(x=>x.toLowerCase()===v)){
+      let add=document.createElement('div'); add.textContent=`+ Adicionar "${inp.value}"`; add.style.padding='10px'; add.style.color='var(--accent)'; add.style.fontWeight='700'; add.style.cursor='pointer';
+      add.onmousedown=e=>{ e.preventDefault(); db[arrName].push(inp.value.trim()); saveDB(); loadDropdowns(); res.style.display='none'; }
+      res.appendChild(add);
     }
-}
-
-function setupSearches(){
-    searchCombo('truckSearch','truck','truckResults',db.trucks);
-    searchCombo('trailerSearch','trailer','trailerResults',db.trailers);
-    searchCombo('clientSearch','client','clientResults',db.clients.map(x=>x.name));
-    searchCombo('loadSearch','load','loadResults',db.places.map(x=>x.name));
-    searchCombo('unloadSearch','unload','unloadResults',db.places.map(x=>x.name));
-}
-
-function routeSelects(){
-  fillSelect('rclient',db.clients.map(x=>x.name),'Selecionar cliente'); fillSelect('rfrom',db.places.map(x=>x.name),'Origem'); fillSelect('rto',db.places.map(x=>x.name),'Destino'); fillSelect('rtruck',db.trucks,'Camião (Opcional)'); fillSelect('rtrailer',db.trailers,'Reboque (Opcional)');
-  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><div class="item-head"><span>${esc(r.name)}</span></div><div class="item-sub">${esc(r.client)} · ${esc(r.from)} → ${esc(r.to)} ${r.value?'· '+money(r.value):''}</div><div class="actions" style="margin-top:10px"><button class="secondary" onclick="editRoute(${i})">Editar</button><button class="danger" onclick="delRoute(${i})">Apagar</button></div></div>`).join('')||'<div class="empty">Sem rotas habituais.</div>';
-}
-
-function renderCalendar(){
-  let ym=$('calMonth').value;if(!ym)return;let [y,m]=ym.split('-').map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),start=(first.getDay()+6)%7;
-  let cells=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(n=>`<div style="font-weight:800;text-align:center;font-size:11px;color:var(--muted);margin-bottom:4px">${n}</div>`);
-  for(let i=0;i<start;i++)cells.push('<div></div>');
-  for(let d=1;d<=days;d++){
-    let ds=`${y}-${pad(m)}-${pad(d)}`,a=trips.filter(t=>t.date===ds),has=a.length>0;
-    cells.push(`<button type="button" style="min-height:70px;text-align:center;background:${has?'var(--accent-light)':'#f8fafc'};border:1px solid ${has?'#bfdbfe':'#e2e8f0'};color:${has?'var(--accent)':'inherit'};padding:8px" onclick="openDay('${ds}')"><b style="font-size:16px">${d}</b>${has?`<div style="font-size:10px;font-weight:800;margin-top:4px;color:var(--accent)">${a.length}</div>`:''}</button>`);
   }
-  $('calendarGrid').style.display='grid';$('calendarGrid').style.gridTemplateColumns='repeat(7,1fr)';$('calendarGrid').style.gap='6px';$('calendarGrid').innerHTML=cells.join('');
-}
-window.openDay=d=>{show('history');$('filterDate').value=d;renderHistory()}
-function moveMonth(delta){let [y,m]=$('calMonth').value.split('-').map(Number),d=new Date(y,m-1+delta,1);$('calMonth').value=iso(d).slice(0,7);renderCalendar()}
-function reportDates(){let s=$('reportStart').value,e=$('reportEnd').value;return s&&e?trips.filter(t=>t.date>=s&&t.date<=e):[]}
-function fillSelect(el,arr,placeholder){$(el).innerHTML='<option value="">'+placeholder+'</option>'+arr.map(x=>`<option>${esc(x)}</option>`).join('');}
-
-function refresh(){
-  fillSelect('tripRouteQuick', db.routes.map(x=>x.name), 'Selecionar rota (Opcional)'); fillSelect('truck',db.trucks,'Selecionar camião'); fillSelect('trailer',db.trailers,'Selecionar reboque'); fillSelect('client',db.clients.map(x=>x.name),'Selecionar cliente'); fillSelect('load',db.places.map(x=>x.name),'Selecionar local'); fillSelect('unload',db.places.map(x=>x.name),'Selecionar local');
-  renderDb();routeSelects();setupSearches();renderHome();renderReport();renderHistory();renderCalendar();
 }
 
-function periodData(sel){let [s,e]=sel.split('|');return trips.filter(t=>t.date>=s&&t.date<=e)}
-function stats(arr){let days=new Set(arr.map(t=>t.date));return{trips:arr.length,days:days.size,value:arr.reduce((a,t)=>a+ +t.value,0),avg:days.size?arr.length/days.size:0}}
-function renderHome(){let a=periodData($('homePeriod').value),s=stats(a);$('periodLabel').value=$('homePeriod').selectedOptions[0]?.text||'';$('hkTrips').textContent=s.trips;$('hkDays').textContent=s.days;$('hkValue').textContent=money(s.value)}
-function renderReport(){
-  let a=reportDates(),s=stats(a);$('rTrips').textContent=s.trips;$('rDays').textContent=s.days;$('rAvg').textContent=s.avg.toLocaleString('pt-PT',{maximumFractionDigits:1});$('rValue').textContent=money(s.value);
-  $('reportList').innerHTML=a.slice().reverse().map(t=>`<div class="trip"><div class="trip-title"><span>${esc(t.load)} ➔ ${esc(t.unload)}</span><span style="color:var(--accent)">${money(t.value)}</span></div><div class="trip-tags"><span class="tag">📅 ${esc(t.date)}</span><span class="tag">🚛 ${esc(t.truck)}${t.trailer?' / '+esc(t.trailer):''}</span><span class="tag">👤 ${esc(t.client)}</span></div></div>`).join('')||'<div class="empty">Sem viagens neste período.</div>';
-}
+setupSmartSelect('truckSearch', 'truck', 'truckResults', 'trucks');
+setupSmartSelect('trailerSearch', 'trailer', 'trailerResults', 'trailers');
+setupSmartSelect('clientSearch', 'client', 'clientResults', 'clients');
+setupSmartSelect('loadSearch', 'load', 'loadResults', 'locations');
+setupSmartSelect('unloadSearch', 'unload', 'unloadResults', 'locations');
 
-function renderDb(){
-  $('plates').innerHTML=[...db.trucks.map(x=>['Camião',x]),...db.trailers.map(x=>['Reboque',x])].map(([a,x])=>`<div class="item"><div class="item-head"><span>${esc(x)}</span><span class="tag">${a}</span></div><div class="actions"><button class="secondary" onclick="editPlate('${a}','${esc(x)}')">Editar</button><button class="danger" onclick="delPlate('${a}','${esc(x)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem matrículas.</div>';
-  $('clients').innerHTML=db.clients.map(x=>`<div class="item"><div class="item-head"><span>${esc(x.name)}</span></div>${x.nif?`<div class="item-sub">NIF: ${esc(x.nif)}</div>`:''}<div class="actions" style="margin-top:10px"><button class="secondary" onclick="editClient('${esc(x.name)}')">Editar</button><button class="danger" onclick="delClient('${esc(x.name)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem clientes.</div>';
-  $('places').innerHTML=db.places.map(x=>`<div class="item"><div class="item-head"><span>${esc(x.name)}</span></div>${x.address?`<div class="item-sub">${esc(x.address)}</div>`:''}<div class="actions" style="margin-top:10px"><button class="secondary" onclick="editPlace('${esc(x.name)}')">Editar</button><button class="danger" onclick="delPlace('${esc(x.name)}')">Apagar</button></div></div>`).join('')||'<div class="empty">Sem locais.</div>';
-}
+function saveDB(){localStorage.setItem('db',JSON.stringify(db));loadDropdowns();renderDB();}
+function toggleList(id){ $(id).style.display=$(id).style.display==='none'?'block':'none'; }
 
-window.delTrip=id=>{if(confirm('Apagar viagem?')){trips=trips.filter(x=>x.id!==id);save();refresh()}}
-window.delPlate=(type,p)=>{let a=type==='Camião'?db.trucks:db.trailers;a.splice(a.indexOf(p),1);save();refresh()}
-window.delClient=n=>{db.clients=db.clients.filter(x=>x.name!==n);save();refresh()}
-window.delPlace=n=>{db.places=db.places.filter(x=>x.name!==n);save();refresh()}
-window.delRoute=i=>{db.routes.splice(i,1);save();routeSelects()}
+['Truck','Trailer','Client','Location'].forEach(t=>{
+  $('add'+t).onclick=()=>{let v=$('db'+t).value.trim();if(v&&!db[t.toLowerCase()+'s'].includes(v)){db[t.toLowerCase()+'s'].push(v);$('db'+t).value='';saveDB();}};
+});
 
-window.editTrip = id => {
-    let t = trips.find(x => x.id === id); if(!t) return;
-    $('date').value = t.date; $('number').value = t.number || '';
-    $('truckSearch').value = t.truck || ''; $('truck').value = t.truck || ''; $('trailerSearch').value = t.trailer || ''; $('trailer').value = t.trailer || '';
-    $('clientSearch').value = t.client || ''; $('client').value = t.client || ''; $('loadSearch').value = t.load || ''; $('load').value = t.load || ''; $('unloadSearch').value = t.unload || ''; $('unload').value = t.unload || '';
-    $('value').value = t.value || ''; $('notes').value = t.notes || '';
-    let btn = $('mainSubmitBtn'); btn.textContent = 'GUARDAR ALTERAÇÕES'; btn.dataset.editId = id; show('trip'); window.scrollTo(0, 0);
+$('addRoute').onclick=()=>{
+  let n=$('rname').value.trim(); if(!n) return alert('Dê um nome à rota!');
+  db.routes.push({id:Date.now(), name:n, client:$('rclient').value, truck:$('rtruck').value, trailer:$('rtrailer').value, load:$('rfrom').value, unload:$('rto').value, value:$('rvalue').value||0});
+  ['rname','rclient','rtruck','rtrailer','rfrom','rto','rvalue'].forEach(i=>$(i).value=''); saveDB();
 };
 
-function renderHistory(){
-    let fd=$('filterDate').value,q=$('search').value.trim().toLowerCase();
-    let a=trips.filter(t=>(!fd||t.date===fd)&&(!q||[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.notes].join(' ').toLowerCase().includes(q)));
-    $('historyList').innerHTML=a.slice().reverse().map(t=>`
-    <div class="trip">
-        <div class="trip-title"><span>${esc(t.load)} ➔ ${esc(t.unload)}</span><span style="color:var(--accent)">${money(t.value)}</span></div>
-        <div class="trip-tags"><span class="tag">📅 ${esc(t.date)}</span><span class="tag">🚛 ${esc(t.truck)}${t.trailer?' / '+esc(t.trailer):''}</span><span class="tag">👤 ${esc(t.client)}</span></div>
-        <div class="actions"><button class="secondary" onclick="editTrip('${esc(t.id)}')">Editar</button><button class="danger" onclick="delTrip('${esc(t.id)}')">Apagar</button></div>
-    </div>`).join('')||'<div class="empty">Sem viagens registadas.</div>';
-}
-
-$('tripRouteQuick').onchange = e => {
-  let n = e.target.value; if(!n) return; let r = db.routes.find(x => x.name === n);
-  if(r) {
-    if(r.client){ $('clientSearch').value=r.client; $('client').value=r.client; }
-    if(r.from){ $('loadSearch').value=r.from; $('load').value=r.from; }
-    if(r.to){ $('unloadSearch').value=r.to; $('unload').value=r.to; }
-    if(r.truck){ $('truckSearch').value=r.truck; $('truck').value=r.truck; }
-    if(r.trailer){ $('trailerSearch').value=r.trailer; $('trailer').value=r.trailer; }
-    if(r.value){ $('value').value=r.value; }
+$('tripRouteQuick').onchange=e=>{
+  let r=db.routes.find(x=>x.id==e.target.value);
+  if(r){
+    $('clientSearch').value=r.client||''; $('truckSearch').value=r.truck||''; $('trailerSearch').value=r.trailer||'';
+    $('loadSearch').value=r.load||''; $('unloadSearch').value=r.unload||''; $('value').value=r.value||'';
   }
 };
+
+function renderDB(){
+  ['trucks','trailers','clients','locations'].forEach(t=>{
+    $(t).innerHTML=db[t].map((x,i)=>`<div class="item"><div class="item-head">${x} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.${t}.splice(${i},1);saveDB()">Apagar</button></div></div>`).join('');
+  });
+  $('routes').innerHTML=db.routes.map((r,i)=>`<div class="item"><div class="item-head">${r.name} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.routes.splice(${i},1);saveDB()">Apagar</button></div><div class="item-sub">${r.load} → ${r.unload} | ${r.client}</div></div>`).join('');
+}
 
 $('form').onsubmit=e=>{
   e.preventDefault();
-  let btn = $('mainSubmitBtn'), editId = btn.dataset.editId;
-  let t={
-    id: editId || Date.now().toString(), date: $('date').value, number: $('number').value,
-    truck: $('truckSearch').value.trim().toUpperCase(), trailer: $('trailerSearch').value.trim().toUpperCase(),
-    client: $('clientSearch').value.trim(), load: $('loadSearch').value.trim(), unload: $('unloadSearch').value.trim(),
-    value: $('value').value, notes: $('notes').value
-  };
-  
-  if(!t.truck || !t.client || !t.load || !t.unload) return alert('Preencha os campos obrigatórios: camião, cliente, carga e descarga.');
-  if(t.truck && !db.trucks.includes(t.truck)) db.trucks.push(t.truck);
-  if(t.trailer && !db.trailers.includes(t.trailer)) db.trailers.push(t.trailer);
-  if(t.client && !db.clients.some(x => x && x.name && x.name.toLowerCase() === t.client.toLowerCase())) db.clients.push({ name: t.client, nif: '' });
-  if(t.load && !db.places.some(x => x && x.name && x.name.toLowerCase() === t.load.toLowerCase())) db.places.push({ name: t.load, address: '' });
-  if(t.unload && !db.places.some(x => x && x.name && x.name.toLowerCase() === t.unload.toLowerCase())) db.places.push({ name: t.unload, address: '' });
+  let t={id:editId||Date.now(),date:$('date').value,number:$('number').value.trim(),truck:$('truckSearch').value,trailer:$('trailerSearch').value,client:$('clientSearch').value,load:$('loadSearch').value,unload:$('unloadSearch').value,value:$('value').value||0,notes:$('notes').value.trim()};
+  if(editId) trips=trips.map(x=>x.id===editId?t:x); else trips.push(t);
+  localStorage.setItem('trips',JSON.stringify(trips));$('clear').click();show('home');
+};
 
-  if(editId){ let idx = trips.findIndex(x=>x.id===editId); if(idx>-1) trips[idx] = t; btn.textContent = 'GUARDAR VIAGEM'; delete btn.dataset.editId; } 
-  else trips.push(t);
-  
-  save(); let d=t.date; $('form').reset(); $('date').value=d; $('tripRouteQuick').value='';
-  refresh(); show('history');
+$('clear').onclick=()=>{editId=null;['number','truckSearch','trailerSearch','clientSearch','loadSearch','unloadSearch','value','notes','tripRouteQuick'].forEach(id=>$(id).value='');$('date').value=str(now);$('mainSubmitBtn').textContent='GUARDAR VIAGEM';};
+
+function renderHistory(){
+  let f=$('filterDate').value,s=$('search').value.toLowerCase(),arr=trips;
+  if(f)arr=arr.filter(t=>t.date===f);
+  if(s)arr=arr.filter(t=>t.client.toLowerCase().includes(s)||t.load.toLowerCase().includes(s)||t.unload.toLowerCase().includes(s)||t.truck.toLowerCase().includes(s));
+  arr.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  $('historyList').innerHTML=arr.length?arr.map(t=>`
+    <div class="trip">
+      <div class="trip-title"><span>#${t.number||'--'} | ${t.date.split('-').reverse().join('/')}</span> <span style="color:var(--accent); font-size:16px">${money(t.value)}</span></div>
+      <div class="trip-tags"><span class="tag">🚚 ${t.truck}</span>${t.trailer?`<span class="tag">📦 ${t.trailer}</span>`:''}<span class="tag">🏢 ${t.client}</span></div>
+      <div style="font-weight:700; font-size:14px; margin:4px 0">${t.load||'?'} ➔ ${t.unload||'?'}</div>
+      ${t.notes?`<div style="font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;">📝 ${t.notes}</div>`:''}
+      <div class="actions"><button class="secondary" onclick="edit(${t.id})">Editar</button><button class="danger" onclick="del(${t.id})">Apagar</button></div>
+    </div>`).join(''):'<div class="empty">Nenhuma viagem encontrada.</div>';
 }
 
-$('clear').onclick=()=>{ let d=$('date').value; $('form').reset(); $('date').value=d; $('tripRouteQuick').value=''; $('mainSubmitBtn').textContent = 'GUARDAR VIAGEM'; delete $('mainSubmitBtn').dataset.editId; }
+function edit(id){let t=trips.find(x=>x.id===id);editId=id;['date','number','value','notes'].forEach(k=>$(k).value=t[k]);$('truckSearch').value=t.truck;$('trailerSearch').value=t.trailer;$('clientSearch').value=t.client;$('loadSearch').value=t.load;$('unloadSearch').value=t.unload;$('mainSubmitBtn').textContent='ATUALIZAR VIAGEM';show('trip');}
+function del(id){if(confirm('Apagar esta viagem?')){trips=trips.filter(t=>t.id!==id);localStorage.setItem('trips',JSON.stringify(trips));renderHistory();}}
 
-window.editPlate = (type, oldPlate) => { $('vtype').value = type; $('plate').value = oldPlate; $('addPlate').textContent = 'Guardar'; $('addPlate').dataset.old = oldPlate; $('plate').focus(); window.scrollTo(0, 0); };
-window.editClient = (name) => { let c = db.clients.find(x => x.name === name); if(!c) return; $('cname').value = c.name; $('cnif').value = c.nif || ''; $('addClient').textContent = 'Guardar'; $('addClient').dataset.old = name; $('cname').focus(); window.scrollTo(0, 0); };
-window.editPlace = (name) => { let p = db.places.find(x => x.name === name); if(!p) return; $('pname').value = p.name; $('paddr').value = p.address || ''; $('addPlace').textContent = 'Guardar'; $('addPlace').dataset.old = name; $('pname').focus(); };
-window.editRoute = (i) => { let r = db.routes[i]; if(!r) return; $('rname').value = r.name; $('rclient').value = r.client; $('rfrom').value = r.from; $('rto').value = r.to; $('rtruck').value = r.truck || ''; $('rtrailer').value = r.trailer || ''; $('rvalue').value = r.value || ''; $('addRoute').textContent = 'Guardar'; $('addRoute').dataset.idx = i; $('rname').focus(); };
+$('filterDate').onchange=renderHistory; $('search').oninput=renderHistory;
+$('showAll').onclick=()=>{f=$('filterDate').value='';s=$('search').value='';renderHistory();};
 
-$('addPlate').onclick=()=>{ let p=$('plate').value.trim().toUpperCase(),t=$('vtype').value; if(!p)return; let old=$('addPlate').dataset.old,a=t==='Camião'?db.trucks:db.trailers; if(old){ let oldArr=db.trucks.includes(old)?db.trucks:db.trailers; let idx=oldArr.indexOf(old); if(idx>-1) oldArr.splice(idx,1); } if(!a.includes(p))a.push(p); $('plate').value=''; $('addPlate').textContent='Adicionar matrícula'; delete $('addPlate').dataset.old; save();refresh(); };
-$('addClient').onclick=()=>{ let n=$('cname').value.trim(),nif=$('cnif').value.trim(); if(!n)return; let old=$('addClient').dataset.old; if(old){ let c=db.clients.find(x=>x.name===old); if(c){ c.name=n; c.nif=nif; } }else{ if(!db.clients.some(x=>x.name.toLowerCase()===n.toLowerCase()))db.clients.push({name:n,nif}); } $('cname').value='';$('cnif').value=''; $('addClient').textContent='Adicionar cliente'; delete $('addClient').dataset.old; save();refresh(); };
-$('addPlace').onclick=()=>{ let n=$('pname').value.trim(),a=$('paddr').value.trim(); if(!n)return; let old=$('addPlace').dataset.old; if(old){ let p=db.places.find(x=>x.name===old); if(p){ p.name=n; p.address=a; } }else{ if(!db.places.some(x=>x.name.toLowerCase()===n.toLowerCase()))db.places.push({name:n,address:a}); } $('pname').value='';$('paddr').value=''; $('addPlace').textContent='Adicionar local'; delete $('addPlace').dataset.old; save();refresh(); };
-$('addRoute').onclick=()=>{ let name=$('rname').value.trim(),client=$('rclient').value,from=$('rfrom').value,to=$('rto').value,truck=$('rtruck').value,trailer=$('rtrailer').value,value=$('rvalue').value; if(!name||!from||!to)return alert('Preenche nome, origem e destino.'); let idx=$('addRoute').dataset.idx; if(idx!==undefined) db.routes[idx]={name,client,from,to,truck,trailer,value}; else db.routes.push({name,client,from,to,truck,trailer,value}); $('rname').value='';$('rtruck').value='';$('rtrailer').value='';$('rvalue').value=''; $('addRoute').textContent='Adicionar rota'; delete $('addRoute').dataset.idx; save();refresh(); };
+let ds=$('reportStart'),de=$('reportEnd');
+[ds,de].forEach(e=>e.onchange=()=>{
+  if(!ds.value||!de.value)return;
+  let arr=trips.filter(t=>t.date>=ds.value&&t.date<=de.value).sort((a,b)=>b.date.localeCompare(a.date)),s=stats(arr);
+  $('rTrips').textContent=s.trips;$('rDays').textContent=s.days;$('rAvg').textContent=s.days?(s.trips/s.days).toFixed(1):0;$('rValue').textContent=money(s.value);
+  $('reportList').innerHTML=arr.length?arr.map(t=>`<div class="item"><div class="item-head">${t.date.split('-').reverse().join('/')} <span style="color:var(--accent)">${money(t.value)}</span></div><div class="item-sub">${t.load} → ${t.unload}</div></div>`).join(''):'<div class="empty">Nenhum registo.</div>';
+});
 
-function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===id)); window.scrollTo(0,0); }
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
-$('homePeriod').onchange=renderHome;$('reportStart').onchange=renderReport;$('reportEnd').onchange=renderReport;$('prevMonth').onclick=()=>moveMonth(-1);$('nextMonth').onclick=()=>moveMonth(1);$('calMonth').onchange=renderCalendar;$('filterDate').onchange=renderHistory;$('search').oninput=renderHistory;$('showAll').onclick=()=>{$('filterDate').value='';$('search').value='';renderHistory()}
+function renderCalendar(){
+  let c=$('calMonth').value.split('-'), y=parseInt(c[0]), m=parseInt(c[1])-1;
+  let d1=new Date(y,m,1), d2=new Date(y,m+1,0), sDay=d1.getDay()===0?6:d1.getDay()-1;
+  let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);margin-bottom:8px"><div>2ª</div><div>3ª</div><div>4ª</div><div>5ª</div><div>6ª</div><div>Sá</div><div>Do</div></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
+  for(let i=0;i<sDay;i++) html+=`<div style="padding:10px;background:var(--input-bg);border-radius:8px"></div>`;
+  for(let i=1;i<=d2.getDate();i++){
+    let f=y+'-'+pad(m+1)+'-'+pad(i), arr=trips.filter(t=>t.date===f);
+    html+=`<div style="padding:10px 4px; border-radius:12px; border:1.5px solid ${arr.length?'var(--accent)':'var(--line)'}; background:${arr.length?'var(--accent-light)':'var(--card)'}; text-align:center; cursor:pointer;" onclick="gotoDay('${f}')">
+      <div style="font-weight:800; font-size:14px; color:${arr.length?'var(--accent)':'var(--text)'}">${i}</div>
+      ${arr.length?`<div style="font-size:10px; font-weight:700; color:var(--accent); margin-top:2px">${arr.length}v</div>`:''}
+    </div>`;
+  }
+  $('calendarGrid').innerHTML=html+'</div>';
+}
+function gotoDay(d){ $('filterDate').value=d; show('history'); }
+$('prevMonth').onclick=()=>{let c=$('calMonth').value.split('-');$('calMonth').value=c[0]+'-'+pad(parseInt(c[1])-1);if(c[1]=='01')$('calMonth').value=(parseInt(c[0])-1)+'-12';renderCalendar();};
+$('nextMonth').onclick=()=>{let c=$('calMonth').value.split('-');$('calMonth').value=c[0]+'-'+pad(parseInt(c[1])+1);if(c[1]=='12')$('calMonth').value=(parseInt(c[0])+1)+'-01';renderCalendar();};
 
-$('export').onclick=()=>{let h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Valor (€)','Observações'],rows=trips.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='historico_viagens.csv';a.click()}
-$('exportReport').onclick=()=>{let a=reportDates();if(!a.length)return alert('Sem viagens neste período.');let s=$('reportStart').value,e=$('reportEnd').value,h=['Data','Nº viagem','Camião','Reboque','Cliente','Carga','Descarga','Valor (€)','Observações'],rows=a.map(t=>[t.date,t.number,t.truck,t.trailer,t.client,t.load,t.unload,t.value,t.notes]),csv=[h,...rows].map(r=>r.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),lk=document.createElement('a');lk.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));lk.download=`relatorio_${s}_a_${e}.csv`;lk.click()}
+let exp=n=>{
+  let csv='Data,Viagem,Camião,Reboque,Cliente,Carga,Descarga,Valor,Obs\n'+trips.map(t=>`${t.date},${t.number||''},${t.truck||''},${t.trailer||''},${t.client||''},${t.load||''},${t.unload||''},${t.value||0},${(t.notes||'').replace(/,/g,';')}`).join('\n');
+  let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=n;a.click();
+};
+$('export').onclick=()=>exp('diario_completo.csv');
+$('exportReport').onclick=()=>exp(`relatorio_${ds.value}_a_${de.value}.csv`);
 
-$('backup').onclick=()=>{let data=JSON.stringify({version:6.0,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()}
-$('restoreBtn').onclick=()=>$('restore').click();
+$('backup').onclick=()=>{let data=JSON.stringify({version:6.5,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()};
+
 $('restore').onchange=e=>{
-  let f=e.target.files[0]; if(!f)return; let r=new FileReader();
-  r.onload=()=>{ try{ let x=JSON.parse(r.result); if(!x.trips||!x.db)throw 0; trips=x.trips; db=x.db; db.routes=db.routes||[]; db.trucks=db.trucks||[]; db.trailers=db.trailers||[]; trips.forEach(t => { delete t.kmStart; delete t.kmEnd; }); save(); refresh(); alert('Backup restaurado com sucesso.'); }catch{ alert('Ficheiro inválido.'); } };
-  r.readAsText(f);
-}
+  let file=e.target.files[0]; if(!file) return; let r=new FileReader();
+  r.onload=x=>{
+    try {
+      let d=JSON.parse(x.target.result.trim());
+      if(Array.isArray(d)) trips=d; else if(d && typeof d==='object') { trips=d.trips||trips; if(d.db) db=d.db; }
+      saveDB(); localStorage.setItem('trips',JSON.stringify(trips)); alert('✅ Restaurado com sucesso!'); location.reload();
+    } catch(err) { alert('❌ Erro no ficheiro.'); }
+  };
+  r.readAsText(file);
+};
+$('reset').onclick=()=>{if(confirm('⚠️ APAGAR TUDO? Sem volta!')){localStorage.clear();location.reload();}};
 
-document.addEventListener('click', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') document.querySelectorAll('[id$="Results"]').forEach(el => el.innerHTML = ''); });
-fillPeriods();let cp=periods().find(p=>today()>=p.s&&today()<=p.e)||periods()[6];$('reportStart').value=cp.s;$('reportEnd').value=cp.e;$('calMonth').value=today().slice(0,7);refresh();
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-</script>
-</body></html>
+loadDropdowns(); renderDB(); renderHome(); renderCalendar();
+let t=new Date(); ds.value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-01'; de.value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+new Date(t.getFullYear(),t.getMonth()+1,0).getDate(); ds.onchange();
+</script></body></html>
