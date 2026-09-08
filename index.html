@@ -5,60 +5,51 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v6.2</title>
+<title>Diário Pro v6.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
   --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
   --line: #e2e8f0; --accent: #2563eb; --accent-light: #eff6ff;
-  --danger: #ef4444; --nav-bg: #ffffff; --input-bg: #f8fafc;
+  --danger: #ef4444; --nav-bg: #ffffff;
 }
-body.dark {
-  --bg: #0b1329; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
-  --line: #334155; --accent: #3b82f6; --accent-light: rgba(59, 130, 246, 0.15);
-  --danger: #f87171; --nav-bg: #1e293b; --input-bg: #0f172a;
-}
-
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); transition: background 0.3s, color 0.3s; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); }
 
 header { background: #0b1220; color: white; padding: 18px 16px 35px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; position: relative; z-index: 1; }
 header .top { max-width: 900px; margin: auto; display: flex; justify-content: space-between; align-items: center; }
 h1 { font-size: 20px; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
 h1 img { height: 32px; width: 32px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-.header-right { display: flex; align-items: center; gap: 10px; }
-.theme-btn { background: rgba(255,255,255,0.15); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; font-weight: 700; width: auto; }
-.theme-btn:active { transform: scale(0.95); }
 .badge { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; }
 
-nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); transition: background 0.3s; }
+nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); }
 nav button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; background: transparent; color: var(--muted); border: none; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
 nav button.active { background: var(--accent-light); color: var(--accent); }
 .ic { font-size: 18px; }
 
 @media (max-width: 650px) {
-  nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 10px 8px calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); gap: 0; }
+  nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 10px 8px calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 25px rgba(0,0,0,0.06); gap: 0; }
   nav button { flex-direction: column; gap: 4px; padding: 8px 4px; font-size: 10px; }
   .ic { font-size: 22px; margin-bottom: 2px; }
   main { margin-bottom: 90px; }
 }
 
 main { max-width: 900px; margin: auto; padding: 24px 16px; }
-.card { background: var(--card); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--line); transition: background 0.3s, border-color 0.3s; }
+.card { background: var(--card); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(226,232,240,0.6); }
 h2 { font-size: 18px; margin: 0 0 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .full { grid-column: 1 / -1; }
 label { font-size: 12px; font-weight: 800; display: block; margin-bottom: 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-input, select, textarea { font: inherit; border-radius: 14px; padding: 14px; border: 1.5px solid var(--line); background: var(--input-bg); color: var(--text); width: 100%; transition: 0.2s; font-weight: 600; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); background: var(--card); }
+input, select, textarea { font: inherit; border-radius: 14px; padding: 14px; border: 1.5px solid var(--line); background: #f8fafc; color: var(--text); width: 100%; transition: 0.2s; font-weight: 600; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); background: #fff; }
 textarea { min-height: 90px; }
 
 button { font: inherit; border: none; cursor: pointer; transition: 0.2s; font-weight: 750; border-radius: 14px; padding: 14px; width: 100%; }
 button.primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
 button.primary:active { transform: scale(0.97); }
-button.secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--line); }
-button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+button.secondary { background: #f1f5f9; color: var(--text); }
+button.danger { background: #fef2f2; color: var(--danger); }
 .row { display: flex; gap: 10px; } .row > * { flex: 1; }
 
 .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -71,19 +62,19 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .hero input, .hero select { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white; }
 .hero input:focus, .hero select:focus { background: rgba(255,255,255,0.15); border-color: var(--accent); }
 
-.trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: var(--card); transition: 0.2s; display: flex; flex-direction: column; gap: 10px; }
-.trip:active { background: var(--input-bg); }
+.trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: #fff; transition: box-shadow 0.2s; display: flex; flex-direction: column; gap: 10px; }
+.trip:active { background: #f8fafc; }
 .trip-title { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .trip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { background: var(--input-bg); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); }
+.tag { background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569; }
 .actions { display: flex; gap: 8px; margin-top: 4px; }
 .actions button { padding: 10px; font-size: 12px; }
 
-.item { padding: 14px; border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: var(--card); }
+.item { padding: 14px; border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: #fff; }
 .item-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 15px; margin-bottom: 4px; }
 .item-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
 
-.notice { font-size: 13px; color: var(--muted); background: var(--input-bg); padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
+.notice { font-size: 13px; color: #475569; background: #f8fafc; padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
 .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-weight: 700; }
 
 .view { display: none; animation: fadeIn 0.3s ease-out; }
@@ -96,10 +87,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 <body>
 <header><div class="top">
   <h1><img src="45700.jpg" alt="Logo"> Diário Pro</h1>
-  <div class="header-right">
-    <button class="theme-btn" id="themeBtn">🌙</button>
-    <span class="badge">V6.2</span>
-  </div>
+  <span class="badge">V6.1 Modern</span>
 </div></header>
 
 <nav>
@@ -130,9 +118,9 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </section>
 
 <section id="trip" class="view"><div class="card"><h2>➕ Registar viagem</h2><form id="form" class="grid">
-<div class="full" style="background:var(--accent-light); padding:16px; border:1px solid var(--accent); border-radius:16px; margin-bottom:8px;">
+<div class="full" style="background:#eff6ff; padding:16px; border:1px solid #bfdbfe; border-radius:16px; margin-bottom:8px;">
   <label style="color:var(--accent)">⭐ Rota Habitual (Preenchimento rápido)</label>
-  <select id="tripRouteQuick" style="margin-top:8px; font-weight: 700;"></select>
+  <select id="tripRouteQuick" style="margin-top:8px; border-color:#93c5fd; font-weight: 700;"></select>
 </div>
 <div><label>Data</label><input id="date" type="date" required></div><div><label>N.º viagem</label><input id="number"></div>
 <div><label>Camião</label><input id="truckSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="truck" style="display:none"></select><div id="truckResults"></div></div><div><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou pesquisar" autocomplete="off"><select id="trailer" style="display:none"></select><div id="trailerResults"></div></div>
@@ -144,12 +132,12 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </form></div></section>
 
 <section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Filtrar Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
-<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:var(--accent-light); color:var(--accent);">Exportar CSV</button></div><div id="historyList"></div></div></section>
+<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:#e0f2fe; color:#0369a1;">Exportar CSV</button></div><div id="historyList"></div></div></section>
 
 <section id="calendar" class="view"><div class="card"><h2>📅 Calendário</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:16px"></div></div></section>
 
 <section id="report" class="view"><div class="card"><h2>📊 Relatórios</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
-<div style="margin-top:14px"><button id="exportReport" class="secondary" style="background:var(--accent-light); color:var(--accent);">⬇️ Exportar Excel (CSV) do período</button></div>
+<div style="margin-top:14px"><button id="exportReport" class="secondary" style="background:#e0f2fe; color:#0369a1;">⬇️ Exportar Excel (CSV) do período</button></div>
 <div class="kpis" style="margin-top:16px"><div class="kpi"><b id="rTrips">0</b><span>Viagens</span></div><div class="kpi"><b id="rDays">0</b><span>Dias</span></div><div class="kpi"><b id="rAvg">0</b><span>Viagens/Dia</span></div></div><div style="margin-top:16px; text-align: center;"><b id="rValue" style="font-size:28px; color:var(--accent);">0,00 €</b> <div class="muted" style="font-weight: 700; margin-top:4px;">FATURAÇÃO TOTAL</div></div></div>
 <div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
 
@@ -175,7 +163,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 <button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('locations')">Ver / Ocultar</button><div id="locations" style="display:none; margin-top:12px;"></div></div>
 
 <div class="card danger"><h2>⚠️ Gestão de dados</h2><p class="notice">Guarda uma cópia antes de limpar ou se mudares de telemóvel.</p>
-<div class="row" style="margin-top:12px"><button id="backup" class="secondary" style="background:var(--accent-light); color:var(--accent)">💾 Criar Backup</button><label style="background:var(--input-bg); color:var(--text); border:1px solid var(--line); padding:14px; border-radius:14px; cursor:pointer; font-weight:750; text-align:center;">📂 Restaurar Backup<input type="file" id="restore" accept=".json" style="display:none"></label></div>
+<div class="row" style="margin-top:12px"><button id="backup" class="secondary" style="background:#f0fdf4; color:#166534">💾 Criar Backup</button><label style="background:#fff7ed; color:#c2410c; padding:14px; border-radius:14px; cursor:pointer; font-weight:750; text-align:center;">📂 Restaurar Backup<input type="file" id="restore" accept=".json" style="display:none"></label></div>
 <button id="reset" class="danger" style="margin-top:12px">Apagar tudo</button></div>
 </section>
 </main>
@@ -183,14 +171,6 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 let trips=JSON.parse(localStorage.getItem('trips'))||[],db=JSON.parse(localStorage.getItem('db'))||{trucks:[],trailers:[],clients:[],locations:[],routes:[]},editId=null,$=id=>document.getElementById(id);
 if(!db.routes) db.routes=[];
 if(!db.trucks) db.trucks=[]; if(!db.trailers) db.trailers=[]; if(!db.clients) db.clients=[]; if(!db.locations) db.locations=[];
-
-let darkMode=localStorage.getItem('darkMode')==='true';
-function applyTheme(){
-  if(darkMode){ document.body.classList.add('dark'); $('themeBtn').textContent='☀️'; }
-  else { document.body.classList.remove('dark'); $('themeBtn').textContent='🌙'; }
-}
-$('themeBtn').onclick=()=>{ darkMode=!darkMode; localStorage.setItem('darkMode',darkMode); applyTheme(); };
-applyTheme();
 
 let navBtns=document.querySelectorAll('nav button'),views=document.querySelectorAll('.view');
 navBtns.forEach(b=>{b.onclick=()=>{navBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');views.forEach(v=>v.classList.remove('active'));$(b.dataset.v).classList.add('active');if(b.dataset.v==='history')renderHistory();if(b.dataset.v==='calendar')renderCalendar();if(b.dataset.v==='home')renderHome();}});
@@ -316,7 +296,7 @@ function renderHistory(){
       <div class="trip-title"><span>#${t.number||'--'} | ${t.date.split('-').reverse().join('/')}</span> <span style="color:var(--accent); font-size:16px">${money(t.value)}</span></div>
       <div class="trip-tags"><span class="tag">🚚 ${t.truck}</span>${t.trailer?`<span class="tag">📦 ${t.trailer}</span>`:''}<span class="tag">🏢 ${t.client}</span></div>
       <div style="font-weight:700; font-size:14px; margin:4px 0">${t.load||'?'} ➔ ${t.unload||'?'}</div>
-      ${t.notes?`<div style="font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;">📝 ${t.notes}</div>`:''}
+      ${t.notes?`<div style="font-size:12px; color:var(--muted); background:#f8fafc; padding:8px; border-radius:8px;">📝 ${t.notes}</div>`:''}
       <div class="actions"><button class="secondary" onclick="edit(${t.id})">Editar</button><button class="danger" onclick="del(${t.id})">Apagar</button></div>
     </div>`).join(''):'<div class="empty">Nenhuma viagem encontrada.</div>';
 }
@@ -339,10 +319,10 @@ function renderCalendar(){
   let c=$('calMonth').value.split('-'), y=parseInt(c[0]), m=parseInt(c[1])-1;
   let d1=new Date(y,m,1), d2=new Date(y,m+1,0), sDay=d1.getDay()===0?6:d1.getDay()-1;
   let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);margin-bottom:8px"><div>2ª</div><div>3ª</div><div>4ª</div><div>5ª</div><div>6ª</div><div>Sá</div><div>Do</div></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
-  for(let i=0;i<sDay;i++) html+=`<div style="padding:10px;background:var(--input-bg);border-radius:8px"></div>`;
+  for(let i=0;i<sDay;i++) html+=`<div style="padding:10px;background:#f8fafc;border-radius:8px"></div>`;
   for(let i=1;i<=d2.getDate();i++){
     let f=y+'-'+pad(m+1)+'-'+pad(i), arr=trips.filter(t=>t.date===f);
-    html+=`<div style="padding:10px 4px; border-radius:12px; border:1.5px solid ${arr.length?'var(--accent)':'var(--line)'}; background:${arr.length?'var(--accent-light)':'var(--card)'}; text-align:center; cursor:pointer;" onclick="gotoDay('${f}')">
+    html+=`<div style="padding:10px 4px; border-radius:12px; border:1.5px solid ${arr.length?'var(--accent)':'#e2e8f0'}; background:${arr.length?'var(--accent-light)':'#fff'}; text-align:center; cursor:pointer;" onclick="gotoDay('${f}')">
       <div style="font-weight:800; font-size:14px; color:${arr.length?'var(--accent)':'var(--text)'}">${i}</div>
       ${arr.length?`<div style="font-size:10px; font-weight:700; color:var(--accent); margin-top:2px">${arr.length}v</div>`:''}
     </div>`;
@@ -362,7 +342,7 @@ let exp=n=>{
 $('export').onclick=()=>exp('diario_completo.csv');
 $('exportReport').onclick=()=>exp(`relatorio_${ds.value}_a_${de.value}.csv`);
 
-$('backup').onclick=()=>{let data=JSON.stringify({version:6.2,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()};
+$('backup').onclick=()=>{let data=JSON.stringify({version:6.1,trips,db},null,2),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='backup_diario.json';a.click()};
 $('restore').onchange=e=>{
   let r=new FileReader(); r.onload=x=>{
     try { let d=JSON.parse(x.target.result); trips=d.trips||[]; db=d.db||{trucks:[],trailers:[],clients:[],locations:[],routes:[]}; saveDB(); localStorage.setItem('trips',JSON.stringify(trips)); alert('✅ Restaurado com sucesso!'); location.reload(); }
