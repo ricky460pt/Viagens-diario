@@ -5,18 +5,20 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
-<title>Diário Pro v7.1</title>
+<title>Diário Pro v7.2</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 :root {
   --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
   --line: #e2e8f0; --accent: #2563eb; --accent-light: #eff6ff;
-  --danger: #ef4444; --nav-bg: #ffffff; --input-bg: #f8fafc;
+  --danger: #ef4444; --warn: #d97706; --warn-bg: rgba(217, 119, 6, 0.12);
+  --nav-bg: #ffffff; --input-bg: #f8fafc;
 }
 body.dark {
   --bg: #0b1329; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
   --line: #334155; --accent: #3b82f6; --accent-light: rgba(59, 130, 246, 0.15);
-  --danger: #f87171; --nav-bg: #1e293b; --input-bg: #0f172a;
+  --danger: #f87171; --warn: #fbbf24; --warn-bg: rgba(251, 191, 36, 0.14);
+  --nav-bg: #1e293b; --input-bg: #0f172a;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -53,6 +55,7 @@ textarea { min-height: 90px; }
 
 button { font: inherit; border: none; cursor: pointer; transition: 0.2s; font-weight: 750; border-radius: 14px; padding: 14px; width: 100%; }
 button.primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+button.primary:active { transform: scale(0.97); }
 button.secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--line); }
 button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .row { display: flex; gap: 10px; } .row > * { flex: 1; }
@@ -65,6 +68,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .smart-results { position: absolute; z-index: 100; background: var(--card); border: 1px solid var(--line); border-radius: 14px; max-height: 200px; overflow-y: auto; width: calc(100% - 2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; margin-top: 4px; }
 
 .trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: var(--card); transition: 0.2s; display: flex; flex-direction: column; gap: 10px; }
+.trip:active { background: var(--input-bg); }
 .trip-title { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .trip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag { background: var(--input-bg); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); }
@@ -76,6 +80,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 .item-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
 
 .notice { font-size: 13px; color: var(--muted); background: var(--input-bg); padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
+.backup-reminder { display: none; font-size: 12px; color: var(--warn); background: var(--warn-bg); padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(217, 119, 6, 0.28); font-weight: 700; margin-bottom: 16px; line-height: 1.4; }
 .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-weight: 700; }
 
 .view { display: none; animation: fadeIn 0.3s ease-out; }
@@ -87,7 +92,7 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 </head>
 <body>
 <header><div class="top">
-  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v7.1</span></h1>
+  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v7.2</span></h1>
   <button id="themeToggle" class="badge" style="border:1px solid rgba(255,255,255,0.3); color:white; cursor:pointer;">🌓 Tema</button>
 </div></header>
 
@@ -102,13 +107,14 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 
 <main>
 <section id="home" class="view active">
+<div id="backupReminder" class="backup-reminder"></div>
 <div style="margin-bottom: 12px; text-align: center;"><span id="periodLabel" class="badge" style="background:var(--accent-light); color:var(--accent); font-size:12px; border:1px solid var(--line);">Período: --/-- a --/--</span></div>
 <div class="kpis" style="margin-bottom: 20px;">
   <div class="kpi"><b id="hkTrips">0</b><span>Viagens do Período</span></div>
   <div class="kpi"><b id="hkDays">0</b><span>Dias Trabalhados</span></div>
 </div>
 <div class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
-  <button type="button" class="primary" style="padding: 18px; font-size: 16px; margin-bottom: 12px;" onclick="show('trip')">➕ NOVA VIAGEM</button>
+  <button type="button" class="primary" style="padding: 18px; font-size: 16px; margin-bottom: 12px;" onclick="openNewTrip()">➕ NOVA VIAGEM</button>
   <button type="button" class="secondary" style="background: var(--accent-light); color: var(--accent); font-weight:700;" onclick="emergencyBackup()">💾 GUARDAR CÓPIA DE SEGURANÇA</button>
 </div>
 </section>
@@ -128,553 +134,4 @@ button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 <div class="full" style="position:relative"><label>Local de carga</label><input id="loadSearch" placeholder="Onde carregou?" autocomplete="off"><div id="loadResults" class="smart-results"></div></div>
 <div class="full" style="position:relative"><label>Local de descarga</label><input id="unloadSearch" placeholder="Onde descarregou?" autocomplete="off"><div id="unloadResults" class="smart-results"></div></div>
 <div class="full"><label>Observações</label><textarea id="notes" placeholder="Detalhes extra (opcional)"></textarea></div>
-<div class="full row" style="margin-top:8px"><button type="submit" id="mainSubmitBtn" class="primary">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
-</form></div></section>
-
-<section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Filtrar Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
-<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:var(--accent-light); color:var(--accent);">Exportar CSV</button></div><div id="historyList"></div></div></section>
-
-<section id="calendar" class="view"><div class="card"><h2>📅 Calendário</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:16px"></div></div></section>
-
-<section id="report" class="view"><div class="card"><h2>📊 Relatórios</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
-<div style="margin-top:14px"><button id="exportReport" class="secondary" style="background:var(--accent-light); color:var(--accent);">⬇️ Exportar Excel (CSV) do período</button></div>
-<div class="kpis" style="margin-top:16px"><div class="kpi"><b id="rTrips">0</b><span>Viagens</span></div><div class="kpi"><b id="rDays">0</b><span>Dias</span></div><div class="kpi" style="grid-column: span 2"><b id="rAvg">0</b><span>Média Viagens/Dia</span></div></div><div style="margin-top:16px; text-align: center;"><b id="rValue" style="font-size:28px; color:var(--accent);">0,00 €</b> <div class="muted" style="font-weight: 700; margin-top:4px;">FATURAÇÃO TOTAL</div></div></div>
-<div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
-
-<section id="db" class="view">
-<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid">
-<div class="full"><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div>
-<div><label>Cliente</label><select id="rclient"></select></div><div><label>Valor (€)</label><input id="rvalue" type="number" min="0" step=".01"></div>
-<div><label>Origem</label><select id="rfrom"></select></div><div><label>Destino</label><select id="rto"></select></div>
-<div><label>Camião</label><select id="rtruck"></select></div><div><label>Reboque</label><select id="rtrailer"></select></div>
-</div>
-<div class="row" style="margin-top:14px"><button id="addRoute" class="primary">Adicionar rota</button><button type="button" class="secondary" onclick="toggleList('routes')">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:12px;"></div></div>
-
-<div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Matrícula camião</label><input id="dbTruck" placeholder="Ex: 11-AA-22"></div><div><button type="button" class="primary" style="margin-top:22px" id="addTruck">Adicionar</button></div></div>
-<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('trucks')">Ver / Ocultar</button><div id="trucks" style="display:none; margin-top:12px;"></div></div>
-
-<div class="card"><h2>📦 Reboques</h2><div class="grid"><div><label>Matrícula reboque</label><input id="dbTrailer" placeholder="Ex: L-123456"></div><div><button type="button" class="primary" style="margin-top:22px" id="addTrailer">Adicionar</button></div></div>
-<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('trailers')">Ver / Ocultar</button><div id="trailers" style="display:none; margin-top:12px;"></div></div>
-
-<div class="card"><h2>🏢 Clientes</h2><div class="grid"><div><label>Nome do cliente</label><input id="dbClient"></div><div><button type="button" class="primary" style="margin-top:22px" id="addClient">Adicionar</button></div></div>
-<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('clients')">Ver / Ocultar</button><div id="clients" style="display:none; margin-top:12px;"></div></div>
-
-<div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Localidade</label><input id="dbLocation"></div><div><button type="button" class="primary" style="margin-top:22px" id="addLocation">Adicionar</button></div></div>
-<button type="button" class="secondary" style="margin-top:14px" onclick="toggleList('locations')">Ver / Ocultar</button><div id="locations" style="display:none; margin-top:12px;"></div></div>
-
-<div class="card danger"><h2>⚠️ Gestão de dados</h2><p class="notice">Guarda uma cópia antes de limpar ou se mudares de telemóvel.</p>
-<div class="row" style="margin-top:12px"><button id="backup" class="secondary" style="background:var(--accent-light); color:var(--accent)">💾 Criar Backup</button><label style="background:var(--input-bg); color:var(--text); border:1px solid var(--line); padding:14px; border-radius:14px; cursor:pointer; font-weight:750; text-align:center;">📂 Restaurar Backup<input type="file" id="restore" accept=".json" style="display:none"></label></div>
-<button id="reset" class="danger" style="margin-top:12px">Apagar tudo</button></div>
-</section>
-</main>
-
-<script>
-let $ = id => document.getElementById(id);
-let pad = n => n < 10 ? '0' + n : n;
-let str = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-let money = v => Number(v || 0).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
-
-// Função de sanitização de listas
-function sanitizeList(raw) {
-  if (!Array.isArray(raw)) return [];
-  let res = [];
-  raw.forEach(item => {
-    if (!item) return;
-    if (typeof item === 'string') {
-      let clean = item.trim();
-      if (clean) res.push(clean);
-    } else if (typeof item === 'object') {
-      let val = item.name || item.nome || item.cliente || item.client || item.local || item.location || '';
-      if (typeof val === 'string' && val.trim()) res.push(val.trim());
-    }
-  });
-  return Array.from(new Set(res));
-}
-
-// Histórico de viagens
-let rawStorage = localStorage.getItem('trips');
-let rawTrips = [];
-if (rawStorage) {
-  try {
-    let parsed = JSON.parse(rawStorage);
-    if (typeof parsed === 'string') parsed = JSON.parse(parsed);
-    if (Array.isArray(parsed)) rawTrips = parsed;
-    else if (parsed && typeof parsed === 'object') rawTrips = parsed.trips || parsed.data || [];
-  } catch(e) {}
-}
-
-let trips = rawTrips.map((t, idx) => {
-  if (typeof t === 'string') { try { t = JSON.parse(t); } catch(e) { t = {}; } }
-  if (!t || typeof t !== 'object') t = {};
-  return {
-    id: String(t.id || t._id || (Date.now() + idx)),
-    date: String(t.date || t.data || ''),
-    number: String(t.number || t.numero || t.n || ''),
-    truck: String(t.truck || t.camiao || t.matricula || ''),
-    trailer: String(t.trailer || t.reboque || ''),
-    client: String(t.client || t.cliente || ''),
-    load: String(t.load || t.carga || t.origem || ''),
-    unload: String(t.unload || t.descarga || t.destino || ''),
-    value: Number(t.value || t.valor || 0),
-    notes: String(t.notes || t.obs || t.observacoes || '')
-  };
-});
-localStorage.setItem('trips', JSON.stringify(trips));
-
-// Base de dados local
-let rawDb = localStorage.getItem('db');
-let parsedDb = {};
-if (rawDb) { try { parsedDb = JSON.parse(rawDb) || {}; } catch(e){} }
-
-let db = {
-  trucks: sanitizeList(parsedDb.trucks || parsedDb.camioes),
-  trailers: sanitizeList(parsedDb.trailers || parsedDb.reboques),
-  clients: sanitizeList(parsedDb.clients || parsedDb.clientes),
-  locations: sanitizeList(parsedDb.locations || parsedDb.locais),
-  routes: Array.isArray(parsedDb.routes || parsedDb.rotas) ? (parsedDb.routes || parsedDb.rotas).map(r => ({
-    id: String(r.id || Date.now() + Math.random()),
-    name: String(r.name || r.nome || ''),
-    client: String(r.client || r.cliente || ''),
-    truck: String(r.truck || r.camiao || ''),
-    trailer: String(r.trailer || r.reboque || ''),
-    load: String(r.load || r.origem || r.carga || ''),
-    unload: String(r.unload || r.destino || r.descarga || ''),
-    value: Number(r.value || r.valor || 0)
-  })) : []
-};
-
-let editId = null;
-
-function saveDB(){
-  db.trucks = sanitizeList(db.trucks);
-  db.trailers = sanitizeList(db.trailers);
-  db.clients = sanitizeList(db.clients);
-  db.locations = sanitizeList(db.locations);
-  localStorage.setItem('db', JSON.stringify(db));
-  loadDropdowns();
-  renderDB();
-}
-
-function emergencyBackup() {
-  let data = JSON.stringify({version: 7.1, trips, db}, null, 2);
-  let a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
-  a.download = 'diario_backup_seguranca.json';
-  a.click();
-  alert('✅ Backup descarregado com sucesso!');
-}
-
-// Tema Claro / Escuro
-const themeBtn = $('themeToggle');
-const currentTheme = localStorage.getItem('theme');
-const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-function applyTheme(theme) {
-  if (theme === 'dark' || (!theme && sysDark.matches)) {
-    document.body.classList.add('dark');
-    themeBtn.innerHTML = '☀️ Claro';
-  } else {
-    document.body.classList.remove('dark');
-    themeBtn.innerHTML = '🌙 Escuro';
-  }
-}
-applyTheme(currentTheme);
-themeBtn.onclick = () => {
-  const isDark = document.body.classList.contains('dark');
-  const newTheme = isDark ? 'light' : 'dark';
-  localStorage.setItem('theme', newTheme);
-  applyTheme(newTheme);
-};
-
-// Navegação
-let navBtns = document.querySelectorAll('nav button'), views = document.querySelectorAll('.view');
-navBtns.forEach(b => {
-  b.onclick = () => {
-    navBtns.forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    views.forEach(v => v.classList.remove('active'));
-    $(b.dataset.v).classList.add('active');
-    if (b.dataset.v === 'history') renderHistory();
-    if (b.dataset.v === 'calendar') renderCalendar();
-    if (b.dataset.v === 'home') renderHome();
-    if (b.dataset.v === 'report') updateReport();
-  };
-});
-function show(v){ let btn = document.querySelector(`[data-v="${v}"]`); if (btn) btn.click(); }
-
-let now = new Date();
-if (!$('date').value) $('date').value = str(now);
-$('calMonth').value = now.getFullYear() + '-' + pad(now.getMonth() + 1);
-
-// Período 16 a 15
-function getPeriodRange(refDate = new Date()) {
-  let y = refDate.getFullYear();
-  let m = refDate.getMonth();
-  let d = refDate.getDate();
-  
-  let start, end;
-  if (d >= 16) {
-    start = new Date(y, m, 16);
-    end = new Date(y, m + 1, 15);
-  } else {
-    start = new Date(y, m - 1, 16);
-    end = new Date(y, m, 15);
-  }
-  return {
-    start: str(start),
-    end: str(end),
-    label: `${pad(start.getDate())}/${pad(start.getMonth() + 1)} a ${pad(end.getDate())}/${pad(end.getMonth() + 1)}`
-  };
-}
-
-function stats(arr) {
-  let d = new Set();
-  arr.forEach(t => { if (t.date) d.add(t.date); });
-  return {
-    trips: arr.length,
-    days: d.size,
-    value: arr.reduce((s, t) => s + Number(t.value || 0), 0)
-  };
-}
-
-function renderHome() {
-  let period = getPeriodRange(new Date());
-  let periodTrips = trips.filter(t => t.date >= period.start && t.date <= period.end);
-  let s = stats(periodTrips);
-  
-  $('periodLabel').textContent = `Período Atual: ${period.label}`;
-  $('hkTrips').textContent = s.trips;
-  $('hkDays').textContent = s.days;
-}
-
-// Obter valores únicos
-function getUniqueList(dbCategory, tripFields) {
-  let fromDb = sanitizeList(db[dbCategory] || []);
-  let fields = Array.isArray(tripFields) ? tripFields : [tripFields];
-  let fromTrips = [];
-  
-  trips.forEach(t => {
-    fields.forEach(f => {
-      if (t && t[f] && typeof t[f] === 'string' && t[f].trim()) {
-        fromTrips.push(t[f].trim());
-      }
-    });
-  });
-  
-  return Array.from(new Set([...fromDb, ...fromTrips])).sort((a, b) => a.localeCompare(b, 'pt', { sensitivity: 'base' }));
-}
-
-function loadDropdowns() {
-  let fill = (id, arr) => {
-    let el = $(id);
-    if (el) el.innerHTML = '<option value="">Selecione...</option>' + arr.map(x => `<option value="${x}">${x}</option>`).join('');
-  };
-  
-  fill('rtruck', getUniqueList('trucks', 'truck'));
-  fill('rtrailer', getUniqueList('trailers', 'trailer'));
-  fill('rclient', getUniqueList('clients', 'client'));
-  fill('rfrom', getUniqueList('locations', ['load', 'unload']));
-  fill('rto', getUniqueList('locations', ['load', 'unload']));
-
-  let rq = $('tripRouteQuick');
-  if (rq) {
-    rq.innerHTML = '<option value="">Selecione para preencher...</option>';
-    db.routes.forEach(r => {
-      let o = document.createElement('option');
-      o.value = r.id;
-      o.textContent = r.name || `${r.load} ➔ ${r.unload}`;
-      rq.appendChild(o);
-    });
-  }
-}
-
-// Sugestões inteligentes
-function setupSmartSelect(inputId, resultsId, getListFn, categoryKey) {
-  let inp = $(inputId), res = $(resultsId);
-  if (!inp || !res) return;
-
-  function renderList() {
-    let options = getListFn();
-    let v = (inp.value || '').trim().toLowerCase();
-    let matches = options.filter(x => (x || '').toLowerCase().includes(v));
-
-    res.innerHTML = '';
-    if (matches.length > 0) {
-      matches.slice(0, 10).forEach(m => {
-        let d = document.createElement('div');
-        d.textContent = m;
-        d.style.padding = '12px';
-        d.style.borderBottom = '1px solid var(--line)';
-        d.style.cursor = 'pointer';
-        d.style.fontWeight = '600';
-        d.onmousedown = e => {
-          e.preventDefault();
-          inp.value = m;
-          res.style.display = 'none';
-        };
-        res.appendChild(d);
-      });
-    }
-
-    if (v && !options.find(x => (x || '').toLowerCase() === v)) {
-      let add = document.createElement('div');
-      add.textContent = `+ Adicionar "${inp.value}" ao cadastro`;
-      add.style.padding = '12px';
-      add.style.color = 'var(--accent)';
-      add.style.fontWeight = '800';
-      add.style.cursor = 'pointer';
-      add.onmousedown = e => {
-        e.preventDefault();
-        let val = inp.value.trim();
-        if (val && !db[categoryKey].includes(val)) {
-          db[categoryKey].push(val);
-          saveDB();
-        }
-        res.style.display = 'none';
-      };
-      res.appendChild(add);
-    }
-    res.style.display = (res.children.length > 0) ? 'block' : 'none';
-  }
-
-  inp.onfocus = () => renderList();
-  inp.oninput = () => renderList();
-  inp.onblur = () => setTimeout(() => res.style.display = 'none', 250);
-}
-
-setupSmartSelect('truckSearch', 'truckResults', () => getUniqueList('trucks', 'truck'), 'trucks');
-setupSmartSelect('trailerSearch', 'trailerResults', () => getUniqueList('trailers', 'trailer'), 'trailers');
-setupSmartSelect('clientSearch', 'clientResults', () => getUniqueList('clients', 'client'), 'clients');
-setupSmartSelect('loadSearch', 'loadResults', () => getUniqueList('locations', ['load', 'unload']), 'locations');
-setupSmartSelect('unloadSearch', 'unloadResults', () => getUniqueList('locations', ['load', 'unload']), 'locations');
-
-function toggleList(id){ $(id).style.display = $(id).style.display === 'none' ? 'block' : 'none'; }
-
-['Truck','Trailer','Client','Location'].forEach(t => {
-  $('add' + t).onclick = () => {
-    let key = t.toLowerCase() + 's';
-    let v = $('db' + t).value.trim();
-    if (v && !db[key].includes(v)) {
-      db[key].push(v);
-      $('db' + t).value = '';
-      saveDB();
-    }
-  };
-});
-
-$('addRoute').onclick = () => {
-  let n = $('rname').value.trim();
-  if (!n) return alert('Dê um nome à rota!');
-  db.routes.push({
-    id: String(Date.now()),
-    name: n,
-    client: $('rclient').value,
-    truck: $('rtruck').value,
-    trailer: $('rtrailer').value,
-    load: $('rfrom').value,
-    unload: $('rto').value,
-    value: Number($('rvalue').value || 0)
-  });
-  ['rname','rclient','rtruck','rtrailer','rfrom','rto','rvalue'].forEach(i => $(i).value = '');
-  saveDB();
-};
-
-$('tripRouteQuick').onchange = e => {
-  let r = db.routes.find(x => String(x.id) === String(e.target.value));
-  if (r) {
-    $('clientSearch').value = r.client || '';
-    $('truckSearch').value = r.truck || '';
-    $('trailerSearch').value = r.trailer || '';
-    $('loadSearch').value = r.load || '';
-    $('unloadSearch').value = r.unload || '';
-    $('value').value = r.value || '';
-  }
-};
-
-function renderDB(){
-  ['trucks','trailers','clients','locations'].forEach(t => {
-    $(t).innerHTML = db[t].map((x, i) => `
-      <div class="item">
-        <div class="item-head">${x} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.${t}.splice(${i},1);saveDB()">Apagar</button></div>
-      </div>`).join('');
-  });
-  $('routes').innerHTML = db.routes.map((r, i) => `
-    <div class="item">
-      <div class="item-head">${r.name} <button class="danger" style="padding:4px 8px; width:auto; border-radius:8px;" onclick="db.routes.splice(${i},1);saveDB()">Apagar</button></div>
-      <div class="item-sub">${r.load} ➔ ${r.unload} | ${r.client} | ${money(r.value)}</div>
-    </div>`).join('');
-}
-
-$('form').onsubmit = e => {
-  e.preventDefault();
-  let t = {
-    id: editId || String(Date.now()),
-    date: $('date').value,
-    number: $('number').value.trim(),
-    truck: $('truckSearch').value.trim(),
-    trailer: $('trailerSearch').value.trim(),
-    client: $('clientSearch').value.trim(),
-    load: $('loadSearch').value.trim(),
-    unload: $('unloadSearch').value.trim(),
-    value: Number($('value').value || 0),
-    notes: $('notes').value.trim()
-  };
-  
-  if (t.truck && !db.trucks.includes(t.truck)) db.trucks.push(t.truck);
-  if (t.trailer && !db.trailers.includes(t.trailer)) db.trailers.push(t.trailer);
-  if (t.client && !db.clients.includes(t.client)) db.clients.push(t.client);
-  if (t.load && !db.locations.includes(t.load)) db.locations.push(t.load);
-  if (t.unload && !db.locations.includes(t.unload)) db.locations.push(t.unload);
-  saveDB();
-
-  if (editId) trips = trips.map(x => String(x.id) === String(editId) ? t : x);
-  else trips.push(t);
-  
-  localStorage.setItem('trips', JSON.stringify(trips));
-  $('clear').click();
-  show('home');
-};
-
-$('clear').onclick = () => {
-  editId = null;
-  ['number','truckSearch','trailerSearch','clientSearch','loadSearch','unloadSearch','value','notes','tripRouteQuick'].forEach(id => $(id).value = '');
-  $('date').value = str(now);
-  $('mainSubmitBtn').textContent = 'GUARDAR VIAGEM';
-  if ($('formTitle')) $('formTitle').textContent = '➕ Registar viagem';
-};
-
-function renderHistory(){
-  let f = $('filterDate').value, s = ($('search').value || '').toLowerCase().trim(), arr = trips;
-  if (f) arr = arr.filter(t => t.date === f);
-  if (s) arr = arr.filter(t => (t.client || '').toLowerCase().includes(s) || (t.load || '').toLowerCase().includes(s) || (t.unload || '').toLowerCase().includes(s) || (t.truck || '').toLowerCase().includes(s) || (t.number || '').toString().toLowerCase().includes(s));
-  
-  arr.sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.id - a.id);
-  
-  $('historyList').innerHTML = arr.length ? arr.map(t => {
-    let dStr = t.date ? t.date.split('-').reverse().join('/') : '--/--/----';
-    let safeId = String(t.id).replace(/'/g, "\\'");
-    return `
-    <div class="trip">
-      <div class="trip-title"><span>#${t.number || '--'} | ${dStr}</span> <span style="color:var(--accent); font-size:16px">${money(t.value)}</span></div>
-      <div class="trip-tags"><span class="tag">🚚 ${t.truck || '--'}</span>${t.trailer ? `<span class="tag">📦 ${t.trailer}</span>` : ''}<span class="tag">🏢 ${t.client || '--'}</span></div>
-      <div style="font-weight:700; font-size:14px; margin:4px 0">${t.load || '?'} ➔ ${t.unload || '?'}</div>
-      ${t.notes ? `<div style="font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;">📝 ${t.notes}</div>` : ''}
-      <div class="actions"><button class="secondary" onclick="editTrip('${safeId}')">Editar</button><button class="danger" onclick="delTrip('${safeId}')">Apagar</button></div>
-    </div>`;
-  }).join('') : '<div class="empty">Nenhuma viagem encontrada.</div>';
-}
-
-function editTrip(id){
-  try {
-    let t = trips.find(x => String(x.id).trim() === String(id).trim());
-    if (!t) return alert('Viagem não encontrada.');
-    editId = String(t.id);
-    $('date').value = t.date || str(now);
-    $('number').value = t.number || '';
-    $('value').value = t.value || '';
-    $('notes').value = t.notes || '';
-    $('truckSearch').value = t.truck || '';
-    $('trailerSearch').value = t.trailer || '';
-    $('clientSearch').value = t.client || '';
-    $('loadSearch').value = t.load || '';
-    $('unloadSearch').value = t.unload || '';
-    $('mainSubmitBtn').textContent = 'ATUALIZAR VIAGEM';
-    if ($('formTitle')) $('formTitle').textContent = '✏️ Editar viagem';
-    show('trip');
-  } catch(err) {
-    alert('Erro ao carregar viagem: ' + err.message);
-  }
-}
-
-function delTrip(id){
-  if (confirm('Apagar esta viagem?')){
-    trips = trips.filter(t => String(t.id).trim() !== String(id).trim());
-    localStorage.setItem('trips', JSON.stringify(trips));
-    renderHistory();
-    renderHome();
-  }
-}
-
-$('filterDate').onchange = renderHistory;
-$('search').oninput = renderHistory;
-$('showAll').onclick = () => { $('filterDate').value = ''; $('search').value = ''; renderHistory(); };
-
-// --- RELATÓRIOS (PERSISTÊNCIA DE DATAS E PADRÃO 16-15) ---
-let ds = $('reportStart'), de = $('reportEnd');
-
-function updateReport() {
-  if (!ds.value || !de.value) return;
-  
-  // Guardar a escolha do utilizador na memória local
-  localStorage.setItem('reportStart', ds.value);
-  localStorage.setItem('reportEnd', de.value);
-
-  let arr = trips.filter(t => t.date >= ds.value && t.date <= de.value).sort((a, b) => (b.date || '').localeCompare(a.date || '')), s = stats(arr);
-  $('rTrips').textContent = s.trips;
-  $('rDays').textContent = s.days;
-  $('rAvg').textContent = s.days ? (s.trips / s.days).toFixed(1) : 0;
-  $('rValue').textContent = money(s.value);
-  $('reportList').innerHTML = arr.length ? arr.map(t => `<div class="item"><div class="item-head">${t.date ? t.date.split('-').reverse().join('/') : '--/--/----'} <span style="color:var(--accent)">${money(t.value)}</span></div><div class="item-sub">${t.load || '?'} ➔ ${t.unload || '?'}</div></div>`).join('') : '<div class="empty">Nenhum registo.</div>';
-}
-
-[ds, de].forEach(e => e.onchange = updateReport);
-
-// Carregar datas gravadas ou aplicar o período do dia 16 ao 15 por defeito
-let savedStart = localStorage.getItem('reportStart');
-let savedEnd = localStorage.getItem('reportEnd');
-let initialPeriod = getPeriodRange(new Date());
-
-ds.value = savedStart || initialPeriod.start;
-de.value = savedEnd || initialPeriod.end;
-
-function renderCalendar(){
-  let c = $('calMonth').value.split('-'), y = parseInt(c[0]), m = parseInt(c[1]) - 1;
-  let d1 = new Date(y, m, 1), d2 = new Date(y, m + 1, 0), sDay = d1.getDay() === 0 ? 6 : d1.getDay() - 1;
-  let html = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);margin-bottom:8px"><div>2ª</div><div>3ª</div><div>4ª</div><div>5ª</div><div>6ª</div><div>Sá</div><div>Do</div></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
-  for(let i=0; i<sDay; i++) html += `<div style="padding:10px;background:var(--input-bg);border-radius:8px"></div>`;
-  for(let i=1; i<=d2.getDate(); i++){
-    let f = y + '-' + pad(m + 1) + '-' + pad(i), arr = trips.filter(t => t.date === f);
-    html += `<div style="padding:10px 4px; border-radius:12px; border:1.5px solid ${arr.length ? 'var(--accent)' : 'var(--line)'}; background:${arr.length ? 'var(--accent-light)' : 'var(--card)'}; text-align:center; cursor:pointer;" onclick="gotoDay('${f}')">
-      <div style="font-weight:800; font-size:14px; color:${arr.length ? 'var(--accent)' : 'var(--text)'}">${i}</div>
-      ${arr.length ? `<div style="font-size:10px; font-weight:700; color:var(--accent); margin-top:2px">${arr.length}v</div>` : ''}
-    </div>`;
-  }
-  $('calendarGrid').innerHTML = html + '</div>';
-}
-
-function gotoDay(d){ $('filterDate').value = d; show('history'); }
-$('prevMonth').onclick = () => { let c = $('calMonth').value.split('-'); $('calMonth').value = c[0] + '-' + pad(parseInt(c[1]) - 1); if (c[1] == '01') $('calMonth').value = (parseInt(c[0]) - 1) + '-12'; renderCalendar(); };
-$('nextMonth').onclick = () => { let c = $('calMonth').value.split('-'); $('calMonth').value = c[0] + '-' + pad(parseInt(c[1]) + 1); if (c[1] == '12') $('calMonth').value = (parseInt(c[0]) + 1) + '-01'; renderCalendar(); };
-
-let exp = n => {
-  let csv = 'Data,Viagem,Camião,Reboque,Cliente,Carga,Descarga,Valor,Obs\n' + trips.map(t => `${t.date||''},${t.number||''},${t.truck||''},${t.trailer||''},${t.client||''},${t.load||''},${t.unload||''},${t.value||0},${(t.notes||'').replace(/,/g,';')}`).join('\n');
-  let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); a.download = n; a.click();
-};
-$('export').onclick = () => exp('diario_completo.csv');
-$('exportReport').onclick = () => exp(`relatorio_${ds.value}_a_${de.value}.csv`);
-
-$('backup').onclick = emergencyBackup;
-
-$('restore').onchange = e => {
-  let file = e.target.files[0]; if (!file) return;
-  let r = new FileReader();
-  r.onload = x => {
-    try {
-      let d = JSON.parse(x.target.result.trim());
-      if (Array.isArray(d)) trips = d;
-      else if (d && typeof d === 'object') {
-        if (d.trips) trips = d.trips;
-        if (d.db) db = d.db;
-      }
-      saveDB();
-      localStorage.setItem('trips', JSON.stringify(trips));
-      alert('✅ Restaurado com sucesso!');
-      location.reload();
-    } catch(err) { alert('❌ Erro no ficheiro.'); }
-  };
-  r.readAsText(file);
-};
-$('reset').onclick = () => { if (confirm('⚠️ APAGAR TUDO? Sem volta!')) { localStorage.clear(); location.reload(); } };
-
-saveDB(); renderHome(); renderCalendar(); updateReport();
-</script></body></html>
+<div class="full row" style="margin-top:8px"><button type="submit" id="mainSubmitBtn" class="primary">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button>
