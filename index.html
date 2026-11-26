@@ -5,6 +5,1091 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="45700.jpg">
+<title>Diário Pro v7.5</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+:root {
+  --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+  --line: #e2e8f0; --accent: #2563eb; --accent-light: #eff6ff;
+  --danger: #ef4444; --warn: #d97706; --warn-bg: rgba(217, 119, 6, 0.12);
+  --nav-bg: #ffffff; --input-bg: #f8fafc;
+}
+body.dark {
+  --bg: #0b1329; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
+  --line: #334155; --accent: #3b82f6; --accent-light: rgba(59, 130, 246, 0.15);
+  --danger: #f87171; --warn: #fbbf24; --warn-bg: rgba(251, 191, 36, 0.14);
+  --nav-bg: #1e293b; --input-bg: #0f172a;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); transition: background 0.3s, color 0.3s; }
+
+header { background: #0b1220; color: white; padding: 18px 16px 35px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; position: relative; z-index: 1; }
+header .top { max-width: 900px; margin: auto; display: flex; justify-content: space-between; align-items: center; }
+h1 { font-size: 20px; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+h1 img { height: 32px; width: 32px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.badge { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; transition: 0.2s; }
+
+nav { background: var(--nav-bg); display: flex; justify-content: space-between; padding: 8px; max-width: 900px; margin: -20px auto 0; border-radius: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10; width: calc(100% - 32px); transition: background 0.3s; }
+nav button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; background: transparent; color: var(--muted); border: none; border-radius: 12px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+nav button.active { background: var(--accent-light); color: var(--accent); }
+.ic { font-size: 18px; }
+
+@media (max-width: 650px) {
+  nav { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 10px 8px calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 25px rgba(0,0,0,0.1); gap: 0; }
+  nav button { flex-direction: column; gap: 4px; padding: 8px 4px; font-size: 10px; }
+  .ic { font-size: 22px; margin-bottom: 2px; }
+  main { margin-bottom: 90px; }
+}
+
+main { max-width: 900px; margin: auto; padding: 24px 16px; }
+.card { background: var(--card); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--line); transition: background 0.3s, border-color 0.3s; }
+h2 { font-size: 18px; margin: 0 0 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.full { grid-column: 1 / -1; }
+label { font-size: 12px; font-weight: 800; display: block; margin-bottom: 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+input, select, textarea { font: inherit; border-radius: 14px; padding: 14px; border: 1.5px solid var(--line); background: var(--input-bg); color: var(--text); width: 100%; transition: 0.2s; font-weight: 600; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); background: var(--card); }
+textarea { min-height: 90px; }
+
+button { font: inherit; border: none; cursor: pointer; transition: 0.2s; font-weight: 750; border-radius: 14px; padding: 14px; width: 100%; }
+button.primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+button.primary:active { transform: scale(0.97); }
+button.secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--line); }
+button.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+.row { display: flex; gap: 10px; } .row > * { flex: 1; }
+
+.kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.kpi { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.kpi b { font-size: 26px; display: block; color: var(--accent); font-weight: 800; margin-bottom: 4px; }
+.kpi span { font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.smart-results { position: absolute; z-index: 100; background: var(--card); border: 1px solid var(--line); border-radius: 14px; max-height: 200px; overflow-y: auto; width: calc(100% - 2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; margin-top: 4px; }
+
+.trip { border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 12px; background: var(--card); transition: 0.2s; display: flex; flex-direction: column; gap: 10px; }
+.trip:active { background: var(--input-bg); }
+.trip-title { font-size: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.trip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { background: var(--input-bg); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); }
+.actions { display: flex; gap: 8px; margin-top: 4px; }
+.actions button { padding: 10px; font-size: 12px; }
+
+.item { padding: 14px; border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: var(--card); }
+.item-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+.item-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+.notice { font-size: 13px; color: var(--muted); background: var(--input-bg); padding: 16px; border-radius: 14px; border-left: 4px solid var(--accent); font-weight: 600; line-height: 1.5; }
+.backup-reminder { display: none; font-size: 12px; color: var(--warn); background: var(--warn-bg); padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(217, 119, 6, 0.28); font-weight: 700; margin-bottom: 16px; line-height: 1.4; }
+.empty { text-align: center; color: var(--muted); padding: 40px 10px; font-weight: 700; }
+
+.view { display: none; animation: fadeIn 0.3s ease-out; }
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+@media(max-width: 650px) { .grid { grid-template-columns: 1fr; gap: 12px; } .full { grid-column: auto; } header { padding-bottom: 25px; } }
+</style>
+</head>
+<body>
+<header><div class="top">
+  <h1><img src="45700.jpg" alt="Logo"> Diário Pro <span style="font-size:12px; opacity:0.7">v7.5</span></h1>
+  <button id="themeToggle" class="badge" style="border:1px solid rgba(255,255,255,0.3); color:white; cursor:pointer;">🌓 Tema</button>
+</div></header>
+
+<nav>
+<button data-v="home" class="active"><span class="ic">🏠</span> <span class="tx">Início</span></button>
+<button data-v="trip"><span class="ic">➕</span> <span class="tx">Viagem</span></button>
+<button data-v="calendar"><span class="ic">📅</span> <span class="tx">Calendário</span></button>
+<button data-v="report"><span class="ic">📊</span> <span class="tx">Relatórios</span></button>
+<button data-v="db"><span class="ic">🗂️</span> <span class="tx">Cadastros</span></button>
+<button data-v="history"><span class="ic">📋</span> <span class="tx">Histórico</span></button>
+</nav>
+
+<main>
+<section id="home" class="view active">
+<div id="backupReminder" class="backup-reminder"></div>
+<div style="margin-bottom: 12px; text-align: center;"><span id="periodLabel" class="badge" style="background:var(--accent-light); color:var(--accent); font-size:12px; border:1px solid var(--line);">Período: --/-- a --/--</span></div>
+<div class="kpis" style="margin-bottom: 20px;">
+  <div class="kpi"><b id="hkTrips">0</b><span>Viagens do Período</span></div>
+  <div class="kpi"><b id="hkDays">0</b><span>Dias Trabalhados</span></div>
+</div>
+<div class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+  <button type="button" class="primary" style="padding: 18px; font-size: 16px; margin-bottom: 12px;" id="btnNewTripHome">➕ NOVA VIAGEM</button>
+  <button type="button" class="secondary" style="background: var(--accent-light); color: var(--accent); font-weight:700;" id="btnBackupHome">💾 GUARDAR CÓPIA DE SEGURANÇA</button>
+</div>
+</section>
+
+<section id="trip" class="view"><div class="card"><h2 id="formTitle">➕ Registar viagem</h2><form id="form" class="grid">
+<div class="full" style="background:var(--accent-light); padding:16px; border:1px solid var(--accent); border-radius:16px; margin-bottom:8px;">
+  <label style="color:var(--accent)">⭐ Rota Habitual (Preenchimento rápido)</label>
+  <select id="tripRouteQuick" style="margin-top:8px; font-weight: 700;"></select>
+</div>
+<div><label>Data</label><input id="date" type="date" required></div><div><label>N.º viagem</label><input id="number"></div>
+
+<div style="position:relative"><label>Camião</label><input id="truckSearch" placeholder="Escrever ou escolher..." autocomplete="off"><div id="truckResults" class="smart-results"></div></div>
+<div style="position:relative"><label>Reboque</label><input id="trailerSearch" placeholder="Escrever ou escolher..." autocomplete="off"><div id="trailerResults" class="smart-results"></div></div>
+<div style="position:relative"><label>Cliente</label><input id="clientSearch" placeholder="Escrever ou escolher..." autocomplete="off"><div id="clientResults" class="smart-results"></div></div>
+<div><label>Valor (€)</label><input id="value" type="number" min="0" step=".01"></div>
+
+<div class="full" style="position:relative"><label>Local de carga</label><input id="loadSearch" placeholder="Onde carregou?" autocomplete="off"><div id="loadResults" class="smart-results"></div></div>
+<div class="full" style="position:relative"><label>Local de descarga</label><input id="unloadSearch" placeholder="Onde descarregou?" autocomplete="off"><div id="unloadResults" class="smart-results"></div></div>
+<div class="full"><label>Observações</label><textarea id="notes" placeholder="Detalhes extra (opcional)"></textarea></div>
+<div class="full row" style="margin-top:8px"><button type="submit" id="mainSubmitBtn" class="primary">GUARDAR VIAGEM</button><button type="button" class="secondary" id="clear">Limpar</button></div>
+</form></div></section>
+
+<section id="history" class="view"><div class="card"><h2>📋 Histórico</h2><div class="grid"><div><label>Filtrar Data</label><input id="filterDate" type="date"></div><div><label>Pesquisar</label><input id="search" placeholder="Cliente, matrícula, local..."></div></div>
+<div class="row" style="margin-top:14px"><button id="showAll" class="secondary">Ver Todas</button><button id="export" class="secondary" style="background:var(--accent-light); color:var(--accent);">Exportar CSV</button></div><div id="historyList"></div></div></section>
+
+<section id="calendar" class="view"><div class="card"><h2>📅 Calendário</h2><div class="row"><button id="prevMonth" class="secondary">◀</button><input id="calMonth" type="month"><button id="nextMonth" class="secondary">▶</button></div><div id="calendarGrid" style="margin-top:16px"></div><div class="item-sub" style="margin-top:12px;">Dias até hoje sem registo ficam assinalados a tracejado para facilitar a revisão.</div></div></section>
+
+<section id="report" class="view"><div class="card"><h2>📊 Relatórios</h2><div class="grid"><div><label>Data inicial</label><input id="reportStart" type="date"></div><div><label>Data final</label><input id="reportEnd" type="date"></div></div>
+<div class="row" style="margin-top:14px">
+  <button type="button" id="applyPeriod16" class="secondary">🗓️ Período 16–15</button>
+  <button type="button" id="exportReport" class="secondary" style="background:var(--accent-light); color:var(--accent);">⬇️ Exportar CSV</button>
+</div>
+<div class="kpis" style="margin-top:16px"><div class="kpi"><b id="rTrips">0</b><span>Viagens</span></div><div class="kpi"><b id="rDays">0</b><span>Dias</span></div><div class="kpi" style="grid-column: span 2"><b id="rAvg">0</b><span>Média Viagens/Dia</span></div></div><div style="margin-top:16px; text-align: center;"><b id="rValue" style="font-size:28px; color:var(--accent);">0,00 €</b> <div class="muted" style="font-weight: 700; margin-top:4px;">FATURAÇÃO TOTAL</div></div></div>
+<div class="card"><h2>Resumo por cliente</h2><div id="reportClients"></div></div>
+<div class="card"><h2>Viagens do período</h2><div id="reportList"></div></div></section>
+
+<section id="db" class="view">
+<div class="card"><h2>🔄 Rotas habituais</h2><div class="grid">
+<div class="full"><label>Nome da rota</label><input id="rname" placeholder="Ex.: Porto → Lisboa"></div>
+<div><label>Cliente</label><select id="rclient"></select></div><div><label>Valor (€)</label><input id="rvalue" type="number" min="0" step=".01"></div>
+<div><label>Origem</label><select id="rfrom"></select></div><div><label>Destino</label><select id="rto"></select></div>
+<div><label>Camião</label><select id="rtruck"></select></div><div><label>Reboque</label><select id="rtrailer"></select></div>
+</div>
+<div class="row" style="margin-top:14px"><button id="addRoute" class="primary">Adicionar rota</button><button type="button" class="secondary" data-toggle="routes">Ver / Ocultar</button></div><div id="routes" style="display:none; margin-top:12px;"></div></div>
+
+<div class="card"><h2>🚛 Viaturas</h2><div class="grid"><div><label>Matrícula camião</label><input id="dbTruck" placeholder="Ex: 11-AA-22"></div><div><button type="button" class="primary" style="margin-top:22px" id="addTruck">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" data-toggle="trucks">Ver / Ocultar</button><div id="trucks" style="display:none; margin-top:12px;"></div></div>
+
+<div class="card"><h2>📦 Reboques</h2><div class="grid"><div><label>Matrícula reboque</label><input id="dbTrailer" placeholder="Ex: L-123456"></div><div><button type="button" class="primary" style="margin-top:22px" id="addTrailer">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" data-toggle="trailers">Ver / Ocultar</button><div id="trailers" style="display:none; margin-top:12px;"></div></div>
+
+<div class="card"><h2>🏢 Clientes</h2><div class="grid"><div><label>Nome do cliente</label><input id="dbClient"></div><div><button type="button" class="primary" style="margin-top:22px" id="addClient">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" data-toggle="clients">Ver / Ocultar</button><div id="clients" style="display:none; margin-top:12px;"></div></div>
+
+<div class="card"><h2>📍 Locais</h2><div class="grid"><div><label>Localidade</label><input id="dbLocation"></div><div><button type="button" class="primary" style="margin-top:22px" id="addLocation">Adicionar</button></div></div>
+<button type="button" class="secondary" style="margin-top:14px" data-toggle="locations">Ver / Ocultar</button><div id="locations" style="display:none; margin-top:12px;"></div></div>
+
+<div class="card danger"><h2>⚠️ Gestão de dados</h2><p class="notice">Guarda uma cópia antes de limpar ou se mudares de telemóvel.</p>
+<div class="row" style="margin-top:12px"><button id="backup" class="secondary" style="background:var(--accent-light); color:var(--accent)">💾 Criar Backup</button><label style="background:var(--input-bg); color:var(--text); border:1px solid var(--line); padding:14px; border-radius:14px; cursor:pointer; font-weight:750; text-align:center;">📂 Restaurar Backup<input type="file" id="restore" accept=".json" style="display:none"></label></div>
+<button id="reset" class="danger" style="margin-top:12px">Apagar tudo</button></div>
+</section>
+</main>
+
+<script>
+var $ = function(id) { return document.getElementById(id); };
+var pad = function(n) { return n < 10 ? '0' + n : String(n); };
+var str = function(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+var money = function(v) { return Number(v || 0).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }); };
+
+function sanitizeList(raw) {
+  if (!Array.isArray(raw)) return [];
+  var res = [];
+  for (var i = 0; i < raw.length; i++) {
+    var item = raw[i];
+    if (!item) continue;
+    if (typeof item === 'string') {
+      var clean = item.trim();
+      if (clean && res.indexOf(clean) === -1) res.push(clean);
+    } else if (typeof item === 'object') {
+      var val = item.name || item.nome || item.cliente || item.client || item.local || item.location || '';
+      if (typeof val === 'string' && val.trim() && res.indexOf(val.trim()) === -1) res.push(val.trim());
+    }
+  }
+  return res;
+}
+
+var rawTrips = [];
+try {
+  var rawStorage = localStorage.getItem('trips');
+  if (rawStorage) {
+    var parsed = JSON.parse(rawStorage);
+    if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+    if (Array.isArray(parsed)) rawTrips = parsed;
+    else if (parsed && typeof parsed === 'object' && Array.isArray(parsed.trips)) rawTrips = parsed.trips;
+  }
+} catch (e) { rawTrips = []; }
+
+var trips = [];
+for (var idx = 0; idx < rawTrips.length; idx++) {
+  var t = rawTrips[idx];
+  if (typeof t === 'string') {
+    try { t = JSON.parse(t); } catch (e) { t = {}; }
+  }
+  if (!t || typeof t !== 'object') t = {};
+  trips.push({
+    id: String(t.id || t._id || (Date.now() + idx)),
+    date: String(t.date || t.data || ''),
+    number: String(t.number || t.numero || t.n || ''),
+    truck: String(t.truck || t.camiao || t.matricula || ''),
+    trailer: String(t.trailer || t.reboque || ''),
+    client: String(t.client || t.cliente || ''),
+    load: String(t.load || t.carga || t.origem || ''),
+    unload: String(t.unload || t.descarga || t.destino || ''),
+    value: Number(t.value || t.valor || 0),
+    notes: String(t.notes || t.obs || t.observacoes || '')
+  });
+}
+
+var parsedDb = {};
+try {
+  var rawDb = localStorage.getItem('db');
+  if (rawDb) parsedDb = JSON.parse(rawDb) || {};
+} catch (e) { parsedDb = {}; }
+
+var rawRoutes = parsedDb.routes || parsedDb.rotas || [];
+var cleanRoutes = [];
+if (Array.isArray(rawRoutes)) {
+  for (var rIdx = 0; rIdx < rawRoutes.length; rIdx++) {
+    var r = rawRoutes[rIdx];
+    if (r && typeof r === 'object') {
+      cleanRoutes.push({
+        id: String(r.id || (Date.now() + rIdx)),
+        name: String(r.name || r.nome || ''),
+        client: String(r.client || r.cliente || ''),
+        truck: String(r.truck || r.camiao || ''),
+        trailer: String(r.trailer || r.reboque || ''),
+        load: String(r.load || r.origem || r.carga || ''),
+        unload: String(r.unload || r.destino || r.descarga || ''),
+        value: Number(r.value || r.valor || 0)
+      });
+    }
+  }
+}
+
+var db = {
+  trucks: sanitizeList(parsedDb.trucks || parsedDb.camioes),
+  trailers: sanitizeList(parsedDb.trailers || parsedDb.reboques),
+  clients: sanitizeList(parsedDb.clients || parsedDb.clientes),
+  locations: sanitizeList(parsedDb.locations || parsedDb.locais),
+  routes: cleanRoutes
+};
+
+var editId = null;
+
+function saveDB() {
+  db.trucks = sanitizeList(db.trucks);
+  db.trailers = sanitizeList(db.trailers);
+  db.clients = sanitizeList(db.clients);
+  db.locations = sanitizeList(db.locations);
+  try { localStorage.setItem('db', JSON.stringify(db)); } catch (e) {}
+  loadDropdowns();
+  renderDB();
+}
+
+function renderBackupReminder() {
+  try {
+    var el = $('backupReminder');
+    if (!el) return;
+    if (!trips.length) { el.style.display = 'none'; return; }
+    var last = Number(localStorage.getItem('lastBackupAt') || 0);
+    var days = last ? Math.floor((Date.now() - last) / 86400000) : 999;
+    if (days >= 7) {
+      el.style.display = 'block';
+      el.textContent = last
+        ? '⚠️ Último backup há ' + days + ' dias. Guarda uma cópia JSON em Cadastros ou no botão abaixo.'
+        : '⚠️ Ainda não guardaste nenhuma cópia de segurança JSON. Faz um backup para proteger os teus dados.';
+    } else {
+      el.style.display = 'none';
+    }
+  } catch (e) {}
+}
+
+function emergencyBackup() {
+  try {
+    var data = JSON.stringify({ version: 7.5, trips: trips, db: db }, null, 2);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    a.download = 'diario_backup_seguranca.json';
+    a.click();
+    try { localStorage.setItem('lastBackupAt', String(Date.now())); } catch (e) {}
+    renderBackupReminder();
+    alert('✅ Backup descarregado com sucesso!');
+  } catch (e) {
+    alert('❌ Não foi possível gerar o backup.');
+  }
+}
+
+var themeBtn = $('themeToggle');
+var currentTheme = '';
+try { currentTheme = localStorage.getItem('theme') || ''; } catch (e) {}
+var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+
+function applyTheme(theme) {
+  var isDark = (theme === 'dark') || (!theme && sysDark && sysDark.matches);
+  if (isDark) {
+    document.body.classList.add('dark');
+    if (themeBtn) themeBtn.innerHTML = '☀️ Claro';
+  } else {
+    document.body.classList.remove('dark');
+    if (themeBtn) themeBtn.innerHTML = '🌙 Escuro';
+  }
+}
+applyTheme(currentTheme);
+if (themeBtn) {
+  themeBtn.onclick = function() {
+    var darkNow = document.body.classList.contains('dark');
+    var nextTheme = darkNow ? 'light' : 'dark';
+    try { localStorage.setItem('theme', nextTheme); } catch (e) {}
+    applyTheme(nextTheme);
+  };
+}
+
+function getLastVehicle() {
+  var sorted = trips.slice().sort(function(a, b) {
+    var dCmp = String(b.date || '').localeCompare(String(a.date || ''));
+    if (dCmp !== 0) return dCmp;
+    return String(b.id || '').localeCompare(String(a.id || ''));
+  });
+  var latest = null;
+  for (var i = 0; i < sorted.length; i++) {
+    if (sorted[i].truck || sorted[i].trailer) { latest = sorted[i]; break; }
+  }
+  return {
+    truck: latest ? (latest.truck || '') : (db.trucks[0] || ''),
+    trailer: latest ? (latest.trailer || '') : (db.trailers[0] || '')
+  };
+}
+
+function applyDefaultsForNewTrip() {
+  editId = null;
+  var lastVeh = getLastVehicle();
+  var clearIds = ['number', 'clientSearch', 'loadSearch', 'unloadSearch', 'value', 'notes', 'tripRouteQuick'];
+  for (var i = 0; i < clearIds.length; i++) {
+    if ($(clearIds[i])) $(clearIds[i]).value = '';
+  }
+  if ($('truckSearch')) $('truckSearch').value = lastVeh.truck;
+  if ($('trailerSearch')) $('trailerSearch').value = lastVeh.trailer;
+  if ($('date')) $('date').value = str(new Date());
+  if ($('mainSubmitBtn')) $('mainSubmitBtn').textContent = 'GUARDAR VIAGEM';
+  if ($('formTitle')) $('formTitle').textContent = '➕ Registar viagem';
+}
+
+function openNewTrip() {
+  applyDefaultsForNewTrip();
+  show('trip');
+}
+
+function show(v) {
+  var btn = document.querySelector('nav button[data-v="' + v + '"]');
+  var sec = $(v);
+  if (!btn || !sec) return;
+  var allBtns = document.querySelectorAll('nav button');
+  for (var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+  btn.classList.add('active');
+  var allViews = document.querySelectorAll('.view');
+  for (var j = 0; j < allViews.length; j++) allViews[j].classList.remove('active');
+  sec.classList.add('active');
+  if (v === 'history') renderHistory();
+  if (v === 'calendar') renderCalendar();
+  if (v === 'home') { renderHome(); renderBackupReminder(); }
+  if (v === 'report') updateReport();
+}
+
+var navList = document.querySelectorAll('nav button');
+for (var n = 0; n < navList.length; n++) {
+  (function(btn) {
+    btn.onclick = function() { show(btn.getAttribute('data-v')); };
+  })(navList[n]);
+}
+
+if ($('btnNewTripHome')) $('btnNewTripHome').onclick = openNewTrip;
+if ($('btnBackupHome')) $('btnBackupHome').onclick = emergencyBackup;
+
+var toggleBtns = document.querySelectorAll('[data-toggle]');
+for (var tg = 0; tg < toggleBtns.length; tg++) {
+  (function(tb) {
+    tb.onclick = function() {
+      var targetId = tb.getAttribute('data-toggle');
+      var el = $(targetId);
+      if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    };
+  })(toggleBtns[tg]);
+}
+
+var now = new Date();
+if ($('date') && !$('date').value) $('date').value = str(now);
+if ($('calMonth') && !$('calMonth').value) $('calMonth').value = now.getFullYear() + '-' + pad(now.getMonth() + 1);
+
+function getPeriodRange(refDate) {
+  var dObj = refDate || new Date();
+  var y = dObj.getFullYear();
+  var m = dObj.getMonth();
+  var d = dObj.getDate();
+  var start, end;
+  if (d >= 16) {
+    start = new Date(y, m, 16);
+    end = new Date(y, m + 1, 15);
+  } else {
+    start = new Date(y, m - 1, 16);
+    end = new Date(y, m, 15);
+  }
+  return {
+    start: str(start),
+    end: str(end),
+    label: pad(start.getDate()) + '/' + pad(start.getMonth() + 1) + ' a ' + pad(end.getDate()) + '/' + pad(end.getMonth() + 1)
+  };
+}
+
+function stats(arr) {
+  var daysSet = {};
+  var sumVal = 0;
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].date) daysSet[arr[i].date] = true;
+    sumVal += Number(arr[i].value || 0);
+  }
+  return { trips: arr.length, days: Object.keys(daysSet).length, value: sumVal };
+}
+
+function renderHome() {
+  try {
+    var period = getPeriodRange(new Date());
+    var periodTrips = trips.filter(function(t) { return t.date >= period.start && t.date <= period.end; });
+    var s = stats(periodTrips);
+    if ($('periodLabel')) $('periodLabel').textContent = 'Período Atual: ' + period.label;
+    if ($('hkTrips')) $('hkTrips').textContent = String(s.trips);
+    if ($('hkDays')) $('hkDays').textContent = String(s.days);
+  } catch (e) {}
+}
+
+function getUniqueList(dbCategory, tripFields) {
+  var fromDb = sanitizeList(db[dbCategory] || []);
+  var fields = Array.isArray(tripFields) ? tripFields : [tripFields];
+  var combined = fromDb.slice();
+  for (var i = 0; i < trips.length; i++) {
+    for (var f = 0; f < fields.length; f++) {
+      var val = trips[i][fields[f]];
+      if (typeof val === 'string' && val.trim() && combined.indexOf(val.trim()) === -1) {
+        combined.push(val.trim());
+      }
+    }
+  }
+  combined.sort(function(a, b) { return a.localeCompare(b, 'pt', { sensitivity: 'base' }); });
+  return combined;
+}
+
+function loadDropdowns() {
+  function fill(id, arr) {
+    var el = $(id);
+    if (!el) return;
+    var html = '<option value="">Selecione...</option>';
+    for (var i = 0; i < arr.length; i++) {
+      html += '<option value="' + arr[i] + '">' + arr[i] + '</option>';
+    }
+    el.innerHTML = html;
+  }
+  fill('rtruck', getUniqueList('trucks', 'truck'));
+  fill('rtrailer', getUniqueList('trailers', 'trailer'));
+  fill('rclient', getUniqueList('clients', 'client'));
+  fill('rfrom', getUniqueList('locations', ['load', 'unload']));
+  fill('rto', getUniqueList('locations', ['load', 'unload']));
+
+  var rq = $('tripRouteQuick');
+  if (rq) {
+    var rHtml = '<option value="">Selecione para preencher...</option>';
+    for (var r = 0; r < db.routes.length; r++) {
+      var rt = db.routes[r];
+      var lbl = rt.name || ((rt.load || '?') + ' ➔ ' + (rt.unload || '?'));
+      rHtml += '<option value="' + rt.id + '">' + lbl + '</option>';
+    }
+    rq.innerHTML = rHtml;
+  }
+}
+
+function setupSmartSelect(inputId, resultsId, getListFn, categoryKey) {
+  var inp = $(inputId), res = $(resultsId);
+  if (!inp || !res) return;
+
+  function renderList() {
+    var options = getListFn();
+    var v = (inp.value || '').trim().toLowerCase();
+    var matches = options.filter(function(x) { return (x || '').toLowerCase().indexOf(v) !== -1; });
+    res.innerHTML = '';
+
+    var limit = Math.min(matches.length, 10);
+    for (var i = 0; i < limit; i++) {
+      (function(m) {
+        var d = document.createElement('div');
+        d.textContent = m;
+        d.style.padding = '12px';
+        d.style.borderBottom = '1px solid var(--line)';
+        d.style.cursor = 'pointer';
+        d.style.fontWeight = '600';
+        d.onmousedown = function(e) {
+          e.preventDefault();
+          inp.value = m;
+          res.style.display = 'none';
+        };
+        res.appendChild(d);
+      })(matches[i]);
+    }
+
+    var exactExists = false;
+    for (var k = 0; k < options.length; k++) {
+      if ((options[k] || '').toLowerCase() === v) { exactExists = true; break; }
+    }
+
+    if (v && !exactExists) {
+      var add = document.createElement('div');
+      add.textContent = '+ Adicionar "' + inp.value + '" ao cadastro';
+      add.style.padding = '12px';
+      add.style.color = 'var(--accent)';
+      add.style.fontWeight = '800';
+      add.style.cursor = 'pointer';
+      add.onmousedown = function(e) {
+        e.preventDefault();
+        var val = inp.value.trim();
+        if (val && db[categoryKey].indexOf(val) === -1) {
+          db[categoryKey].push(val);
+          saveDB();
+        }
+        res.style.display = 'none';
+      };
+      res.appendChild(add);
+    }
+    res.style.display = res.children.length > 0 ? 'block' : 'none';
+  }
+
+  inp.onfocus = renderList;
+  inp.oninput = renderList;
+  inp.onblur = function() { setTimeout(function() { res.style.display = 'none'; }, 250); };
+}
+
+setupSmartSelect('truckSearch', 'truckResults', function() { return getUniqueList('trucks', 'truck'); }, 'trucks');
+setupSmartSelect('trailerSearch', 'trailerResults', function() { return getUniqueList('trailers', 'trailer'); }, 'trailers');
+setupSmartSelect('clientSearch', 'clientResults', function() { return getUniqueList('clients', 'client'); }, 'clients');
+setupSmartSelect('loadSearch', 'loadResults', function() { return getUniqueList('locations', ['load', 'unload']); }, 'locations');
+setupSmartSelect('unloadSearch', 'unloadResults', function() { return getUniqueList('locations', ['load', 'unload']); }, 'locations');
+
+var dbTypes = ['Truck', 'Trailer', 'Client', 'Location'];
+for (var dt = 0; dt < dbTypes.length; dt++) {
+  (function(tName) {
+    var btn = $('add' + tName);
+    if (btn) {
+      btn.onclick = function() {
+        var key = tName.toLowerCase() + 's';
+        var inp = $('db' + tName);
+        var v = inp ? inp.value.trim() : '';
+        if (v && db[key].indexOf(v) === -1) {
+          db[key].push(v);
+          inp.value = '';
+          saveDB();
+        }
+      };
+    }
+  })(dbTypes[dt]);
+}
+
+if ($('addRoute')) {
+  $('addRoute').onclick = function() {
+    var n = $('rname') ? $('rname').value.trim() : '';
+    if (!n) return alert('Dê um nome à rota!');
+    db.routes.push({
+      id: String(Date.now()),
+      name: n,
+      client: $('rclient') ? $('rclient').value : '',
+      truck: $('rtruck') ? $('rtruck').value : '',
+      trailer: $('rtrailer') ? $('rtrailer').value : '',
+      load: $('rfrom') ? $('rfrom').value : '',
+      unload: $('rto') ? $('rto').value : '',
+      value: $('rvalue') ? Number($('rvalue').value || 0) : 0
+    });
+    var rFields = ['rname', 'rclient', 'rtruck', 'rtrailer', 'rfrom', 'rto', 'rvalue'];
+    for (var i = 0; i < rFields.length; i++) {
+      if ($(rFields[i])) $(rFields[i]).value = '';
+    }
+    saveDB();
+  };
+}
+
+if ($('tripRouteQuick')) {
+  $('tripRouteQuick').onchange = function(e) {
+    var chosenId = String(e.target.value);
+    var r = null;
+    for (var i = 0; i < db.routes.length; i++) {
+      if (String(db.routes[i].id) === chosenId) { r = db.routes[i]; break; }
+    }
+    if (r) {
+      if ($('clientSearch')) $('clientSearch').value = r.client || '';
+      if ($('truckSearch')) $('truckSearch').value = r.truck || '';
+      if ($('trailerSearch')) $('trailerSearch').value = r.trailer || '';
+      if ($('loadSearch')) $('loadSearch').value = r.load || '';
+      if ($('unloadSearch')) $('unloadSearch').value = r.unload || '';
+      if ($('value')) $('value').value = r.value || '';
+    }
+  };
+}
+
+function renderDB() {
+  var lists = ['trucks', 'trailers', 'clients', 'locations'];
+  for (var l = 0; l < lists.length; l++) {
+    (function(key) {
+      var box = $(key);
+      if (!box) return;
+      box.innerHTML = '';
+      for (var i = 0; i < db[key].length; i++) {
+        (function(idxItem) {
+          var card = document.createElement('div');
+          card.className = 'item';
+          var head = document.createElement('div');
+          head.className = 'item-head';
+          var span = document.createElement('span');
+          span.textContent = db[key][idxItem];
+          var delBtn = document.createElement('button');
+          delBtn.className = 'danger';
+          delBtn.style.cssText = 'padding:4px 8px; width:auto; border-radius:8px;';
+          delBtn.textContent = 'Apagar';
+          delBtn.onclick = function() {
+            db[key].splice(idxItem, 1);
+            saveDB();
+          };
+          head.appendChild(span);
+          head.appendChild(delBtn);
+          card.appendChild(head);
+          box.appendChild(card);
+        })(i);
+      }
+    })(lists[l]);
+  }
+
+  var rBox = $('routes');
+  if (rBox) {
+    rBox.innerHTML = '';
+    for (var r = 0; r < db.routes.length; r++) {
+      (function(rIdxItem) {
+        var rt = db.routes[rIdxItem];
+        var card = document.createElement('div');
+        card.className = 'item';
+        var head = document.createElement('div');
+        head.className = 'item-head';
+        var span = document.createElement('span');
+        span.textContent = rt.name;
+        var delBtn = document.createElement('button');
+        delBtn.className = 'danger';
+        delBtn.style.cssText = 'padding:4px 8px; width:auto; border-radius:8px;';
+        delBtn.textContent = 'Apagar';
+        delBtn.onclick = function() {
+          db.routes.splice(rIdxItem, 1);
+          saveDB();
+        };
+        var sub = document.createElement('div');
+        sub.className = 'item-sub';
+        sub.textContent = (rt.load || '?') + ' ➔ ' + (rt.unload || '?') + ' | ' + (rt.client || '--') + ' | ' + money(rt.value);
+        head.appendChild(span);
+        head.appendChild(delBtn);
+        card.appendChild(head);
+        card.appendChild(sub);
+        rBox.appendChild(card);
+      })(r);
+    }
+  }
+}
+
+if ($('form')) {
+  $('form').onsubmit = function(e) {
+    e.preventDefault();
+    var t = {
+      id: editId || String(Date.now()),
+      date: $('date') ? $('date').value : '',
+      number: $('number') ? $('number').value.trim() : '',
+      truck: $('truckSearch') ? $('truckSearch').value.trim() : '',
+      trailer: $('trailerSearch') ? $('trailerSearch').value.trim() : '',
+      client: $('clientSearch') ? $('clientSearch').value.trim() : '',
+      load: $('loadSearch') ? $('loadSearch').value.trim() : '',
+      unload: $('unloadSearch') ? $('unloadSearch').value.trim() : '',
+      value: $('value') ? Number($('value').value || 0) : 0,
+      notes: $('notes') ? $('notes').value.trim() : ''
+    };
+
+    if (t.truck && db.trucks.indexOf(t.truck) === -1) db.trucks.push(t.truck);
+    if (t.trailer && db.trailers.indexOf(t.trailer) === -1) db.trailers.push(t.trailer);
+    if (t.client && db.clients.indexOf(t.client) === -1) db.clients.push(t.client);
+    if (t.load && db.locations.indexOf(t.load) === -1) db.locations.push(t.load);
+    if (t.unload && db.locations.indexOf(t.unload) === -1) db.locations.push(t.unload);
+    saveDB();
+
+    if (editId) {
+      for (var i = 0; i < trips.length; i++) {
+        if (String(trips[i].id) === String(editId)) { trips[i] = t; break; }
+      }
+    } else {
+      trips.push(t);
+    }
+
+    try { localStorage.setItem('trips', JSON.stringify(trips)); } catch (err) {}
+    applyDefaultsForNewTrip();
+    show('home');
+  };
+}
+
+if ($('clear')) $('clear').onclick = applyDefaultsForNewTrip;
+
+function fillFormWithTrip(t, mode) {
+  if (!t) return;
+  if ($('date')) $('date').value = mode === 'duplicate' ? str(new Date()) : (t.date || str(new Date()));
+  if ($('number')) $('number').value = mode === 'duplicate' ? '' : (t.number || '');
+  if ($('value')) $('value').value = t.value || '';
+  if ($('notes')) $('notes').value = t.notes || '';
+  if ($('truckSearch')) $('truckSearch').value = t.truck || '';
+  if ($('trailerSearch')) $('trailerSearch').value = t.trailer || '';
+  if ($('clientSearch')) $('clientSearch').value = t.client || '';
+  if ($('loadSearch')) $('loadSearch').value = t.load || '';
+  if ($('unloadSearch')) $('unloadSearch').value = t.unload || '';
+  if (mode === 'edit') {
+    editId = String(t.id);
+    if ($('mainSubmitBtn')) $('mainSubmitBtn').textContent = 'ATUALIZAR VIAGEM';
+    if ($('formTitle')) $('formTitle').textContent = '✏️ Editar viagem';
+  } else {
+    editId = null;
+    if ($('mainSubmitBtn')) $('mainSubmitBtn').textContent = 'GUARDAR VIAGEM';
+    if ($('formTitle')) $('formTitle').textContent = '📋 Duplicar viagem';
+  }
+  show('trip');
+}
+
+function renderHistory() {
+  try {
+    var listEl = $('historyList');
+    if (!listEl) return;
+    var f = $('filterDate') ? $('filterDate').value : '';
+    var s = $('search') ? ($('search').value || '').toLowerCase().trim() : '';
+
+    var arr = trips.filter(function(t) {
+      if (f && t.date !== f) return false;
+      if (!s) return true;
+      return (t.client || '').toLowerCase().indexOf(s) !== -1 ||
+             (t.load || '').toLowerCase().indexOf(s) !== -1 ||
+             (t.unload || '').toLowerCase().indexOf(s) !== -1 ||
+             (t.truck || '').toLowerCase().indexOf(s) !== -1 ||
+             (t.number || '').toLowerCase().indexOf(s) !== -1;
+    });
+
+    arr.sort(function(a, b) {
+      var dCmp = String(b.date || '').localeCompare(String(a.date || ''));
+      if (dCmp !== 0) return dCmp;
+      return String(b.id || '').localeCompare(String(a.id || ''));
+    });
+
+    listEl.innerHTML = '';
+    if (!arr.length) {
+      listEl.innerHTML = '<div class="empty">Nenhuma viagem encontrada.</div>';
+      return;
+    }
+
+    for (var i = 0; i < arr.length; i++) {
+      (function(t) {
+        var dStr = t.date ? t.date.split('-').reverse().join('/') : '--/--/----';
+        var card = document.createElement('div');
+        card.className = 'trip';
+
+        var title = document.createElement('div');
+        title.className = 'trip-title';
+        title.innerHTML = '<span>#' + (t.number || '--') + ' | ' + dStr + '</span> <span style="color:var(--accent); font-size:16px">' + money(t.value) + '</span>';
+
+        var tags = document.createElement('div');
+        tags.className = 'trip-tags';
+        tags.innerHTML = '<span class="tag">🚚 ' + (t.truck || '--') + '</span>' + (t.trailer ? '<span class="tag">📦 ' + t.trailer + '</span>' : '') + '<span class="tag">🏢 ' + (t.client || '--') + '</span>';
+
+        var route = document.createElement('div');
+        route.style.cssText = 'font-weight:700; font-size:14px; margin:4px 0';
+        route.textContent = (t.load || '?') + ' ➔ ' + (t.unload || '?');
+
+        card.appendChild(title);
+        card.appendChild(tags);
+        card.appendChild(route);
+
+        if (t.notes) {
+          var obs = document.createElement('div');
+          obs.style.cssText = 'font-size:12px; color:var(--muted); background:var(--input-bg); padding:8px; border-radius:8px;';
+          obs.textContent = '📝 ' + t.notes;
+          card.appendChild(obs);
+        }
+
+        var actions = document.createElement('div');
+        actions.className = 'actions';
+
+        var bEdit = document.createElement('button');
+        bEdit.className = 'secondary';
+        bEdit.textContent = 'Editar';
+        bEdit.onclick = function() { fillFormWithTrip(t, 'edit'); };
+
+        var bDup = document.createElement('button');
+        bDup.className = 'secondary';
+        bDup.textContent = 'Duplicar';
+        bDup.onclick = function() { fillFormWithTrip(t, 'duplicate'); };
+
+        var bDel = document.createElement('button');
+        bDel.className = 'danger';
+        bDel.textContent = 'Apagar';
+        bDel.onclick = function() {
+          if (confirm('Apagar esta viagem?')) {
+            trips = trips.filter(function(x) { return String(x.id) !== String(t.id); });
+            try { localStorage.setItem('trips', JSON.stringify(trips)); } catch (err) {}
+            renderHistory();
+            renderHome();
+          }
+        };
+
+        actions.appendChild(bEdit);
+        actions.appendChild(bDup);
+        actions.appendChild(bDel);
+        card.appendChild(actions);
+        listEl.appendChild(card);
+      })(arr[i]);
+    }
+  } catch (e) {}
+}
+
+if ($('filterDate')) $('filterDate').onchange = renderHistory;
+if ($('search')) $('search').oninput = renderHistory;
+if ($('showAll')) {
+  $('showAll').onclick = function() {
+    if ($('filterDate')) $('filterDate').value = '';
+    if ($('search')) $('search').value = '';
+    renderHistory();
+  };
+}
+
+var ds = $('reportStart'), de = $('reportEnd');
+
+function renderClientSummary(arr) {
+  var box = $('reportClients');
+  if (!box) return;
+  var map = {};
+  for (var i = 0; i < arr.length; i++) {
+    var name = (arr[i].client || '').trim() || 'Sem cliente';
+    if (!map[name]) map[name] = { trips: 0, value: 0 };
+    map[name].trips += 1;
+    map[name].value += Number(arr[i].value || 0);
+  }
+  var keys = Object.keys(map).sort(function(a, b) {
+    return map[b].value - map[a].value || map[b].trips - map[a].trips;
+  });
+  if (!keys.length) {
+    box.innerHTML = '<div class="empty">Sem dados por cliente neste período.</div>';
+    return;
+  }
+  var html = '';
+  for (var k = 0; k < keys.length; k++) {
+    var nm = keys[k];
+    var info = map[nm];
+    html += '<div class="item"><div class="item-head"><span>' + nm + '</span><span style="color:var(--accent)">' + money(info.value) + '</span></div><div class="item-sub">' + info.trips + ' ' + (info.trips === 1 ? 'viagem' : 'viagens') + '</div></div>';
+  }
+  box.innerHTML = html;
+}
+
+function updateReport() {
+  try {
+    if (!ds || !de || !ds.value || !de.value) return;
+    try {
+      localStorage.setItem('reportStart', ds.value);
+      localStorage.setItem('reportEnd', de.value);
+    } catch (e) {}
+
+    var arr = trips.filter(function(t) { return t.date >= ds.value && t.date <= de.value; });
+    arr.sort(function(a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+    var s = stats(arr);
+
+    if ($('rTrips')) $('rTrips').textContent = String(s.trips);
+    if ($('rDays')) $('rDays').textContent = String(s.days);
+    if ($('rAvg')) $('rAvg').textContent = s.days ? (s.trips / s.days).toFixed(1) : '0';
+    if ($('rValue')) $('rValue').textContent = money(s.value);
+    renderClientSummary(arr);
+
+    var rList = $('reportList');
+    if (rList) {
+      if (!arr.length) {
+        rList.innerHTML = '<div class="empty">Nenhum registo.</div>';
+      } else {
+        var html = '';
+        for (var i = 0; i < arr.length; i++) {
+          var t = arr[i];
+          var dStr = t.date ? t.date.split('-').reverse().join('/') : '--/--/----';
+          html += '<div class="item"><div class="item-head">' + dStr + ' <span style="color:var(--accent)">' + money(t.value) + '</span></div><div class="item-sub">' + (t.client || 'Sem cliente') + ' • ' + (t.load || '?') + ' ➔ ' + (t.unload || '?') + '</div></div>';
+        }
+        rList.innerHTML = html;
+      }
+    }
+  } catch (e) {}
+}
+
+if (ds) ds.onchange = updateReport;
+if (de) de.onchange = updateReport;
+
+if ($('applyPeriod16')) {
+  $('applyPeriod16').onclick = function() {
+    var p = getPeriodRange(new Date());
+    if (ds) ds.value = p.start;
+    if (de) de.value = p.end;
+    updateReport();
+  };
+}
+
+var savedStart = '', savedEnd = '';
+try {
+  savedStart = localStorage.getItem('reportStart') || '';
+  savedEnd = localStorage.getItem('reportEnd') || '';
+} catch (e) {}
+var initialPeriod = getPeriodRange(new Date());
+if (ds) ds.value = savedStart || initialPeriod.start;
+if (de) de.value = savedEnd || initialPeriod.end;
+
+function renderCalendar() {
+  try {
+    var gridEl = $('calendarGrid');
+    var mInput = $('calMonth');
+    if (!gridEl || !mInput || !mInput.value) return;
+    var parts = mInput.value.split('-');
+    var y = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10) - 1;
+    if (isNaN(y) || isNaN(m)) return;
+    var d1 = new Date(y, m, 1);
+    var d2 = new Date(y, m + 1, 0);
+    var sDay = d1.getDay() === 0 ? 6 : d1.getDay() - 1;
+    var todayStr = str(new Date());
+
+    gridEl.innerHTML = '';
+    var headerRow = document.createElement('div');
+    headerRow.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-weight:800;font-size:12px;color:var(--muted);margin-bottom:8px';
+    headerRow.innerHTML = '<div>2ª</div><div>3ª</div><div>4ª</div><div>5ª</div><div>6ª</div><div>Sá</div><div>Do</div>';
+    gridEl.appendChild(headerRow);
+
+    var bodyGrid = document.createElement('div');
+    bodyGrid.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:4px;';
+
+    for (var i = 0; i < sDay; i++) {
+      var padCell = document.createElement('div');
+      padCell.style.cssText = 'padding:10px;background:var(--input-bg);border-radius:8px';
+      bodyGrid.appendChild(padCell);
+    }
+
+    for (var day = 1; day <= d2.getDate(); day++) {
+      (function(dNum) {
+        var f = y + '-' + pad(m + 1) + '-' + pad(dNum);
+        var count = 0;
+        for (var k = 0; k < trips.length; k++) {
+          if (trips[k].date === f) count++;
+        }
+        var isPastOrToday = f <= todayStr;
+        var borderStyle = count ? '1.5px solid var(--accent)' : (isPastOrToday ? '1.5px dashed var(--muted)' : '1.5px solid var(--line)');
+        var bgStyle = count ? 'var(--accent-light)' : (isPastOrToday ? 'var(--input-bg)' : 'var(--card)');
+        var numColor = count ? 'var(--accent)' : 'var(--text)';
+        var subHtml = count
+          ? '<div style="font-size:10px; font-weight:700; color:var(--accent); margin-top:2px">' + count + 'v</div>'
+          : (isPastOrToday ? '<div style="font-size:9px; font-weight:700; color:var(--muted); margin-top:2px">0v</div>' : '');
+
+        var cell = document.createElement('div');
+        cell.style.cssText = 'padding:10px 4px; border-radius:12px; border:' + borderStyle + '; background:' + bgStyle + '; text-align:center; cursor:pointer;';
+        cell.innerHTML = '<div style="font-weight:800; font-size:14px; color:' + numColor + '">' + dNum + '</div>' + subHtml;
+        cell.onclick = function() {
+          if ($('filterDate')) $('filterDate').value = f;
+          show('history');
+        };
+        bodyGrid.appendChild(cell);
+      })(day);
+    }
+
+    gridEl.appendChild(bodyGrid);
+  } catch (e) {}
+}
+
+if ($('calMonth')) $('calMonth').onchange = renderCalendar;
+
+if ($('prevMonth')) {
+  $('prevMonth').onclick = function() {
+    if (!$('calMonth') || !$('calMonth').value) return;
+    var c = $('calMonth').value.split('-');
+    var yr = parseInt(c[0], 10);
+    var mo = parseInt(c[1], 10) - 1;
+    if (mo < 1) { mo = 12; yr -= 1; }
+    $('calMonth').value = yr + '-' + pad(mo);
+    renderCalendar();
+  };
+}
+
+if ($('nextMonth')) {
+  $('nextMonth').onclick = function() {
+    if (!$('calMonth') || !$('calMonth').value) return;
+    var c = $('calMonth').value.split('-');
+    var yr = parseInt(c[0], 10);
+    var mo = parseInt(c[1], 10) + 1;
+    if (mo > 12) { mo = 1; yr += 1; }
+    $('calMonth').value = yr + '-' + pad(mo);
+    renderCalendar();
+  };
+}
+
+function exportCsv(filename) {
+  var lines = ['Data,Viagem,Camião,Reboque,Cliente,Carga,Descarga,Valor,Obs'];
+  for (var i = 0; i < trips.length; i++) {
+    var t = trips[i];
+    var cleanNotes = String(t.notes || '').replace(/,/g, ';').replace(/\n/g, ' ');
+    lines.push([t.date || '', t.number || '', t.truck || '', t.trailer || '', t.client || '', t.load || '', t.unload || '', t.value || 0, cleanNotes].join(','));
+  }
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' }));
+  a.download = filename;
+  a.click();
+}
+
+if ($('export')) $('export').onclick = function() { exportCsv('diario_completo.csv'); };
+if ($('exportReport')) {
+  $('exportReport').onclick = function() {
+    var sVal = ds ? ds.value : '';
+    var eVal = de ? de.value : '';
+    exportCsv('relatorio_' + sVal + '_a_' + eVal + '.csv');
+  };
+}
+
+if ($('backup')) $('backup').onclick = emergencyBackup;
+
+if ($('restore')) {
+  $('restore').onchange = function(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var r = new FileReader();
+    r.onload = function(x) {
+      try {
+        var d = JSON.parse(String(x.target.result || '').trim());
+        if (Array.isArray(d)) trips = d;
+        else if (d && typeof d === 'object') {
+          if (d.trips) trips = d.trips;
+          if (d.db) db = d.db;
+        }
+        try { localStorage.setItem('trips', JSON.stringify(trips)); } catch (err) {}
+        saveDB();
+        alert('✅ Restaurado com sucesso!');
+        location.reload();
+      } catch (err) {
+        alert('❌ Erro no ficheiro.');
+      }
+    };
+    r.readAsText(file);
+  };
+}
+
+if ($('reset')) {
+  $('reset').onclick = function() {
+    if (confirm('⚠️ APAGAR TUDO? Sem volta!')) {
+      try { localStorage.clear(); } catch (err) {}
+      location.reload();
+    }
+  };
+}
+
+saveDB();
+renderHome();
+renderBackupReminder();
+</script></body></html>
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="45700.jpg">
 <title>Diário Pro v7.4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
